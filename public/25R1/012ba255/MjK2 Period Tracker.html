@@ -1,96 +1,104 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Period Tracker</title>
+        <link rel="stylesheet" href="./periodtracker.css" />
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Period Tracker</title>
-    <link rel="stylesheet" href="./periodtracker.css">
-</head>
+    <body>
+        <!-- Hackathon autoinsert -->
+        <div id="nethacklabel">
+            This project was a student submission for the 2nd Annual BIBSC Network Hackathon Round 1.
+            <a href="https://nethack.biszweb.club/showcase#012ba255">Learn more</a>
+            .
+        </div>
+        <style>
+            body {
+                padding-bottom: 80px;
+            }
+            #nethacklabel {
+                position: fixed;
+                bottom: 0;
+                color: #39ff14;
+                font-family: Arial, Helvetica, sans-serif;
+                padding: 1.5vh;
+                background: #000;
+                width: 100%;
+                font-size: 1.8vh;
+                text-align: center;
+                z-index: 999;
+            }
+        </style>
+        <!-- End of autoinsert -->
 
-<body>
-    <!-- Hackathon autoinsert -->
-    <div id="nethacklabel">
-        This project was a student submission for the 2nd Annual BIBSC Network Hackathon Round 1. <a href = "https://nethack.biszweb.club/showcase#012ba255">Learn more</a>.
-    </div>
-    <style>
-        body{
-            padding-bottom: 80px;
-        }
-        #nethacklabel{
-            position: fixed;
-            bottom: 0;
-            color: #39FF14;
-            font-family: Arial, Helvetica, sans-serif;
-            padding: 1.5vh;
-            background: #000;
-            width: 100%;
-            font-size: 1.8vh;
-            text-align: center;
-            z-index: 999;
-        }
-    </style>
-    <!-- End of autoinsert -->
-
-    <div class="home">
-        <h1>MjK2</h1>
-        <h1>Hello <h1 ID="name"></h1> Welcome to the MjK2 Period Tracker.</h1>
-        <p>This is a period tracking website developed by Megan, Julie, Kitty and Kerry, hence its name MjK2. In order to predict your next period, please input the appropriate information.</p>
-    </div>
+        <div class="home">
+            <h1>MjK2</h1>
+            <h1>
+                Hello
+                <h1 id="name"></h1>
+                Welcome to the MjK2 Period Tracker.
+            </h1>
+            <p>
+                This is a period tracking website developed by Megan, Julie, Kitty and Kerry, hence its name MjK2. In
+                order to predict your next period, please input the appropriate information.
+            </p>
+        </div>
         <div class="combine">
             <div class="container">
-            <form id="periodForm">
-                <label for="lastPeriodDate">Last Period Start Date</label>
-                <input type="date" id="lastPeriodDate" name="lastPeriodDate" required>
-            
-                <label for="lastingDays">Period Lasting Days</label>
-                <input type="number" id="lastingDays" value="9">
-            
-                <label for="averagecycleLength">Average Cycle Length (days)</label>
-                <input type="number" id="averagecycleLength" value="28">
-            
-                <button type="submit">Calculate Next Period</button>
-            </form>
-            
-            <div id="result"></div>
-            
-            <script>
-                document.getElementById('periodForm').addEventListener('submit', function(event) {
-                    event.preventDefault();
-            
-                    const lastPeriodDate = new Date(document.getElementById('lastPeriodDate').value);
-                    const averageCycleLength = parseInt(document.getElementById('averagecycleLength').value);
-            
-                    const nextPeriodDate = new Date(lastPeriodDate.getTime() + averageCycleLength * 24 * 60 * 60 * 1000);
-            
-                    document.getElementById('result').innerText = "Predicted Next Period Date: " + nextPeriodDate.toDateString();
-                });
-            </script>
-            <div id="result"></div>
-        </div>
-        
-        <div class="calendar">
-            <div class="calendar-header">
-                <button id="before">Previous</button>
-                <h2 id="monthyear"></h2>
-                <button id="next">Next</button>
+                <form id="periodForm">
+                    <label for="lastPeriodDate">Last Period Start Date</label>
+                    <input type="date" id="lastPeriodDate" name="lastPeriodDate" required />
+
+                    <label for="lastingDays">Period Lasting Days</label>
+                    <input type="number" id="lastingDays" value="9" />
+
+                    <label for="averagecycleLength">Average Cycle Length (days)</label>
+                    <input type="number" id="averagecycleLength" value="28" />
+
+                    <button type="submit">Calculate Next Period</button>
+                </form>
+
+                <div id="result"></div>
+
+                <script>
+                    document.getElementById("periodForm").addEventListener("submit", function (event) {
+                        event.preventDefault()
+
+                        const lastPeriodDate = new Date(document.getElementById("lastPeriodDate").value)
+                        const averageCycleLength = parseInt(document.getElementById("averagecycleLength").value)
+
+                        const nextPeriodDate = new Date(
+                            lastPeriodDate.getTime() + averageCycleLength * 24 * 60 * 60 * 1000
+                        )
+
+                        document.getElementById("result").innerText =
+                            "Predicted Next Period Date: " + nextPeriodDate.toDateString()
+                    })
+                </script>
+                <div id="result"></div>
             </div>
-            <div class="days-of-week">
-                <div>Sun</div>
-                <div>Mon</div>
-                <div>Tue</div>
-                <div>Wed</div>
-                <div>Thu</div>
-                <div>Fri</div>
-                <div>Sat</div>
+
+            <div class="calendar">
+                <div class="calendar-header">
+                    <button id="before">Previous</button>
+                    <h2 id="monthyear"></h2>
+                    <button id="next">Next</button>
+                </div>
+                <div class="days-of-week">
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                </div>
+                <div class="calendar-days" id="calendarDays"></div>
             </div>
-            <div class="calendar-days" id="calendarDays"></div>
         </div>
-    </div>
 
-    <script src="./periodtracker.js">
-
-    </script>
-</body>
-
+        <script src="./periodtracker.js"></script>
+    </body>
 </html>

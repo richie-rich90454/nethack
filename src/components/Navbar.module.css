@@ -1,10 +1,10 @@
-.nav{
+.nav {
     position: sticky;
     top: 0;
-    z-index:99;
+    z-index: 99;
 }
-.wrap{
-    background: rgba(10,10,10,.8);
+.wrap {
+    background: rgba(10, 10, 10, 0.8);
     font-size: 2.6vw;
     display: flex;
     align-items: center;
@@ -12,11 +12,11 @@
     /* font-weight: bold; */
 }
 
-.wrap{
+.wrap {
     font-family: "Monaspace Xenon", monospace;
-    color: #FFF;
+    color: #fff;
 }
 
-.fill{
+.fill {
     flex: 1 0 0;
 }

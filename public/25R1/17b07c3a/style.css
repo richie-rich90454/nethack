@@ -1,5 +1,5 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f4f4f9;
     margin: 0;
     padding: 0;
@@ -9,7 +9,7 @@ body {
 }
 
 #top-bar {
-    background-color: #007BFF;
+    background-color: #007bff;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -23,7 +23,7 @@ body {
 
 #investment-buttons button {
     background-color: white;
-    color: #007BFF;
+    color: #007bff;
     padding: 8px 15px;
     border: none;
     border-radius: 4px;
@@ -112,7 +112,7 @@ input {
 }
 
 button {
-    background-color: #007BFF;
+    background-color: #007bff;
     color: white;
     padding: 8px 15px;
     border: none;

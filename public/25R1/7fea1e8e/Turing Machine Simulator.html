@@ -1,24 +1,26 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
     <head>
         <title>Turing Machine Simulator</title>
-        <meta charset="UTF-8">
-        <link rel="stylesheet" href="style.css">
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="style.css" />
         <script src="script.js"></script>
     </head>
     <body>
         <!-- Hackathon autoinsert -->
         <div id="nethacklabel">
-            This project was a student submission for the 2nd Annual BIBSC Network Hackathon Round 1. <a href = "https://nethack.biszweb.club/showcase#012ba255">Learn more</a>.
+            This project was a student submission for the 2nd Annual BIBSC Network Hackathon Round 1.
+            <a href="https://nethack.biszweb.club/showcase#012ba255">Learn more</a>
+            .
         </div>
         <style>
-            body{
+            body {
                 padding-bottom: 80px;
             }
-            #nethacklabel{
+            #nethacklabel {
                 position: fixed;
                 bottom: 0;
-                color: #39FF14;
+                color: #39ff14;
                 font-family: Arial, Helvetica, sans-serif;
                 padding: 1.5vh;
                 background: #000;
@@ -32,32 +34,37 @@
 
         <h1>Turing Machine Simulator</h1>
         <p>Enter all allowed symbols(Blank spaces are not valid):</p>
-        <input type="text" id="symbolInput" placeholder="e.g., 01ABC">
+        <input type="text" id="symbolInput" placeholder="e.g., 01ABC" />
 
         <p>Enter custom tape or generate random tape:</p>
-        <input type="text" id="customTape" placeholder="e.g., 110010">
-        <input type="button" value="Load Custom Tape" onclick="loadCustomTape()">
-        <input type="button" value="Generate Random Tape" onclick="generateTape()">
-        
+        <input type="text" id="customTape" placeholder="e.g., 110010" />
+        <input type="button" value="Load Custom Tape" onclick="loadCustomTape()" />
+        <input type="button" value="Generate Random Tape" onclick="generateTape()" />
+
         <div id="tapeContainer">
-        <div id="tape"></div>
+            <div id="tape"></div>
         </div>
 
-        <h3>Define your rules for the machine: </h3>
+        <h3>Define your rules for the machine:</h3>
         <div id="inputArea">
-            <textarea id="inputRules" cols="50" rows="8" placeholder="Enter your rules in the format of: 
+            <textarea
+                id="inputRules"
+                cols="50"
+                rows="8"
+                placeholder="Enter your rules in the format of: 
 current-state, read-symbol, write-symbol, direction, next-state
 e.g., 
 q0 1 0 R q1
 q0 0 1 L q2
-(Include all possibilities of the symbols readings for each rule)"></textarea>
+(Include all possibilities of the symbols readings for each rule)"
+            ></textarea>
         </div>
-        <input type="button" value="Load Rules" onclick="addRules()">
+        <input type="button" value="Load Rules" onclick="addRules()" />
 
         <div id="controls">
-            <input type="button" value="Start" onclick="startMachine()">
-            <input type="button" value="Step" onclick="stepMachine()">
-            <input type="button" value="Reset" onclick="resetMachine()">
+            <input type="button" value="Start" onclick="startMachine()" />
+            <input type="button" value="Step" onclick="stepMachine()" />
+            <input type="button" value="Reset" onclick="resetMachine()" />
         </div>
     </body>
 </html>

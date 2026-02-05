@@ -1,86 +1,113 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Investment Simulator</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investment Simulator</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+    <body>
+        <!-- Hackathon autoinsert -->
+        <div id="nethacklabel">
+            This project was a student submission for the 2nd Annual BIBSC Network Hackathon Round 1.
+            <a href="https://nethack.biszweb.club/showcase#17b07c3a">Learn more</a>
+            .
+        </div>
+        <style>
+            body {
+                padding-bottom: 80px;
+            }
+            #nethacklabel {
+                position: fixed;
+                bottom: 0;
+                color: #39ff14;
+                font-family: Arial, Helvetica, sans-serif;
+                padding: 1.5vh;
+                background: #000;
+                width: 100%;
+                font-size: 1.8vh;
+                text-align: center;
+                z-index: 999;
+            }
+        </style>
+        <!-- End of autoinsert -->
 
-<body>
-    <!-- Hackathon autoinsert -->
-    <div id="nethacklabel">
-        This project was a student submission for the 2nd Annual BIBSC Network Hackathon Round 1. <a href = "https://nethack.biszweb.club/showcase#17b07c3a">Learn more</a>.
-    </div>
-    <style>
-        body{
-            padding-bottom: 80px;
-        }
-        #nethacklabel{
-            position: fixed;
-            bottom: 0;
-            color: #39FF14;
-            font-family: Arial, Helvetica, sans-serif;
-            padding: 1.5vh;
-            background: #000;
-            width: 100%;
-            font-size: 1.8vh;
-            text-align: center;
-            z-index: 999;
-        }
-    </style>
-    <!-- End of autoinsert -->
-
-    <div id="top-bar">
-        <div id="investment-buttons">
-            <button id="stock-investment">Stock Market</button>
-            <button id="real-estate-investment">Real Estate</button>
-            <button id="bank-investment">Bank</button>
+        <div id="top-bar">
+            <div id="investment-buttons">
+                <button id="stock-investment">Stock Market</button>
+                <button id="real-estate-investment">Real Estate</button>
+                <button id="bank-investment">Bank</button>
+            </div>
+            <div id="portfolio-toggle">
+                <button id="toggle-sidebar">
+                    <span class="hamburger-icon">&#9776;</span>
+                </button>
+            </div>
         </div>
-        <div id="portfolio-toggle">
-            <button id="toggle-sidebar">
-                <span class="hamburger-icon">&#9776;</span>
-            </button>
+        <div id="main-content">
+            <div id="stock-section">
+                <div id="stocks-container"></div>
+                <canvas id="stock-graph" width="800" height="400"></canvas>
+            </div>
+            <div id="real-estate-section" style="display: none">
+                <div id="real-estate-container"></div>
+                <p>
+                    Your Real Estate Portfolio Value:
+                    <span id="real-estate-portfolio-value">0</span>
+                    $
+                </p>
+            </div>
+            <div id="bank-section" style="display: none">
+                <p>Bank Section: Here you can manage your savings and loans.</p>
+                <p>
+                    Current Savings:
+                    <span id="bank-savings">0</span>
+                    $
+                </p>
+                <p>
+                    Current Loan:
+                    <span id="bank-loan">0</span>
+                    $
+                </p>
+                <label for="deposit-amount">Deposit Amount:</label>
+                <input type="number" id="deposit-amount" min="0" />
+                <button onclick="depositToBank()">Deposit</button>
+                <label for="withdraw-amount">Withdraw Amount:</label>
+                <input type="number" id="withdraw-amount" min="0" />
+                <button onclick="withdrawFromBank()">Withdraw</button>
+                <label for="loan-amount">Loan Amount:</label>
+                <input type="number" id="loan-amount" min="0" />
+                <button onclick="takeLoan()">Take Loan</button>
+                <button onclick="repayLoan()">Repay Loan</button>
+            </div>
         </div>
-    </div>
-    <div id="main-content">
-        <div id="stock-section">
-            <div id="stocks-container"></div>
-            <canvas id="stock-graph" width="800" height="400"></canvas>
+        <div id="sidebar" style="display: none">
+            <div id="sidebar-content">
+                <h3>Your portfolio:</h3>
+                <p>
+                    Balance:
+                    <span id="balance-display">10000</span>
+                    $
+                </p>
+                <p>
+                    Total Stock Value:
+                    <span id="total-stock-value">0</span>
+                    $
+                </p>
+                <p>
+                    Total Real Estate Value:
+                    <span id="total-real-estate-value">0</span>
+                    $
+                </p>
+                <p>
+                    Total Net Worth:
+                    <span id="total-net-worth">0</span>
+                    $
+                </p>
+                <div id="real-estate-ownership"></div>
+            </div>
         </div>
-        <div id="real-estate-section" style="display: none;">
-            <div id="real-estate-container"></div>
-            <p>Your Real Estate Portfolio Value: <span id="real-estate-portfolio-value">0</span> $</p>
-        </div>
-        <div id="bank-section" style="display: none;">
-            <p>Bank Section: Here you can manage your savings and loans.</p>
-            <p>Current Savings: <span id="bank-savings">0</span> $</p>
-            <p>Current Loan: <span id="bank-loan">0</span> $</p>
-            <label for="deposit-amount">Deposit Amount:</label>
-            <input type="number" id="deposit-amount" min="0">
-            <button onclick="depositToBank()">Deposit</button>
-            <label for="withdraw-amount">Withdraw Amount:</label>
-            <input type="number" id="withdraw-amount" min="0">
-            <button onclick="withdrawFromBank()">Withdraw</button>
-            <label for="loan-amount">Loan Amount:</label>
-            <input type="number" id="loan-amount" min="0">
-            <button onclick="takeLoan()">Take Loan</button>
-            <button onclick="repayLoan()">Repay Loan</button>
-        </div>
-    </div>
-    <div id="sidebar" style="display: none;">
-        <div id="sidebar-content">
-            <h3>Your portfolio:</h3>
-            <p>Balance: <span id="balance-display">10000</span> $</p>
-            <p>Total Stock Value: <span id="total-stock-value">0</span> $</p>
-            <p>Total Real Estate Value: <span id="total-real-estate-value">0</span> $</p>
-            <p>Total Net Worth: <span id="total-net-worth">0</span> $</p>
-            <div id="real-estate-ownership"></div>
-        </div>
-    </div>
-    <script src="script.js"></script>
-</body>
-
+        <script src="script.js"></script>
+    </body>
 </html>

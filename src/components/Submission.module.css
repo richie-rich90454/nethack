@@ -1,4 +1,4 @@
-.wrap{
+.wrap {
     padding-bottom: 0px;
     padding-top: 0px;
 }
@@ -12,21 +12,21 @@
 .edit {
     flex: 0 0 auto;
 }
-.outline{
+.outline {
     background: #000;
     border-radius: 2px;
     padding: 5px 10px;
     /* padding-right: 10%; */
     position: relative;
 }
-.toolbox{
+.toolbox {
     position: absolute;
     top: 0;
     right: 0;
 }
-.toolboxWrap{
+.toolboxWrap {
     margin: 5px;
-    margin-top:-3px;
+    margin-top: -3px;
     text-align: center;
 }
 .padBottom {

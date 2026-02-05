@@ -1,0 +1,40 @@
+# Ignore directories
+node_modules/
+.next/
+out/
+build/
+dist/
+coverage/
+
+# Ignore specific file types
+*.min.js
+*.min.css
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.svg
+*.woff
+*.woff2
+*.ttf
+*.eot
+*.pdf
+*.zip
+*.mp4
+
+# Ignore specific files
+package-lock.json
+
+# Ignore Jekyll/Liquid template files
+docs/_layouts/
+docs/_config.yml
+
+# Ignore public assets
+public/25R1/**/*.html
+public/25R1/**/*.css
+public/25R1/**/*.js
+
+# Ignore generated files
+*.log
+*.tmp
+*.temp

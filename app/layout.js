@@ -1,11 +1,25 @@
+/**
+ * Root Layout Component
+ *
+ * Defines the root HTML structure and provides global context providers
+ * for the entire application. This layout wraps all pages and includes
+ * essential providers for authentication and competition state management.
+ *
+ * @component
+ * @param {Object} props - Component properties
+ * @param {React.ReactNode} props.children - Child pages/components to render
+ * @returns {JSX.Element} Root HTML structure with providers
+ */
+
 // import { Geist, Geist_Mono } from "next/font/google";
 "use client"
-import "./globals.css";
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import { SessionProvider } from "next-auth/react";
-import { CompetitionProvider } from '@/context/CompetitionContext';
+import "./globals.css"
+import Navbar from "@/components/Navbar"
+import Footer from "@/components/Footer"
+import { SessionProvider } from "next-auth/react"
+import { CompetitionProvider } from "@/context/CompetitionContext"
 
+// Note: Font imports commented out but available for future use
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
 //   subsets: ["latin"],
@@ -22,24 +36,35 @@ import { CompetitionProvider } from '@/context/CompetitionContext';
 // };
 
 export default function RootLayout({ children }) {
-  return (
-    <html lang="en">
-      <head>
-        <meta name="robots" content="noindex, nofollow" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Network Hackathon Site</title>
-      </head>
-      <body>
-        <SessionProvider>
-        <div className = "biggestWrap">
-          <Navbar/>
-          <div className = "bigWrap">
-            <CompetitionProvider>{children}</CompetitionProvider>
-          </div>
-          <Footer/>
-        </div>
-        </SessionProvider>
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en">
+            <head>
+                {/* Prevent search engine indexing for development/competition sites */}
+                <meta name="robots" content="noindex, nofollow" />
+
+                {/* Responsive viewport configuration */}
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+                {/* Application title */}
+                <title>Network Hackathon Site</title>
+            </head>
+            <body>
+                {/* NextAuth Session Provider for authentication state management */}
+                <SessionProvider>
+                    <div className="biggestWrap">
+                        {/* Global navigation bar */}
+                        <Navbar />
+
+                        {/* Main content wrapper with competition state provider */}
+                        <div className="bigWrap">
+                            <CompetitionProvider>{children}</CompetitionProvider>
+                        </div>
+
+                        {/* Global footer */}
+                        <Footer />
+                    </div>
+                </SessionProvider>
+            </body>
+        </html>
+    )
 }

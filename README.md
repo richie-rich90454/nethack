@@ -47,63 +47,67 @@ nethack/
 ### Installation
 
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/richie-rich90454/nethack.git
-   cd nethack
-   ```
+
+    ```bash
+    git clone https://github.com/richie-rich90454/nethack.git
+    cd nethack
+    ```
 
 2. Install dependencies:
-   ```bash
-   npm install
-   ```
 
-3. Set up environment variables:
-   Create a `.env.local` file in the root directory with the following variables:
-   ```
-   # Database Configuration
-   SQL_USERNAME=your_mysql_username
-   SQL_PASSWORD=your_mysql_password
+    ```bash
+    npm install
+    ```
 
-   # NextAuth Configuration
-   NEXTAUTH_SECRET=your_nextauth_secret
-   NEXTAUTH_URL=http://localhost:3000
+3. Set up environment variables: Create a `.env.local` file in the root directory with the following variables:
 
-   # Azure AD Configuration
-   AZURE_AD_CLIENT_ID=your_azure_ad_client_id
-   AZURE_AD_CLIENT_SECRET=your_azure_ad_client_secret
-   AZURE_AD_TENANT_ID=your_azure_ad_tenant_id
-   ```
+    ```
+    # Database Configuration
+    SQL_USERNAME=your_mysql_username
+    SQL_PASSWORD=your_mysql_password
+
+    # NextAuth Configuration
+    NEXTAUTH_SECRET=your_nextauth_secret
+    NEXTAUTH_URL=http://localhost:3000
+
+    # Azure AD Configuration
+    AZURE_AD_CLIENT_ID=your_azure_ad_client_id
+    AZURE_AD_CLIENT_SECRET=your_azure_ad_client_secret
+    AZURE_AD_TENANT_ID=your_azure_ad_tenant_id
+    ```
 
 4. Set up the database:
-   ```sql
-   CREATE DATABASE nethack;
-   USE nethack;
 
-   -- Create users table
-   CREATE TABLE users (
-       id INT AUTO_INCREMENT PRIMARY KEY,
-       email VARCHAR(255) UNIQUE NOT NULL,
-       access INT DEFAULT 0,
-       teamID VARCHAR(255),
-       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-   );
+    ```sql
+    CREATE DATABASE nethack;
+    USE nethack;
 
-   -- Create projects table (example structure)
-   CREATE TABLE projects (
-       id INT AUTO_INCREMENT PRIMARY KEY,
-       teamID VARCHAR(255) NOT NULL,
-       project_name VARCHAR(255),
-       description TEXT,
-       submission_url VARCHAR(500),
-       submission_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-       status VARCHAR(50) DEFAULT 'pending'
-   );
-   ```
+    -- Create users table
+    CREATE TABLE users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        access INT DEFAULT 0,
+        teamID VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- Create projects table (example structure)
+    CREATE TABLE projects (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        teamID VARCHAR(255) NOT NULL,
+        project_name VARCHAR(255),
+        description TEXT,
+        submission_url VARCHAR(500),
+        submission_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        status VARCHAR(50) DEFAULT 'pending'
+    );
+    ```
 
 5. Run the development server:
-   ```bash
-   npm run dev
-   ```
+
+    ```bash
+    npm run dev
+    ```
 
 6. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
@@ -127,6 +131,7 @@ The application uses NextAuth with Azure AD provider for authentication. User ro
 ### Database Layer
 
 The database connection is managed through a connection pool in `app/api/sql/database.js`. The pool configuration includes:
+
 - Connection limit: 20
 - Wait for connections: true
 - Automatic error handling and reconnection
@@ -138,6 +143,7 @@ The competition state is managed through React Context (`src/context/Competition
 ### Component Architecture
 
 Components are organized by functionality:
+
 - **Layout Components**: Navbar, Footer
 - **Dashboard Components**: DashboardCompetitor, DashboardJudge
 - **Submission Components**: Submission, SubmissionForm, SubmissionPresent
@@ -146,30 +152,36 @@ Components are organized by functionality:
 ## API Endpoints
 
 ### Authentication
+
 - `GET/POST /api/auth/[...nextauth]` - NextAuth authentication routes
 
 ### Database Operations
+
 - `GET /api/sql/phase` - Get current competition phase
 - `GET /api/sql/pullProject` - Retrieve project submissions (judges only)
 - `POST /api/sql/editProject` - Edit project submissions
 
 ### Database Connection
+
 - `app/api/sql/database.js` - Database connection pool and utility functions
 
 ## User Roles and Permissions
 
 ### Visitor/Voter (Access Level 0)
+
 - View competition information
 - Access public showcase
 - Cannot access dashboard
 
 ### Competitor (Access Level 1)
+
 - All visitor permissions
 - Access competition dashboard
 - Submit and edit project materials
 - View submission status
 
 ### Judge/Admin (Access Level 2+)
+
 - All competitor permissions
 - View all project submissions
 - Judge and score submissions
@@ -186,27 +198,31 @@ The application uses CSS Modules for component-scoped styling. Global styles are
 
 ## Environment Variables
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `SQL_USERNAME` | MySQL database username | Yes |
-| `SQL_PASSWORD` | MySQL database password | Yes |
-| `NEXTAUTH_SECRET` | Secret for NextAuth session encryption | Yes |
-| `NEXTAUTH_URL` | Base URL for NextAuth callbacks | Yes |
-| `AZURE_AD_CLIENT_ID` | Azure AD application client ID | Yes |
-| `AZURE_AD_CLIENT_SECRET` | Azure AD application client secret | Yes |
-| `AZURE_AD_TENANT_ID` | Azure AD tenant ID | Yes |
+| Variable                 | Description                            | Required |
+| ------------------------ | -------------------------------------- | -------- |
+| `SQL_USERNAME`           | MySQL database username                | Yes      |
+| `SQL_PASSWORD`           | MySQL database password                | Yes      |
+| `NEXTAUTH_SECRET`        | Secret for NextAuth session encryption | Yes      |
+| `NEXTAUTH_URL`           | Base URL for NextAuth callbacks        | Yes      |
+| `AZURE_AD_CLIENT_ID`     | Azure AD application client ID         | Yes      |
+| `AZURE_AD_CLIENT_SECRET` | Azure AD application client secret     | Yes      |
+| `AZURE_AD_TENANT_ID`     | Azure AD tenant ID                     | Yes      |
 
 ## Database Schema
 
 ### Users Table
+
 Stores user authentication and role information:
+
 - `email` (VARCHAR): User email (primary identifier)
 - `access` (INT): Access level (0=visitor, 1=competitor, 2+=judge)
 - `teamID` (VARCHAR): Team identifier for competitors
 - `created_at` (TIMESTAMP): Account creation timestamp
 
 ### Projects Table (Example)
+
 Stores project submissions:
+
 - `teamID` (VARCHAR): Reference to team
 - `project_name` (VARCHAR): Project title
 - `description` (TEXT): Project description
@@ -217,12 +233,14 @@ Stores project submissions:
 ## Deployment
 
 ### Production Build
+
 ```bash
 npm run build
 npm start
 ```
 
 ### Environment Considerations
+
 - Ensure all environment variables are set in production
 - Configure proper CORS settings if needed
 - Set up SSL/TLS for production
@@ -233,19 +251,19 @@ npm start
 ### Common Issues
 
 1. **Database Connection Errors**
-   - Verify MySQL service is running
-   - Check database credentials in environment variables
-   - Ensure database schema is properly initialized
+    - Verify MySQL service is running
+    - Check database credentials in environment variables
+    - Ensure database schema is properly initialized
 
 2. **Authentication Issues**
-   - Verify Azure AD application configuration
-   - Check redirect URIs in Azure AD portal
-   - Ensure NEXTAUTH_URL matches deployment URL
+    - Verify Azure AD application configuration
+    - Check redirect URIs in Azure AD portal
+    - Ensure NEXTAUTH_URL matches deployment URL
 
 3. **Build Errors**
-   - Clear node_modules and reinstall: `rm -rf node_modules && npm install`
-   - Check Node.js version compatibility
-   - Verify all dependencies are properly installed
+    - Clear node_modules and reinstall: `rm -rf node_modules && npm install`
+    - Check Node.js version compatibility
+    - Verify all dependencies are properly installed
 
 ### Debugging
 

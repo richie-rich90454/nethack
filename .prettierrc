@@ -12,7 +12,6 @@
     "htmlWhitespaceSensitivity": "ignore",
     "quoteProps": "as-needed",
     "jsxSingleQuote": false,
-    "jsxBracketSameLine": false,
     "embeddedLanguageFormatting": "auto",
     "singleAttributePerLine": false
 }

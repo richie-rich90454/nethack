@@ -1,44 +1,42 @@
-body{
-    font-family:arial;
-    text-align:center;
-    margin:50px;
-    background-color:black;
-    color:white;
+body {
+    font-family: arial;
+    text-align: center;
+    margin: 50px;
+    background-color: black;
+    color: white;
 }
 
-#tape{
+#tape {
     align-items: center;
     justify-content: flex-start;
     white-space: nowrap;
     display: inline-flex;
-
 }
 
-#tapeContainer{
-    width:100%;
-    overflow-x:auto; 
-    white-space:nowrap;
+#tapeContainer {
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
     border: 2px solid white;
     background-color: #222;
     padding: 10px;
 }
 
-.tapeCell{
+.tapeCell {
     border: 1px solid whites;
     margin: 2px;
-    display:flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     background-color: #ffffff;
     color: black;
     font-size: 3rem;
-
 }
 
-textarea{
-    display:block;
+textarea {
+    display: block;
     width: 50%;
-    margin:auto;
+    margin: auto;
     font-size: 1rem;
     color: #4a4a4a;
 }
@@ -52,19 +50,19 @@ input[type="button"] {
     border: #000000;
     border-radius: 3rem;
     width: 10rem;
-    text-align:center;
+    text-align: center;
 }
-input[type="button"]:hover{
-    background-color:#000000;
-    color:#ffffff;
-    font-weight:bold;
-}
-
-#loadRules{
-    width:30.5rem;
+input[type="button"]:hover {
+    background-color: #000000;
+    color: #ffffff;
+    font-weight: bold;
 }
 
-.machineHeadCell{
+#loadRules {
+    width: 30.5rem;
+}
+
+.machineHeadCell {
     background-color: black;
     border: 5px solid white;
     border-radius: 4px;

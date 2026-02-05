@@ -1,19 +1,25 @@
 {
-  "name": "nethack",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@babel/runtime": "^7.28.6",
-    "mysql2": "^3.12.0",
-    "next": "^16.1.6",
-    "next-auth": "^4.24.13",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4"
-  }
+    "name": "nethack",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev --turbopack",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "format:js": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
+        "format:html": "prettier --write \"**/*.html\"",
+        "format:css": "prettier --write \"**/*.css\"",
+        "format:json": "prettier --write \"**/*.json\""
+    },
+    "dependencies": {
+        "@babel/runtime": "^7.28.6",
+        "mysql2": "^3.12.0",
+        "next": "^16.1.6",
+        "next-auth": "^4.24.13",
+        "react": "^19.2.4",
+        "react-dom": "^19.2.4"
+    }
 }

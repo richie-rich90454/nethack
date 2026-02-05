@@ -1,21 +1,19 @@
 body {
-    font-family: 'Times New Roman', Times, serif, 'Times New Roman', Times, serif;
+    font-family: "Times New Roman", Times, serif, "Times New Roman", Times, serif;
     margin: 0;
     padding: 0;
     background-color: #fffcfc;
     text-align: center;
-    color:#df92ab;
+    color: #df92ab;
     flex-direction: column;
     display: flex;
     align-items: center;
-    
 }
 
 body h1 {
-    color:#f0749b;
+    color: #f0749b;
     text-size-adjust: 65;
 }
-
 
 .home {
     background-color: pink;
@@ -32,7 +30,7 @@ body h1 {
     width: 60%;
     justify-content: center;
     align-items: center;
-    flex-direction:column;
+    flex-direction: column;
 }
 
 form {
@@ -47,18 +45,19 @@ label {
     font-weight: bold;
     color: #ffacd8;
 }
-.combine{
+.combine {
     display: flex;
     flex-direction: row;
     justify-content: space-between; /* Adjust spacing */
-    align-items: space-between; 
+    align-items: space-between;
     padding-right: 10px;
 }
-input, select {
+input,
+select {
     margin-top: 5px;
     padding: 10px;
     width: 100%;
-    border: 1px solid #ffacd8; 
+    border: 1px solid #ffacd8;
     border-radius: 6px;
     box-sizing: border-box;
 }
@@ -66,7 +65,7 @@ input, select {
 button {
     margin-top: 25px;
     padding: 12px 24px;
-    background-color: #f0749b; 
+    background-color: #f0749b;
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -76,7 +75,7 @@ button {
 }
 
 button:hover {
-    background-color: #c4defa; 
+    background-color: #c4defa;
 }
 
 #result {
@@ -91,7 +90,6 @@ button:hover {
     align-items: center;
     margin-bottom: 20px;
     flex-direction: row;
-
 }
 
 .calendar {
@@ -106,20 +104,20 @@ button:hover {
     display: flex;
     flex-direction: column;
 }
-.days-of-week{
+.days-of-week {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
 }
-.calendar-days{
+.calendar-days {
     display: grid;
-    grid-template-columns: repeat(7,1fr);
+    grid-template-columns: repeat(7, 1fr);
 }
 .calendar-days .today {
     background-color: gray;
     color: white;
     border-radius: 70%;
 }
-.calendar-days .periodStart .periodEnd{
+.calendar-days .periodStart .periodEnd {
     background-color: rgb(204, 73, 73);
     color: white;
     border-radius: 70%;
