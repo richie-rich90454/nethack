@@ -2,57 +2,61 @@
 
 ## System Overview
 
-The BIBS·C Network Hackathon Portal is a full-stack web application built with Next.js 16 (App Router) that manages the annual hackathon competition. The system provides authentication, project submission, judging workflows, and competition state management for participants, judges, and administrators.
+The BIBS·C Network Hackathon Portal is a full‑stack web application built with **Next.js 16 (App Router)** and **TypeScript**, designed to manage annual hackathon competitions. The platform provides secure authentication, project submission workflows, judging dashboards, and competition state management for participants, judges, and administrators. All user‑facing text is externalized into a single configuration file, enabling rapid rebranding without code changes.
 
 ## Architecture Diagram
 
 ```
-┌────────────────────────────────────────────────────────────┐
-│                    Client (Browser)                        │
-│  ┌─────────────┐  ┌─────────────┐  ┌──────────────────┐    │
-│  │   React     │  │  Next.js    │  │   CSS Modules    │    │
-│  │ Components  │◄─┤    App      │◄─┤     Styling      │    │
-│  │             │  │    Router   │  │                  │    │
-│  └─────────────┘  └─────────────┘  └──────────────────┘    │
-└───────────────────────────┬────────────────────────────────┘
-                            │ HTTPS
-                            ▼
-┌────────────────────────────────────────────────────────────┐
-│                 Next.js Server (Node.js)                   │
-│  ┌─────────────┐  ┌─────────────┐  ┌──────────────────┐    │
-│  │   API       │  │   Page      │  │   Middleware     │    │
-│  │   Routes    │  │   Routes    │  │   & Auth         │    │
-│  └──────┬──────┘  └──────┬──────┘  └──────────┬───────┘    │
-└─────────┼────────────────┼────────────────────┼────────────┘
-          │                │                    │
-          ▼                ▼                    ▼
-┌──────────────┐  ┌──────────────┐  ┌─────────────────────┐
-│   Database   │  │   Azure AD   │  │   Static Assets     │
-│   (MySQL)    │  │   (OAuth)    │  │   (Public/)         │
-└──────────────┘  └──────────────┘  └─────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                         Client (Browser)                         │
+│  ┌─────────────┐  ┌─────────────┐  ┌───────────────────────┐   │
+│  │   React     │  │  Next.js    │  │     CSS Modules       │   │
+│  │ Components  │◄─┤    App      │◄─┤  (component‑scoped)   │   │
+│  │   (TSX)     │  │    Router   │  │                       │   │
+│  └─────────────┘  └─────────────┘  └───────────────────────┘   │
+└─────────────────────────────┬───────────────────────────────────┘
+                              │ HTTPS
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                     Next.js Server (Node.js)                     │
+│  ┌─────────────┐  ┌─────────────┐  ┌───────────────────────┐   │
+│  │   API       │  │   Page      │  │    next.config.ts     │   │
+│  │   Routes    │  │   Routes    │  │  (security/performance)│   │
+│  │  (TypeScript)│  │ (TypeScript)│  └───────────────────────┘   │
+│  └──────┬──────┘  └──────┬──────┘                                 │
+└─────────┼────────────────┼───────────────────────────────────────┘
+          │                │
+          ▼                ▼
+┌───────────────────┐  ┌─────────────────────┐  ┌──────────────────┐
+│    Database       │  │      Azure AD       │  │   Static Assets  │
+│    (MySQL 8+)     │  │      (OAuth 2.0)    │  │    (public/)     │
+│   connection pool │  │                     │  │                  │
+└───────────────────┘  └─────────────────────┘  └──────────────────┘
 ```
 
 ## Technology Stack
 
 ### Frontend Layer
 
-- **Next.js 16.1.6**: React framework with App Router for server-side rendering and routing
-- **React 19.2.4**: UI component library with hooks for state management
-- **CSS Modules**: Component-scoped styling with custom properties
-- **NextAuth.js**: Authentication library for session management
+- **Next.js 16.1.6**: React framework with App Router, Turbopack for fast development, and built‑in optimizations.
+- **React 19.2.4**: UI library with hooks for state and lifecycle management.
+- **TypeScript**: Strict mode, path aliases (`@/src/*`), and global type augmentations.
+- **CSS Modules**: Component‑scoped styling with global design tokens defined in `globals.css`.
+- **NextAuth.js**: Authentication library with Azure AD provider and custom JWT/session callbacks.
 
 ### Backend Layer
 
-- **Next.js API Routes**: Serverless functions for backend logic
-- **MySQL 8.0+**: Relational database for persistent storage
-- **mysql2/promise**: Database driver with async/await support
-- **Azure AD**: Enterprise authentication provider via OAuth 2.0
+- **Next.js API Routes**: TypeScript‑based serverless functions handling database operations and authentication.
+- **MySQL 8.0+**: Relational database with tables for users, project submissions (`hacks`), and competition phases (`phases`).
+- **mysql2/promise**: Database driver with connection pooling, prepared statements, and TypeScript support (RowDataPacket).
+- **Azure AD**: Enterprise identity provider via OAuth 2.0 and OpenID Connect.
 
-### Infrastructure
+### Infrastructure & Configuration
 
-- **Connection Pooling**: Managed database connections with configurable limits
-- **Environment Variables**: Configuration management for different environments
-- **Static File Serving**: Optimized delivery of fonts, PDFs, and media files
+- **Centralized Configuration**: All user‑visible text, dates, and external URLs are defined in `config/siteConfig.ts` with a strongly typed interface.
+- **Connection Pooling**: Managed pool with configurable limits (`connectionLimit: 20`) for efficient database resource usage.
+- **Environment Variables**: Strictly typed via `types.d.ts` (NodeJS.ProcessEnv) for compile‑time safety.
+- **Static File Serving**: Optimized delivery of fonts, images, and archived project files from the `public/` directory.
 
 ## Core Components
 
@@ -61,284 +65,268 @@ The BIBS·C Network Hackathon Portal is a full-stack web application built with 
 #### Architecture
 
 ```
-User Browser → Next.js Page → Azure AD OAuth → NextAuth Callbacks → Database → Enriched Session
+User Browser → /login (Next.js) → Azure AD OAuth → NextAuth Callbacks → Database → Enriched Session
 ```
 
 #### Key Components
 
-- **AzureADProvider**: NextAuth provider for Azure Active Directory integration
-- **JWT Callbacks**: Custom token enrichment with competition-specific data
-- **Session Management**: Server-side session storage with client-side hydration
-- **Role-Based Access Control**: Three-tier permission system (visitor, competitor, judge)
+- **AzureADProvider**: NextAuth provider configured with required scopes (`openid profile email User.Read`).
+- **JWT Callback**: Enriches the token with `access`, `teamID`, and `accessToken` retrieved from the `users` table via `getUser(email)`.
+- **Session Callback**: Transfers enriched token data to the client‑side session object.
+- **Role‑Based Access Control**: Three‑tier permission system (0 = visitor/voter, 1 = competitor, 2+ = judge).
 
 #### Data Flow
 
-1. User initiates login via `/login` page
-2. Redirect to Azure AD authorization endpoint
-3. OAuth code exchange for access token
-4. NextAuth JWT callback enriches token with database user data
-5. Session callback makes data available to client components
-6. Access level determines UI rendering and API permissions
+1. User visits `/login`; unauthenticated users see a sign‑in button.
+2. On sign‑in, redirect to Azure AD; after consent, Azure AD redirects to `/api/auth/callback/azure-ad`.
+3. NextAuth exchanges the authorization code for tokens; the `jwt` callback fetches user data from the database.
+4. The `session` callback makes `access`, `teamID`, and other fields available to client components via `useSession()`.
+5. Protected routes and API endpoints check `session.user.access` to enforce permissions.
 
 ### 2. Database Layer
 
 #### Connection Management
 
-```javascript
-// Connection pool configuration
+```typescript
+// app/api/sql/database.ts
 const pool = mysql.createPool({
     host: "localhost",
     user: process.env.SQL_USERNAME,
     password: process.env.SQL_PASSWORD,
     database: "nethack",
     waitForConnections: true,
-    connectionLimit: 20, // Maximum concurrent connections
-    queueLimit: 0 // Unlimited connection queue
+    connectionLimit: 20,
+    queueLimit: 0
 })
+
+export default async function getConnection() {
+    return await pool.getConnection()
+}
 ```
 
-#### Schema Design
+#### Schema Design (Actual Tables)
 
-- **users table**: Authentication and role management
-    - `email` (VARCHAR, UNIQUE): Primary user identifier
-    - `access` (INT): Permission level (0=visitor, 1=competitor, 2+=judge)
-    - `teamID` (VARCHAR): Team association for competitors
-    - `created_at` (TIMESTAMP): Account creation time
+**users** – Authentication and role data
 
-- **projects table**: Competition submissions (example structure)
-    - `teamID` (VARCHAR): Reference to submitting team
-    - `project_name` (VARCHAR): Submission title
-    - `description` (TEXT): Project description
-    - `submission_url` (VARCHAR): Link to project materials
-    - `submission_date` (TIMESTAMP): Submission timestamp
-    - `status` (VARCHAR): Review status (pending, reviewed, etc.)
+| Column     | Type         | Description                       |
+| ---------- | ------------ | --------------------------------- |
+| id         | INT          | Primary key, auto‑increment       |
+| email      | VARCHAR(255) | User email (unique)               |
+| access     | INT          | 0=visitor, 1=competitor, 2+=judge |
+| teamID     | VARCHAR(255) | Team identifier (for competitors) |
+| members    | VARCHAR(255) | Optional team member names        |
+| created_at | TIMESTAMP    | Account creation time             |
 
-#### Query Patterns
+**hacks** – Project submissions (formerly “projects” table)
 
-- **Parameterized Queries**: SQL injection prevention through prepared statements
-- **Connection Pooling**: Efficient resource utilization for concurrent requests
-- **Error Handling**: Graceful degradation with null returns and error logging
+| Column          | Type         | Description                              |
+| --------------- | ------------ | ---------------------------------------- |
+| id              | INT          | Primary key                              |
+| teamID          | VARCHAR(255) | Team identifier (matches `users.teamID`) |
+| title           | VARCHAR(255) | Project title                            |
+| description     | TEXT         | Project description                      |
+| github          | VARCHAR(500) | GitHub repository URL                    |
+| prompt          | VARCHAR(255) | Selected hackathon prompt                |
+| technologies    | TEXT         | Comma‑separated technologies used        |
+| members         | VARCHAR(255) | Team members (denormalized)              |
+| sub_code        | VARCHAR(500) | Code submission URL or `"Github"`        |
+| sub_video       | VARCHAR(500) | Video submission URL                     |
+| round           | VARCHAR(10)  | Competition round (e.g., `"25R2"`)       |
+| submission_date | TIMESTAMP    | Submission timestamp                     |
+| status          | VARCHAR(50)  | `pending`, `reviewed`, etc.              |
+
+**phases** – Competition timeline
+
+| Column     | Type        | Description                       |
+| ---------- | ----------- | --------------------------------- |
+| id         | INT         | Primary key                       |
+| phase      | VARCHAR(50) | `closed`, `active`, or `judging`  |
+| start_date | TIMESTAMP   | Optional phase start              |
+| end_date   | TIMESTAMP   | Optional phase end                |
+| is_active  | BOOLEAN     | Whether this is the current phase |
+
+#### Type‑Safe Query Helpers
+
+All database functions are generic and return typed results:
+
+```typescript
+export async function query<T extends RowDataPacket[]>(sql: string, params?: any[]): Promise<T> {
+    const [rows] = await pool.query<T>(sql, params)
+    return rows
+}
+```
 
 ### 3. State Management
 
 #### Competition Context
 
-- **Global State**: Competition phase accessible application-wide
-- **Real-time Updates**: Automatic fetching on application mount
-- **Provider Pattern**: React Context API for dependency injection
+- **Global State**: `CompetitionContext` provides the current competition phase (`closed`, `active`, `judging`) to all components.
+- **Automatic Fetching**: On mount, it calls `/api/sql/phase` and updates state.
+- **Usage**: `const { competitionState } = useCompetition();`
 
 #### Session State
 
-- **NextAuth Integration**: Automatic session synchronization
-- **Client-side Access**: `useSession()` hook for authentication state
-- **Server-side Validation**: Protected API routes with session checks
+- **NextAuth Integration**: `useSession()` hook provides client‑side session data, enriched with `access` and `teamID`.
+- **Server‑Side Validation**: API routes and server components use `getServerSession()` to verify permissions.
 
 ### 4. API Architecture
 
 #### Route Structure
 
 ```
-/app/api/
-├── auth/[...nextauth]/     # Authentication endpoints (NextAuth)
-└── sql/                    # Database operation endpoints
-    ├── phase/              # Competition phase management
-    ├── pullProject/        # Project retrieval (judges only)
-    └── editProject/        # Project submission and editing
+app/api/
+├── auth/[...nextauth]/          # NextAuth authentication endpoints
+└── sql/                         # Database operation endpoints
+    ├── database.ts                # Connection pool and utilities
+    ├── editProject/route.ts       # POST – update a submission
+    ├── phase/route.ts             # GET – current competition phase
+    └── pullProject/route.ts       # GET – fetch submissions (supports ?search)
 ```
 
 #### Design Patterns
 
-- **RESTful Principles**: Resource-oriented endpoint design
-- **Middleware Integration**: NextAuth session validation
-- **Error Handling**: Consistent error responses with status codes
-- **Input Validation**: Parameter validation before database operations
+- **RESTful Principles**: Endpoints map to resources (`phase`, `project`).
+- **Middleware‑like Validation**: Each route checks session and permissions before processing.
+- **Consistent Error Handling**: Returns JSON with `error` and `details`; HTTP status codes reflect the error type.
+- **Input Validation**: Request bodies are parsed and validated; SQL injection prevented via parameterized queries.
 
 ### 5. Frontend Architecture
 
 #### Component Hierarchy
 
 ```
-RootLayout
-├── SessionProvider (NextAuth)
-├── CompetitionProvider (Custom Context)
-├── Navbar (Navigation)
-├── Main Content (Page-specific)
-└── Footer (Copyright)
+RootLayout (app/layout.tsx)
+├── SessionProvider (next-auth/react)
+├── CompetitionProvider (context)
+├── Navbar (src/components/Navbar.tsx)
+├── Page Content (children)
+└── Footer (src/components/Footer.tsx)
 ```
 
 #### Page Structure
 
-- **Home Page (`/`)**: Public landing with countdown and competition info
-- **Dashboard (`/dashboard`)**: Role-specific interface based on access level
-- **Login (`/login`)**: Authentication entry point
-- **Showcase (`/showcase`)**: Public project gallery
+- **Home (`/`)** – Public landing with countdowns and competition info.
+- **Login (`/login`)** – Authentication page; shows user info when logged in.
+- **Dashboard (`/dashboard`)** – Role‑specific view (competitor or judge) based on `access` level.
+- **Showcase (`/showcase`)** – Public gallery of winning projects, driven by `siteConfig.showcase.winners`.
 
 #### Styling System
 
-- **CSS Modules**: Component-scoped styles with `.module.css` convention
-- **Global Styles**: `app/globals.css` for shared design tokens
-- **Font Management**: Custom font faces with fallback system
-- **Responsive Design**: Mobile-first approach with media queries
+- **CSS Modules**: Each component has a `*.module.css` file for scoped styles.
+- **Global Styles**: `app/globals.css` defines custom fonts (CMU, Monaspace), color variables, and utility classes.
+- **Responsive Design**: Mobile‑first with media queries; flexible layout classes.
+
+## Configuration System
+
+All customizable text and values are centralized in `config/siteConfig.ts`. The configuration is strongly typed and imported wherever a string is needed. This allows the entire portal to be rebranded by editing a single file.
+
+Key sections:
+
+- `siteTitle` – browser tab title
+- `nav` – navigation labels
+- `home` – headings, descriptions, countdown dates
+- `login` – page text and account type labels
+- `dashboard` – access denied, loading messages
+- `dashboardCompetitor` / `dashboardJudge` – phase labels, tooltips, notes
+- `showcase` – headings, winner team IDs, descriptions
+- `submissionForm` – form labels, placeholders, prompt list
+- `footer` – copyright
+- `externalUrls` – sign‑up form link
 
 ## Data Flow Patterns
 
 ### Authentication Flow
 
-1. **Initial Request**: User accesses protected route
-2. **Session Check**: `useSession()` validates authentication state
-3. **Redirect**: Unauthenticated users redirected to `/login`
-4. **OAuth Flow**: Azure AD authentication with scope requests
-5. **Callback Processing**: JWT enrichment with competition data
-6. **Session Creation**: Persistent session with role information
+1. User accesses a protected page; `useSession()` returns `null`.
+2. Page redirects to `/login`.
+3. User clicks “Sign in”; OAuth flow with Azure AD begins.
+4. After successful authentication, NextAuth executes `jwt` and `session` callbacks.
+5. Database user record is fetched (or created) and merged into the session.
+6. Client receives enriched session; UI updates accordingly.
 
-### Competition State Flow
+### Competition Phase Flow
 
-1. **Provider Initialization**: `CompetitionProvider` mounts
-2. **API Request**: Fetch current phase from `/api/sql/phase`
-3. **State Update**: Context value updated with competition phase
-4. **Component Subscription**: Components use `useCompetition()` hook
-5. **Re-render**: UI updates based on competition state
+1. `CompetitionProvider` mounts; calls `/api/sql/phase`.
+2. API route queries the `phases` table and returns the current phase.
+3. Context state updates; all consumers re‑render.
+4. Phase determines which dashboard components are shown and whether forms are editable.
 
-### Project Submission Flow
+### Project Submission Flow (Competitor)
 
-1. **Competitor Access**: User with access level 1 accesses dashboard
-2. **Form Presentation**: Submission form with validation
-3. **API Submission**: POST to `/api/sql/editProject` with project data
-4. **Database Persistence**: Project data stored in MySQL
-5. **Confirmation**: Success/error feedback to user
+1. Competitor (`access === 1`) visits `/dashboard`.
+2. `DashboardCompetitor` renders `SubmissionForm` (if phase is `active`).
+3. User fills out the form; on submit, `POST /api/sql/editProject` is called.
+4. API validates that the `teamID` matches the user’s team and updates the `hacks` table.
+5. On success, `onUpdate` callback refreshes the form data.
+
+### Project Retrieval Flow (Judge)
+
+1. Judge (`access > 1`) visits `/dashboard`.
+2. `DashboardJudge` calls `fetchEntries()` → `GET /api/sql/pullProject`.
+3. API returns all records from the `hacks` table (no `search` param).
+4. Each submission is rendered with `Submission` component; judges see “Edit” buttons.
 
 ## Security Considerations
 
-### Authentication Security
+- **Authentication**: OAuth 2.0 with Azure AD; HTTP‑only cookies for session storage.
+- **Authorization**: Every API endpoint checks `session.user.access` and, for competitor edits, verifies `teamID` ownership.
+- **SQL Injection**: All queries use parameterized statements via `mysql2`.
+- **Input Validation**: Request bodies are parsed and expected fields are validated; malformed requests return 400.
+- **Environment Variables**: Sensitive credentials are stored in `.env.local` (or production equivalents) and never committed.
+- **HTTP Headers**: `next.config.ts` adds security headers: `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`, and a restrictive Content‑Security‑Policy.
+- **Error Messages**: Generic messages returned to client; detailed errors logged server‑side.
 
-- **OAuth 2.0**: Industry-standard authorization framework
-- **JWT Encryption**: NextAuth secret for token signing
-- **Session Management**: HTTP-only cookies for session storage
-- **Scope Limitation**: Minimal required permissions from Azure AD
+## Performance Optimizations
 
-### Database Security
-
-- **Parameterized Queries**: Prevention of SQL injection attacks
-- **Connection Pooling**: Resource isolation between requests
-- **Environment Variables**: Sensitive credentials outside source code
-- **Input Validation**: Server-side validation of all user inputs
-
-### Application Security
-
-- **Role-Based Access Control**: Three-tier permission system
-- **API Authorization**: Session validation on protected endpoints
-- **CORS Configuration**: Restricted cross-origin requests
-- **Error Handling**: Generic error messages to prevent information leakage
-
-## Performance Considerations
-
-### Database Optimization
-
-- **Connection Pooling**: Reuse of database connections
-- **Query Optimization**: Indexed columns for frequent lookups
-- **Batch Operations**: Efficient data retrieval patterns
-
-### Frontend Optimization
-
-- **Code Splitting**: Automatic by Next.js route-based splitting
-- **Image Optimization**: Next.js built-in image optimization
-- **Font Optimization**: Local font files with proper formatting
-- **CSS Optimization**: Minimal runtime overhead with CSS Modules
-
-### Server Optimization
-
-- **Server-Side Rendering**: Initial page load performance
-- **Static Generation**: Pre-rendered pages where applicable
-- **API Caching**: Appropriate cache headers for static data
-- **Bundle Optimization**: Tree-shaking and minification
+- **Database**: Connection pooling reduces overhead; indexes on frequently queried columns (`email`, `teamID`).
+- **Next.js**: `swcMinify: true`, `poweredByHeader: false`, image optimization with modern formats.
+- **Frontend**: Code splitting per route, CSS Modules for minimal runtime, font optimization.
+- **Production Build**: Console logs removed (except errors/warnings), source maps disabled to reduce bundle size.
 
 ## Deployment Architecture
 
 ### Development Environment
 
-- **Local Database**: MySQL instance on localhost
-- **Development Server**: `npm run dev` with hot reload
-- **Environment Variables**: `.env.local` for configuration
+- **Database**: Local MySQL instance with schema defined in README.
+- **Server**: `npm run dev` starts Next.js with Turbopack.
+- **Environment**: `.env.local` supplies database credentials and Azure AD keys.
 
 ### Production Environment
 
-- **Build Process**: `npm run build` for optimized production bundle
-- **Static Export**: Next.js static generation where applicable
-- **Environment Configuration**: Production environment variables
-- **Database Hosting**: Managed MySQL instance with backups
+- **Build**: `npm run build` creates an optimized production bundle.
+- **Serve**: `npm start` runs the standalone Next.js server.
+- **Reverse Proxy**: Nginx (or similar) handles SSL termination, load balancing, and static file caching.
+- **Database**: Managed MySQL service (e.g., AWS RDS) with automated backups.
 
 ### Scaling Considerations
 
-- **Horizontal Scaling**: Stateless application servers
-- **Database Scaling**: Read replicas for heavy read loads
-- **CDN Integration**: Static asset delivery via CDN
-- **Load Balancing**: Distributed traffic across instances
+- **Horizontal Scaling**: Next.js server is stateless; multiple instances can run behind a load balancer.
+- **Database Scaling**: Read replicas for heavy read workloads; connection pool limits adjusted accordingly.
+- **CDN**: Static assets (`/_next/static`) can be served via CDN with long‑lived cache headers.
 
 ## Monitoring and Maintenance
 
-### Logging Strategy
-
-- **Application Logs**: Console logging with error categorization
-- **Database Logs**: Connection errors and query performance
-- **Authentication Logs**: Login attempts and session management
-
-### Monitoring Points
-
-- **Database Connections**: Pool utilization and error rates
-- **API Performance**: Response times and error rates
-- **Authentication Flow**: Success/failure rates and latency
-- **User Engagement**: Page views and feature usage
-
-### Maintenance Procedures
-
-- **Database Backups**: Regular backup schedule and testing
-- **Dependency Updates**: Security patches and version upgrades
-- **Performance Testing**: Load testing before major events
-- **Security Audits**: Regular review of authentication and authorization
+- **Logging**: Application logs (`console.error`, `console.log`) are captured; database errors are logged.
+- **Metrics**: Key metrics include API response times, error rates, and database connection pool usage.
+- **Backups**: Regular database backups; tested restoration procedure.
+- **Dependency Updates**: Regular `npm update` and review of security advisories.
 
 ## Development Guidelines
 
-### Code Organization
+- **TypeScript**: Strict mode; always define interfaces for props and API responses.
+- **Component Structure**: Each component in its own file; export as default.
+- **API Routes**: Use `NextRequest` and `NextResponse`; wrap database calls in try/catch/finally.
+- **Configuration**: Never hardcode user‑facing strings; always use `siteConfig`.
+- **Testing**: Unit tests for utilities; integration tests for critical API flows (planned).
 
-- **Feature-Based Structure**: Components grouped by functionality
-- **API Co-location**: API routes adjacent to related pages
-- **Shared Utilities**: Common functions in dedicated modules
-- **Type Safety**: JSDoc annotations for better developer experience
+## Future Enhancements
 
-### Testing Strategy
+- **Real‑time Updates**: WebSocket integration for live judging scores.
+- **File Uploads**: Direct submission of videos/code via cloud storage.
+- **Advanced Judging**: Scoring rubrics, comments per criterion.
+- **Analytics Dashboard**: Track submissions, views, and engagement.
+- **Internationalization**: Multiple languages via configuration files.
 
-- **Unit Tests**: Individual component and function testing
-- **Integration Tests**: API endpoint and database interaction testing
-- **E2E Tests**: User workflow testing with authentication
-- **Performance Tests**: Load testing for competition periods
+---
 
-### Documentation Standards
-
-- **JSDoc Comments**: All exported functions and components
-- **Architecture Documentation**: This document and README
-- **API Documentation**: Endpoint specifications and examples
-- **Deployment Guides**: Environment-specific setup instructions
-
-## Future Considerations
-
-### Potential Enhancements
-
-1. **Real-time Updates**: WebSocket integration for live competition updates
-2. **File Uploads**: Direct file submission with storage integration
-3. **Advanced Judging**: Scoring system with multiple criteria
-4. **Analytics Dashboard**: Competition metrics and insights
-5. **Mobile Application**: Native mobile experience for participants
-
-### Scalability Improvements
-
-1. **Microservices Architecture**: Decoupled services for specific functions
-2. **Caching Layer**: Redis for frequently accessed data
-3. **Message Queue**: Async processing for resource-intensive operations
-4. **Containerization**: Docker for consistent deployment environments
-
-### Security Enhancements
-
-1. **Two-Factor Authentication**: Additional authentication factor
-2. **Audit Logging**: Comprehensive activity tracking
-3. **Rate Limiting**: API protection against abuse
-4. **Security Headers**: Additional HTTP security headers
+_This documentation reflects the codebase as of March 10, 2026, following the TypeScript migration and configuration‑driven redesign._
