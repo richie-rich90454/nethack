@@ -83,12 +83,12 @@ li {
 }
 .txtArea {
     border: 1px solid var(--foreground);
-    border-radius: 2px;
+    border-radius: 3dvh;
     width: 100%;
 }
 .border {
     padding: 4px;
-    border-radius: 2px;
+    border-radius: 3dvh;
     position: relative;
     margin-top: 10px;
     transition: 0.5s ease;
@@ -211,7 +211,7 @@ textarea {
 
 .bSmooth {
     background: #353535;
-    border-radius: 2px;
+    border-radius: 3dvh;
     padding: 2px;
     padding-bottom: 0px;
 }
@@ -258,7 +258,7 @@ textarea {
 .lightBox {
     background: #dadada;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 3dvh;
 }
 
 .qBox {
@@ -277,7 +277,7 @@ textarea {
     color: #fff;
     font-size: 1vw;
     text-align: center;
-    border-radius: 5px;
+    border-radius: 3dvh;
     padding: 5px;
     position: absolute;
     z-index: 1;
@@ -313,7 +313,7 @@ textarea {
     width: 100%;
     background: #000;
     padding: 10px;
-    border-radius: 2px;
+    border-radius: 3dvh;
     position: relative;
 }
 .projBox button {
@@ -368,7 +368,7 @@ textarea {
 .button {
     padding: 2px;
     border: 2px solid #303030;
-    border-radius: 5px;
+    border-radius: 3dvh;
     cursor: pointer;
 }
 .loginBox hr {
