@@ -1,11 +1,13 @@
 :root {
-    --background: #303030;
-    --foreground: #39ff14;
-    --yellow: #ffbd29;
-    --blue: #32f4ff;
-    --purple: #db6fff;
+    --background: #2B2B2B;
+    --foreground: #32AE54;
+    --yellow: #FFC000;
+    --blue: #32A5E4;
+    --purple: #E461f5;
 }
-
+*{
+    border-radius: 3dvh;
+}
 html,
 body {
     height: 100vh;
@@ -28,7 +30,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 5px;
 }
 ::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.25);

@@ -1,6 +1,7 @@
 .wrap {
     padding-bottom: 0px;
     padding-top: 0px;
+    border-radius: 3dvh;
 }
 .header {
     display: flex;

@@ -1,5 +1,6 @@
 .wrap {
     padding-bottom: 0px;
+    border-radius: 3dvh;
 }
 .outline {
     background: #000;

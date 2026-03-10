@@ -10,6 +10,8 @@
     align-items: center;
     padding: 0 1vw;
     /* font-weight: bold; */
+    border-radius: 0 !important;
+
 }
 
 .wrap {
