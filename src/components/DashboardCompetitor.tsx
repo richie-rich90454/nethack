@@ -1,16 +1,41 @@
-import CountdownMini from "@/components/CountdownMini"
-import { useCompetition } from "@/context/CompetitionContext"
+import React from "react"
+import CountdownMini from "@/src/components/CountdownMini"
+import { useCompetition } from "@/src/context/CompetitionContext"
 import { useSession } from "next-auth/react"
 import SubmissionForm from "./SubmissionForm"
 
-// for user.access === 1
-export default function DashboardCompetitor() {
+/**
+ * Dashboard Competitor Component
+ * Rewrite with TypeScript on 2026/3/10 (1773140503)
+ *
+ * Displays the competitor dashboard with competition phase information
+ * and project submission form. Only accessible to users with access level 1.
+ *
+ * @component
+ * @returns {JSX.Element} Competitor dashboard
+ */
+export default function DashboardCompetitor(): React.ReactElement {
     const { data: session } = useSession()
     const { competitionState } = useCompetition()
 
     const isClosed = competitionState === "closed"
     const isActive = competitionState === "active"
     const isJudging = competitionState === "judging"
+
+    // Safety check - should not happen due to parent component logic
+    if (!session?.user) {
+        return <p>Loading user information...</p>
+    }
+
+    /**
+     * Refresh function passed to SubmissionForm
+     * Can be used to refresh data after submission
+     */
+    const handleUpdate = async (): Promise<void> => {
+        // For competitors, we might want to refresh something in the future
+        // Currently just a placeholder
+        console.log("Submission updated")
+    }
 
     return (
         <>
@@ -22,7 +47,7 @@ export default function DashboardCompetitor() {
             </p>
             <p className="cYellow padEnd">
                 The 2025 Network Hackathon is currently in the&nbsp;
-                <span className={`qBox ${competitionState == "closed" ? "serifBold serifUnderline" : ""}`}>
+                <span className={`qBox ${competitionState === "closed" ? "serifBold serifUnderline" : ""}`}>
                     Closed
                     <span className="tooltip">
                         The Hackathon is <span className="serifBold">Closed</span>. It is currently not accepting work,
@@ -30,7 +55,7 @@ export default function DashboardCompetitor() {
                     </span>
                 </span>
                 &nbsp;&gt;&nbsp;
-                <span className={`qBox ${competitionState == "active" ? "serifBold serifUnderline" : ""}`}>
+                <span className={`qBox ${competitionState === "active" ? "serifBold serifUnderline" : ""}`}>
                     Active
                     <span className="tooltip">
                         The Hackathon is <span className="serifBold">Active</span>. You have this time to complete all
@@ -39,7 +64,7 @@ export default function DashboardCompetitor() {
                     </span>
                 </span>
                 &nbsp;&gt;&nbsp;
-                <span className={`qBox ${competitionState == "judging" ? "serifBold serifUnderline" : ""}`}>
+                <span className={`qBox ${competitionState === "judging" ? "serifBold serifUnderline" : ""}`}>
                     Review
                     <span className="tooltip">
                         The Hackathon is <span className="serifBold">Under Review</span>. You are no longer able to edit
@@ -48,6 +73,7 @@ export default function DashboardCompetitor() {
                 </span>{" "}
                 phase.
             </p>
+
             {isClosed && (
                 <>
                     <br />
@@ -56,21 +82,22 @@ export default function DashboardCompetitor() {
                         <p>
                             Time remaining:{" "}
                             <span className="bSmooth console">
-                                <CountdownMini targetDate="2025-02-17T08:59:59Z"></CountdownMini>
+                                <CountdownMini targetDate="2025-02-17T08:59:59Z" />
                             </span>
                         </p>
                     </div>
                 </>
             )}
+
             {(isActive || isJudging) && (
-                <SubmissionForm teamID={session.user.teamID} readonly={!isActive}>
+                <SubmissionForm teamID={session.user.teamID ?? undefined} readonly={!isActive} onUpdate={handleUpdate}>
                     {isActive && (
                         <>
                             <p className="serifBold med">Hackathon is Active</p>
                             <p>
                                 Time remaining:{" "}
                                 <span className="bSmooth console">
-                                    <CountdownMini targetDate="2025-05-30T23:59:59+0800"></CountdownMini>
+                                    <CountdownMini targetDate="2025-05-30T23:59:59+0800" />
                                 </span>
                             </p>
                         </>
