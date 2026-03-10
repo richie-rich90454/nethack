@@ -1,5 +1,6 @@
 /**
  * Database Connection Module
+ * Rewrite with TypeScript in 2026/3/10 (1773139470)
  *
  * Provides MySQL database connection pooling and utility functions for the application.
  * Uses mysql2/promise for async/await support and connection pooling for performance.
@@ -8,7 +9,9 @@
  */
 
 "use server"
+
 import mysql from "mysql2/promise"
+import { RowDataPacket } from "mysql2"
 
 /**
  * MySQL Connection Pool Configuration
@@ -37,13 +40,22 @@ const pool = mysql.createPool({
 })
 
 /**
- * Pool error event handler
+ * Handle pool errors
  *
- * Logs MySQL connection errors to console for debugging and monitoring.
+ * MySQL connection pool errors are handled by rejecting promises that use the pool.
+ * We can still catch uncaught errors at the process level if needed.
  */
-pool.on("error", err => {
-    console.error("MySQL connection pool error:", err)
-})
+// Note: The 'error' event is not available in mysql2/promise Pool type
+// Connection errors will be thrown when using getConnection() or query()
+
+/**
+ * User data interface for database query results
+ */
+interface UserRow extends RowDataPacket {
+    access: number
+    teamID: string | null
+    [key: string]: unknown
+}
 
 /**
  * Get a database connection from the pool
@@ -64,8 +76,13 @@ pool.on("error", err => {
  *   connection.release();
  * }
  */
-export default async function getConnection() {
-    return await pool.getConnection()
+export default async function getConnection(): Promise<mysql.PoolConnection> {
+    try {
+        return await pool.getConnection()
+    } catch (error) {
+        console.error("Error getting database connection:", error)
+        throw error
+    }
 }
 
 /**
@@ -84,9 +101,9 @@ export default async function getConnection() {
  *   console.log(`Access level: ${user.access}, Team ID: ${user.teamID}`);
  * }
  */
-export async function getUser(email) {
+export async function getUser(email: string): Promise<{ access: number; teamID: string | null } | null> {
     try {
-        const [rows] = await pool.query(
+        const [rows] = await pool.query<UserRow[]>(
             "SELECT access, teamID FROM users WHERE email = ?",
             [email.toLowerCase()] // Normalize email to lowercase for consistent lookup
         )
@@ -111,9 +128,9 @@ export async function getUser(email) {
  * @example
  * const results = await query('SELECT * FROM projects WHERE teamID = ?', ['team123']);
  */
-export async function query(sql, params = []) {
+export async function query<T extends RowDataPacket[]>(sql: string, params: any[] = []): Promise<T> {
     try {
-        const [rows] = await pool.query(sql, params)
+        const [rows] = await pool.query<T>(sql, params)
         return rows
     } catch (error) {
         console.error("Database query error:", error)
