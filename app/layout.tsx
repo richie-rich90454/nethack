@@ -49,9 +49,9 @@ interface RootLayoutProps {
 
 /**
  * Root Layout Component
- * 
+ *
  * Provides the base HTML structure and context providers for the entire application.
- * 
+ *
  * @param {RootLayoutProps} props - Component props
  * @returns {JSX.Element} Root layout with providers
  */

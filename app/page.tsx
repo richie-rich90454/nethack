@@ -19,18 +19,18 @@ import Link from "next/link"
 
 /**
  * Home Page Component
- * 
+ *
  * Landing page that displays:
  * - Competition information
  * - Authentication-based navigation links
  * - Countdown timers for competition deadlines
- * 
+ *
  * @returns {JSX.Element} Home page
  */
 const Home = (): React.ReactElement => {
     const countdownDates: string[] = [
-        "2025-05-16T23:59:59+0800", 
-        "2025-05-17T23:59:59+0800", 
+        "2025-05-16T23:59:59+0800",
+        "2025-05-17T23:59:59+0800",
         "2025-05-30T23:59:59+0800"
     ]
 
@@ -50,7 +50,7 @@ const Home = (): React.ReactElement => {
                 The 2025 Competition has begun! If you have registered, please login to your Hackathon account to view
                 your project Dashboard and submit materials. Please note that this site experience as a beta test.{" "}
             </p>
-            
+
             {/* Conditional navigation based on authentication status */}
             {status === "authenticated" && session?.user.access >= 1 ? (
                 <p>
@@ -60,8 +60,8 @@ const Home = (): React.ReactElement => {
                 </p>
             ) : status === "authenticated" ? (
                 <p>
-                    <a 
-                        href="https://forms.cloud.microsoft/r/3t7EywybWw" 
+                    <a
+                        href="https://forms.cloud.microsoft/r/3t7EywybWw"
                         className="cBlue link"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -78,7 +78,7 @@ const Home = (): React.ReactElement => {
             ) : (
                 <p>&nbsp;</p>
             )}
-            
+
             <center className="console">
                 {/* Countdown timers - commented out ones are for future use */}
                 {/* <Countdown key={0} targetDate={countdownDates[0]} label="Registration Closes"/> */}
