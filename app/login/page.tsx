@@ -8,13 +8,13 @@ import Link from "next/link"
 /**
  * Login Page Component
  * Rewrite with TypeScript in 2026/3/10 (1773139917)
- * 
+ *
  * Handles user authentication and displays user information based on session status.
  * Shows different content for:
  * - Loading state
  * - Authenticated users (with access level-specific info)
  * - Unauthenticated users
- * 
+ *
  * @returns {JSX.Element} Login page
  */
 const Login = (): React.ReactElement => {
@@ -55,12 +55,12 @@ const Login = (): React.ReactElement => {
                     <>
                         <p className="center">
                             You are logged in.{" "}
-                            <span 
-                                className="button serifBold bWhite" 
+                            <span
+                                className="button serifBold bWhite"
                                 onClick={handleSignOut}
                                 role="button"
                                 tabIndex={0}
-                                onKeyDown={(e) => e.key === 'Enter' && handleSignOut()}
+                                onKeyDown={e => e.key === "Enter" && handleSignOut()}
                             >
                                 Sign out
                             </span>
@@ -70,17 +70,18 @@ const Login = (): React.ReactElement => {
                         <p>Name: {session.user.name}</p>
                         <p>Email: {session.user.email}</p>
                         <p>
-                            Account type: {
-                                session.user.access === 0 ? "Visitor/Voter" :
-                                session.user.access === 1 ? "Competitor" :
-                                session.user.access === 2 ? "Judge" :
-                                session.user.access === 9 ? "Admin" : 
-                                "Unknown"
-                            }
+                            Account type:{" "}
+                            {session.user.access === 0
+                                ? "Visitor/Voter"
+                                : session.user.access === 1
+                                  ? "Competitor"
+                                  : session.user.access === 2
+                                    ? "Judge"
+                                    : session.user.access === 9
+                                      ? "Admin"
+                                      : "Unknown"}
                         </p>
-                        {session.user.access === 1 && session.user.teamID && (
-                            <p>Team ID: {session.user.teamID}</p>
-                        )}
+                        {session.user.access === 1 && session.user.teamID && <p>Team ID: {session.user.teamID}</p>}
                         <br />
                         {session.user.access >= 1 && (
                             <p className="center">
@@ -92,7 +93,7 @@ const Login = (): React.ReactElement => {
                         {session.user.access === 0 && (
                             <>
                                 <p className="center">
-                                    <a 
+                                    <a
                                         href="https://forms.cloud.microsoft/r/3t7EywybWw"
                                         target="_blank"
                                         rel="noopener noreferrer"
@@ -111,12 +112,12 @@ const Login = (): React.ReactElement => {
                     <>
                         <p className="center">
                             You are not currently logged in.{" "}
-                            <span 
-                                className="button serifBold" 
+                            <span
+                                className="button serifBold"
                                 onClick={handleSignIn}
                                 role="button"
                                 tabIndex={0}
-                                onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
+                                onKeyDown={e => e.key === "Enter" && handleSignIn()}
                             >
                                 Sign in
                             </span>

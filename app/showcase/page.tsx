@@ -1,20 +1,49 @@
 "use client"
+
 import React from "react"
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
-import { useCompetition } from "@/context/CompetitionContext"
-import CountdownMini from "@/components/CountdownMini"
-import SubmissionPresent from "@/components/SubmissionPresent"
+import { useCompetition } from "@/src/context/CompetitionContext"
+import CountdownMini from "@/src/components/CountdownMini"
+import SubmissionPresent from "@/src/components/SubmissionPresent"
 
-const Dashboard = () => {
+/**
+ * Interface representing a project submission from the database
+ * Rewrite with TypeScript on 2026/3/10 (1773140038)
+ */
+interface ProjectSubmission {
+    id: number
+    teamID: string
+    title: string
+    description: string
+    github: string
+    prompt: string
+    technologies: string
+    submission_date?: string
+    status?: string
+    [key: string]: unknown
+}
+
+/**
+ * Showcase Page Component
+ *
+ * Displays the winning and finalist projects from the 2025R1 Hackathon.
+ * Fetches project data for specific team IDs and renders them with appropriate styling.
+ *
+ * @returns {JSX.Element} Showcase page
+ */
+const Showcase = (): React.ReactElement => {
     const { data: session } = useSession()
-    const [entries, setEntries] = useState("Loading...")
+    const [entries, setEntries] = useState<ProjectSubmission[] | string>("Loading...")
 
-    const fetchEntries = async () => {
+    /**
+     * Fetch project entries for all winner team IDs
+     */
+    const fetchEntries = async (): Promise<void> => {
         try {
             // TODO: prob modify database schema (i.e. make new fields) so this can be done in 1 api call
-            let winners = [
+            const winners: string[] = [
                 "c0ad4f19",
                 "d34f1c1d",
                 "dbb3b35b",
@@ -24,20 +53,26 @@ const Dashboard = () => {
                 "f4da2d19",
                 "7fea1e8e"
             ]
-            let all = []
-            let data
+
+            const all: ProjectSubmission[] = []
+
             for (let i = 0; i < winners.length; i++) {
-                let response = await fetch("/api/sql/pullProject?search=" + winners[i])
+                const response = await fetch("/api/sql/pullProject?search=" + winners[i])
+
                 if (response.ok) {
-                    data = await response.json()
-                    all.push(data[0])
+                    const data = (await response.json()) as ProjectSubmission[]
+                    if (data && data.length > 0) {
+                        all.push(data[0])
+                    }
                 } else {
-                    console.error("Failed to fetch entries")
+                    console.error("Failed to fetch entries for team: " + winners[i])
                 }
             }
+
             setEntries(all)
         } catch (error) {
             console.error("Error fetching entries: ", error)
+            setEntries("Error loading entries")
         }
     }
 
@@ -45,11 +80,10 @@ const Dashboard = () => {
         fetchEntries()
     }, [session])
 
-    const iconAward = (
-        // <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-award" viewBox="0 0 16 16">
-        //     <path d="M9.669.864 8 0 6.331.864l-1.858.282-.842 1.68-1.337 1.32L2.6 6l-.306 1.854 1.337 1.32.842 1.68 1.858.282L8 12l1.669-.864 1.858-.282.842-1.68 1.337-1.32L13.4 6l.306-1.854-1.337-1.32-.842-1.68zm1.196 1.193.684 1.365 1.086 1.072L12.387 6l.248 1.506-1.086 1.072-.684 1.365-1.51.229L8 10.874l-1.355-.702-1.51-.229-.684-1.365-1.086-1.072L3.614 6l-.25-1.506 1.087-1.072.684-1.365 1.51-.229L8 1.126l1.356.702z"/>
-        //     <path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1z"/>
-        // </svg>
+    /**
+     * Award icon SVG component
+     */
+    const iconAward: React.ReactElement = (
         <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -62,6 +96,10 @@ const Dashboard = () => {
             <path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1z" />
         </svg>
     )
+
+    // Check if entries is an array (not a string)
+    const hasEntries = Array.isArray(entries) && entries.length >= 8
+
     return (
         <>
             <p>
@@ -86,7 +124,7 @@ const Dashboard = () => {
             <br />
 
             <div>
-                {entries != "Loading..." && (
+                {hasEntries && (
                     <>
                         <p>
                             <span className="cWhite serifBold med">Our Top 3:</span>
@@ -109,7 +147,7 @@ const Dashboard = () => {
                                 key="0"
                                 submission={entries[0]}
                                 override={`/25R1/${entries[0].teamID}/vid.mp4`}
-                            ></SubmissionPresent>
+                            />
                             <div className="award">{iconAward}</div>
                         </div>
                         <div className="border silver">
@@ -117,7 +155,7 @@ const Dashboard = () => {
                                 key="1"
                                 submission={entries[1]}
                                 override={`/25R1/${entries[1].teamID}/vid.mp4`}
-                            ></SubmissionPresent>
+                            />
                             <div className="award">{iconAward}</div>
                         </div>
                         <div className="border bronze">
@@ -125,7 +163,7 @@ const Dashboard = () => {
                                 key="2"
                                 submission={entries[2]}
                                 override={`/25R1/${entries[2].teamID}/vid.mp4`}
-                            ></SubmissionPresent>
+                            />
                             <div className="award">{iconAward}</div>
                         </div>
                         <br />
@@ -138,11 +176,11 @@ const Dashboard = () => {
                             and captivating projects:
                         </p>
                         <div className="border green">
-                            <SubmissionPresent key="3" submission={entries[3]} override={0}></SubmissionPresent>
+                            <SubmissionPresent key="3" submission={entries[3]} override={0} />
                             <div className="award">{iconAward}</div>
                         </div>
                         <div className="border green">
-                            <SubmissionPresent key="4" submission={entries[4]} override={0}></SubmissionPresent>
+                            <SubmissionPresent key="4" submission={entries[4]} override={0} />
                             <div className="award">{iconAward}</div>
                         </div>
                         <div className="border green">
@@ -150,7 +188,7 @@ const Dashboard = () => {
                                 key="5"
                                 submission={entries[5]}
                                 override={`/25R1/${entries[5].teamID}/vid.mp4`}
-                            ></SubmissionPresent>
+                            />
                             <div className="award">{iconAward}</div>
                         </div>
                         <div className="border green">
@@ -158,11 +196,11 @@ const Dashboard = () => {
                                 key="6"
                                 submission={entries[6]}
                                 override="https://david-why.tech/bmplogicsim/"
-                            ></SubmissionPresent>
+                            />
                             <div className="award">{iconAward}</div>
                         </div>
                         <div className="border green">
-                            <SubmissionPresent key="7" submission={entries[7]} override={0}></SubmissionPresent>
+                            <SubmissionPresent key="7" submission={entries[7]} override={0} />
                             <div className="award">{iconAward}</div>
                         </div>
                         <br />
@@ -174,9 +212,17 @@ const Dashboard = () => {
                         </p>
                     </>
                 )}
+
+                {/* Loading state */}
+                {entries === "Loading..." && <p className="cWhite">Loading showcase projects...</p>}
+
+                {/* Error state */}
+                {entries === "Error loading entries" && (
+                    <p className="cWhite">Failed to load showcase projects. Please try again later.</p>
+                )}
             </div>
         </>
     )
 }
 
-export default Dashboard
+export default Showcase
