@@ -1,5 +1,6 @@
 /**
  * Navigation Bar Component
+ * Rewrite with TypeScript on 2026/3/10 (1773140733)
  *
  * Provides the main navigation header for the application with dynamic login/logout
  * functionality based on user authentication status.
@@ -12,12 +13,22 @@
  *
  * @returns {JSX.Element} Rendered navigation bar with application title and auth link
  */
+
 "use client"
+
+import React from "react"
 import Link from "next/link"
 import styles from "./Navbar.module.css"
 import { useSession } from "next-auth/react"
 
-const Navbar = () => {
+/**
+ * Navigation Bar Component
+ * 
+ * Displays the application title and authentication link.
+ * 
+ * @returns {JSX.Element} Navigation bar
+ */
+const Navbar = (): React.ReactElement => {
     // Get authentication status from NextAuth session
     const { status: authStatus } = useSession()
 
