@@ -1,5 +1,6 @@
 /**
  * Competition Context Provider
+ * Rewrite with TypeScript in 2026/3/10 (1773139749)
  *
  * Provides global competition state management across the application.
  * Fetches and maintains the current competition phase from the backend API.
@@ -8,13 +9,30 @@
  */
 
 "use client"
-import React, { createContext, useContext, useState, useEffect } from "react"
+
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react"
+
+/**
+ * Competition context value interface
+ */
+interface CompetitionContextValue {
+    /** Current competition phase from backend */
+    competitionState: string | null
+}
+
+/**
+ * Props for CompetitionProvider component
+ */
+interface CompetitionProviderProps {
+    /** Child components to wrap */
+    children: ReactNode
+}
 
 /**
  * Competition Context
- * @type {React.Context}
+ * @type {React.Context<CompetitionContextValue | undefined>}
  */
-const CompetitionContext = createContext()
+const CompetitionContext = createContext<CompetitionContextValue | undefined>(undefined)
 
 /**
  * Competition Provider Component
@@ -23,7 +41,7 @@ const CompetitionContext = createContext()
  * Automatically fetches competition phase from the backend on mount.
  *
  * @component
- * @param {Object} props - Component properties
+ * @param {CompetitionProviderProps} props - Component properties
  * @param {React.ReactNode} props.children - Child components to wrap
  *
  * @example
@@ -34,20 +52,20 @@ const CompetitionContext = createContext()
  *
  * @returns {JSX.Element} Context provider wrapping children
  */
-export const CompetitionProvider = ({ children }) => {
+export const CompetitionProvider = ({ children }: CompetitionProviderProps): React.ReactElement => {
     // State to hold current competition phase
-    const [competitionState, setCompetitionState] = useState(null)
+    const [competitionState, setCompetitionState] = useState<string | null>(null)
 
     /**
      * Fetches the current competition phase from the backend API
      * @async
      * @returns {Promise<void>}
      */
-    const fetchCompetitionState = async () => {
+    const fetchCompetitionState = async (): Promise<void> => {
         try {
             const response = await fetch("/api/sql/phase")
             if (response.ok) {
-                const data = await response.json()
+                const data = (await response.json()) as { phase: string }
                 setCompetitionState(data.phase)
             } else {
                 console.error("Failed to fetch competition phase")
@@ -62,7 +80,11 @@ export const CompetitionProvider = ({ children }) => {
         fetchCompetitionState()
     }, []) // Empty dependency array ensures this runs only once on mount
 
-    return <CompetitionContext.Provider value={{ competitionState }}>{children}</CompetitionContext.Provider>
+    const value: CompetitionContextValue = {
+        competitionState
+    }
+
+    return <CompetitionContext.Provider value={value}>{children}</CompetitionContext.Provider>
 }
 
 /**
@@ -72,8 +94,8 @@ export const CompetitionProvider = ({ children }) => {
  * Must be used within a CompetitionProvider.
  *
  * @hook
- * @returns {Object} Competition context value
- * @returns {any} competitionState - Current competition phase from backend
+ * @returns {CompetitionContextValue} Competition context value
+ * @returns {string | null} competitionState - Current competition phase from backend
  *
  * @example
  * // In any component:
@@ -81,10 +103,12 @@ export const CompetitionProvider = ({ children }) => {
  *
  * @throws {Error} If used outside of CompetitionProvider
  */
-export const useCompetition = () => {
+export const useCompetition = (): CompetitionContextValue => {
     const context = useContext(CompetitionContext)
+
     if (context === undefined) {
         throw new Error("useCompetition must be used within a CompetitionProvider")
     }
+
     return context
 }
