@@ -1,11 +1,11 @@
 :root {
-    --background: #2B2B2B;
-    --foreground: #32AE54;
-    --yellow: #FFC000;
-    --blue: #32A5E4;
-    --purple: #E461f5;
+    --background: #2b2b2b;
+    --foreground: #32ae54;
+    --yellow: #ffc000;
+    --blue: #32a5e4;
+    --purple: #e461f5;
 }
-*{
+* {
     border-radius: 3dvh;
 }
 html,
