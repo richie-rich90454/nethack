@@ -23,9 +23,9 @@ import { useSession } from "next-auth/react"
 
 /**
  * Navigation Bar Component
- * 
+ *
  * Displays the application title and authentication link.
- * 
+ *
  * @returns {JSX.Element} Navigation bar
  */
 const Navbar = (): React.ReactElement => {

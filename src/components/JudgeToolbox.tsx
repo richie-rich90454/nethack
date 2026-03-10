@@ -56,16 +56,16 @@ interface JudgeToolboxProps {
 
 /**
  * Judge Toolbox Component
- * 
+ *
  * Provides tools for judges to edit submission metadata directly.
- * 
+ *
  * @param {JudgeToolboxProps} props - Component props
  * @returns {JSX.Element} Judge tools panel
  */
 const JudgeToolbox = ({ submission, onUpdate }: JudgeToolboxProps): React.ReactElement => {
     /**
      * Update submission entries in the database
-     * 
+     *
      * @param {string} newTitle - Updated title
      * @param {string} newTech - Updated technologies list
      */
@@ -88,8 +88,8 @@ const JudgeToolbox = ({ submission, onUpdate }: JudgeToolboxProps): React.ReactE
                 body: JSON.stringify(data)
             })
 
-            const result = await response.json() as { message?: string }
-            
+            const result = (await response.json()) as { message?: string }
+
             if (response.ok) {
                 onUpdate()
             } else {
@@ -140,7 +140,7 @@ const JudgeToolbox = ({ submission, onUpdate }: JudgeToolboxProps): React.ReactE
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e: React.KeyboardEvent): void => {
-                    if (e.key === 'Enter' || e.key === ' ') {
+                    if (e.key === "Enter" || e.key === " ") {
                         handleEditTitle()
                     }
                 }}
@@ -153,7 +153,7 @@ const JudgeToolbox = ({ submission, onUpdate }: JudgeToolboxProps): React.ReactE
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e: React.KeyboardEvent): void => {
-                    if (e.key === 'Enter' || e.key === ' ') {
+                    if (e.key === "Enter" || e.key === " ") {
                         handleEditTechs()
                     }
                 }}
@@ -166,7 +166,7 @@ const JudgeToolbox = ({ submission, onUpdate }: JudgeToolboxProps): React.ReactE
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e: React.KeyboardEvent): void => {
-                    if (e.key === 'Enter' || e.key === ' ') {
+                    if (e.key === "Enter" || e.key === " ") {
                         handleAddComment()
                     }
                 }}

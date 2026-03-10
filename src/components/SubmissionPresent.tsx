@@ -78,10 +78,10 @@ const iconPlay: React.ReactElement = (
 
 /**
  * Submission Present Component
- * 
+ *
  * Displays a project submission in card format with image, title, description,
  * and links to the live project and source code.
- * 
+ *
  * @param {SubmissionPresentProps} props - Component props
  * @returns {JSX.Element} Submission presentation card
  */
@@ -109,11 +109,7 @@ const SubmissionPresent = ({ submission, override }: SubmissionPresentProps): Re
     return (
         <div className={`${styles.wrap} displayBox`}>
             <div id={submission.teamID} className={styles.outline}>
-                <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={linkUrl}
-                >
+                <a target="_blank" rel="noopener noreferrer" href={linkUrl}>
                     <div className={styles.image}>
                         <img src={`/25R1/${submission.teamID}.jpg`} alt={`${submission.title} project thumbnail`} />
                         <div className={styles.play}>{iconPlay}</div>
@@ -144,13 +140,14 @@ const SubmissionPresent = ({ submission, override }: SubmissionPresentProps): Re
                     </p>
 
                     <p className="cWhite">
-                        <span className="cYellow serifBold">{submission.prompt || "No prompt"} </span>| {submission.description}
+                        <span className="cYellow serifBold">{submission.prompt || "No prompt"} </span>|{" "}
+                        {submission.description}
                     </p>
                     <br />
                     <p>
                         Share URL:{" "}
-                        <a 
-                            className="console" 
+                        <a
+                            className="console"
                             href={`https://nethack.biszweb.club/showcase#${submission.teamID}`}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -161,15 +158,11 @@ const SubmissionPresent = ({ submission, override }: SubmissionPresentProps): Re
                     <p>
                         Download code:{" "}
                         {submission.sub_code === "Github" ? (
-                            <a 
-                                href={submission.github} 
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
+                            <a href={submission.github} target="_blank" rel="noopener noreferrer">
                                 View on Github
                             </a>
                         ) : (
-                            <a 
+                            <a
                                 href={`/25R1/${submission.teamID}/${submission.title}.zip`}
                                 target="_blank"
                                 rel="noopener noreferrer"

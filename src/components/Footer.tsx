@@ -20,9 +20,9 @@ import styles from "./Footer.module.css"
 
 /**
  * Footer Component
- * 
+ *
  * Displays the application footer with copyright information.
- * 
+ *
  * @returns {JSX.Element} Footer with copyright notice
  */
 const Footer = (): React.ReactElement => {

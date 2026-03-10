@@ -84,10 +84,10 @@ interface SubmissionProps {
 
 /**
  * Submission Component
- * 
+ *
  * Displays a project submission with all metadata.
  * Judges see edit buttons for modifying submission information.
- * 
+ *
  * @param {SubmissionProps} props - Component props
  * @returns {JSX.Element} Submission display
  */
@@ -111,16 +111,16 @@ const Submission = ({ submission, user, onEdit }: SubmissionProps): React.ReactE
                         <span className="small cGray serifBold">{submission.teamID}</span>
                     </p>
                     <span className={styles.filler}></span>
-                    
+
                     {/* Show edit button for judges (access level >= 2) */}
                     {user.access >= 2 && (
                         <p className={`${styles.edit} sub serifBold cGreen`}>
-                            <a 
+                            <a
                                 onClick={onEdit}
                                 role="button"
                                 tabIndex={0}
                                 onKeyDown={(e: React.KeyboardEvent): void => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
+                                    if (e.key === "Enter" || e.key === " ") {
                                         onEdit()
                                     }
                                 }}
@@ -131,12 +131,12 @@ const Submission = ({ submission, user, onEdit }: SubmissionProps): React.ReactE
                     )}
                 </div>
                 <hr className={styles.padBottom} />
-                
+
                 <p className="cWhite">
                     <span className="serifBold cBlue">Developed by&nbsp;</span>{" "}
                     <span className="">{submission.members || "No team members listed"}</span>
                 </p>
-                
+
                 <p className="cWhite">
                     <span className="serifBold cBlue">Built using&nbsp;&nbsp;</span>{" "}
                     <span className="">
@@ -147,7 +147,7 @@ const Submission = ({ submission, user, onEdit }: SubmissionProps): React.ReactE
                         )}
                     </span>
                 </p>
-                
+
                 <p className="cWhite">
                     <span className="serifBold cBlue">Chosen prompt</span>{" "}
                     <span className="">
@@ -159,48 +159,36 @@ const Submission = ({ submission, user, onEdit }: SubmissionProps): React.ReactE
                     </span>
                 </p>
                 <br />
-                
+
                 <p className="cWhite">{submission.description}</p>
                 <br />
-                
+
                 <span className="console sub">
                     {/* Code and Video links */}
                     <p className="cBlue serifBold">
                         {submission.sub_code === "Github" ? (
-                            <a 
-                                href={submission.github} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                            >
+                            <a href={submission.github} target="_blank" rel="noopener noreferrer">
                                 [View GitHub]
                             </a>
                         ) : submission.sub_code === "NOT SUBMITTED" ? (
                             <span className="cRed">[Code NOT SUBMITTED]</span>
                         ) : (
-                            <a 
-                                href={submission.sub_code} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                            >
+                            <a href={submission.sub_code} target="_blank" rel="noopener noreferrer">
                                 [View Code]
                             </a>
                         )}
                         <span> </span>
-                        
+
                         {submission.sub_video === "NOT SUBMITTED" ? (
                             <span className="cRed">[Video NOT SUBMITTED]</span>
                         ) : (
-                            <a 
-                                href={submission.sub_video} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                            >
+                            <a href={submission.sub_video} target="_blank" rel="noopener noreferrer">
                                 [View Video]
                             </a>
                         )}
                     </p>
                 </span>
-                
+
                 {/* JudgeToolbox component - commented out but kept for reference */}
                 {/* {user.access >= 2 && (
                     <JudgeToolbox submission={submission} onUpdate={onEdit} />

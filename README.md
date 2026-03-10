@@ -279,46 +279,46 @@ The application uses CSS Modules for component-scoped styling. Global styles are
 
 Stores user authentication and role information:
 
-| Column      | Type         | Description                              |
-|-------------|--------------|------------------------------------------|
-| id          | INT          | Primary key, auto-increment              |
-| email       | VARCHAR(255) | User email (unique identifier)           |
-| access      | INT          | Access level (0=visitor, 1=competitor, 2+=judge) |
-| teamID      | VARCHAR(255) | Team identifier for competitors          |
-| members     | VARCHAR(255) | Team member names (optional)             |
-| created_at  | TIMESTAMP    | Account creation timestamp               |
+| Column     | Type         | Description                                      |
+| ---------- | ------------ | ------------------------------------------------ |
+| id         | INT          | Primary key, auto-increment                      |
+| email      | VARCHAR(255) | User email (unique identifier)                   |
+| access     | INT          | Access level (0=visitor, 1=competitor, 2+=judge) |
+| teamID     | VARCHAR(255) | Team identifier for competitors                  |
+| members    | VARCHAR(255) | Team member names (optional)                     |
+| created_at | TIMESTAMP    | Account creation timestamp                       |
 
 ### Hacks Table
 
 Stores project submissions:
 
-| Column         | Type         | Description                              |
-|----------------|--------------|------------------------------------------|
-| id             | INT          | Primary key, auto-increment              |
-| teamID         | VARCHAR(255) | Reference to team                        |
-| title          | VARCHAR(255) | Project title                            |
-| description    | TEXT         | Project description                      |
-| github         | VARCHAR(500) | GitHub repository URL                    |
-| prompt         | VARCHAR(255) | Selected hackathon prompt                 |
-| technologies   | TEXT         | Technologies used (comma-separated)      |
-| members        | VARCHAR(255) | Team members                             |
-| sub_code       | VARCHAR(500) | Code submission URL or type              |
-| sub_video      | VARCHAR(500) | Video submission URL                     |
-| round          | VARCHAR(10)  | Competition round (e.g., "25R1", "25R2") |
-| submission_date| TIMESTAMP    | Submission timestamp                     |
-| status         | VARCHAR(50)  | Submission status (pending, reviewed)    |
+| Column          | Type         | Description                              |
+| --------------- | ------------ | ---------------------------------------- |
+| id              | INT          | Primary key, auto-increment              |
+| teamID          | VARCHAR(255) | Reference to team                        |
+| title           | VARCHAR(255) | Project title                            |
+| description     | TEXT         | Project description                      |
+| github          | VARCHAR(500) | GitHub repository URL                    |
+| prompt          | VARCHAR(255) | Selected hackathon prompt                |
+| technologies    | TEXT         | Technologies used (comma-separated)      |
+| members         | VARCHAR(255) | Team members                             |
+| sub_code        | VARCHAR(500) | Code submission URL or type              |
+| sub_video       | VARCHAR(500) | Video submission URL                     |
+| round           | VARCHAR(10)  | Competition round (e.g., "25R1", "25R2") |
+| submission_date | TIMESTAMP    | Submission timestamp                     |
+| status          | VARCHAR(50)  | Submission status (pending, reviewed)    |
 
 ### Phases Table
 
 Manages competition timeline:
 
-| Column      | Type         | Description                              |
-|-------------|--------------|------------------------------------------|
-| id          | INT          | Primary key, auto-increment              |
-| phase       | VARCHAR(50)  | Phase name (closed, active, judging)     |
-| start_date  | TIMESTAMP    | Phase start time                         |
-| end_date    | TIMESTAMP    | Phase end time                           |
-| is_active   | BOOLEAN      | Whether phase is current                  |
+| Column     | Type        | Description                          |
+| ---------- | ----------- | ------------------------------------ |
+| id         | INT         | Primary key, auto-increment          |
+| phase      | VARCHAR(50) | Phase name (closed, active, judging) |
+| start_date | TIMESTAMP   | Phase start time                     |
+| end_date   | TIMESTAMP   | Phase end time                       |
+| is_active  | BOOLEAN     | Whether phase is current             |
 
 ## Deployment
 

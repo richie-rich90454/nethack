@@ -66,11 +66,11 @@ interface SubmissionFormProps {
  * @param {SubmissionFormProps} props - Component props
  * @returns {JSX.Element} Submission form
  */
-export default function SubmissionForm({ 
-    children, 
-    teamID, 
-    readonly, 
-    onUpdate 
+export default function SubmissionForm({
+    children,
+    teamID,
+    readonly,
+    onUpdate
 }: SubmissionFormProps): React.ReactElement {
     const [members, setMembers] = useState<string>("")
     const [title, setTitle] = useState<string>("")
@@ -84,10 +84,10 @@ export default function SubmissionForm({
      */
     const fetchEntry = async (): Promise<void> => {
         if (!teamID) return
-        
+
         const response = await fetch("/api/sql/pullProject?search=" + teamID)
         if (response.ok) {
-            const data = await response.json() as SubmissionData[]
+            const data = (await response.json()) as SubmissionData[]
             setTitle(data[0]?.title || "")
             setMembers(data[0]?.members || "")
             setDescription(data[0]?.description || "")
@@ -125,8 +125,8 @@ export default function SubmissionForm({
                 body: JSON.stringify(data)
             })
 
-            const result = await response.json() as { message?: string }
-            
+            const result = (await response.json()) as { message?: string }
+
             if (response.ok) {
                 onUpdate()
                 fetchEntry()
@@ -200,7 +200,9 @@ export default function SubmissionForm({
                                             className="txtBox txtArea med serifItalic"
                                             placeholder="Describe your project in 3-8 sentences."
                                             value={description}
-                                            onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => setDescription(e.target.value)}
+                                            onChange={(e: ChangeEvent<HTMLTextAreaElement>): void =>
+                                                setDescription(e.target.value)
+                                            }
                                             rows={15}
                                             readOnly={readonly}
                                         />
@@ -216,7 +218,9 @@ export default function SubmissionForm({
                                                     type="radio"
                                                     value="Game Jam"
                                                     checked={prompt === "Game Jam"}
-                                                    onChange={(e: ChangeEvent<HTMLInputElement>): void => setPrompt(e.target.value)}
+                                                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                                                        setPrompt(e.target.value)
+                                                    }
                                                     disabled={readonly}
                                                 />
                                                 <span className="iconRadio"></span>
@@ -230,7 +234,9 @@ export default function SubmissionForm({
                                             className="txtBox txtArea med serifItalic"
                                             placeholder="e.g. Javascript, Python, numpy, Scratch"
                                             value={technologies}
-                                            onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => setTechnologies(e.target.value)}
+                                            onChange={(e: ChangeEvent<HTMLTextAreaElement>): void =>
+                                                setTechnologies(e.target.value)
+                                            }
                                             rows={3}
                                             readOnly={readonly}
                                         />
@@ -241,7 +247,9 @@ export default function SubmissionForm({
                                             className="txtBox txtArea med serifItalic"
                                             placeholder="https://..."
                                             value={github}
-                                            onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => setGithub(e.target.value)}
+                                            onChange={(e: ChangeEvent<HTMLTextAreaElement>): void =>
+                                                setGithub(e.target.value)
+                                            }
                                             rows={3}
                                             readOnly={readonly}
                                         />

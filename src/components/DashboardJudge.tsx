@@ -73,7 +73,7 @@ export default function DashboardCompetitor(): React.ReactElement {
                 </span>{" "}
                 phase.
             </p>
-            
+
             {isClosed && (
                 <>
                     <br />
@@ -88,13 +88,9 @@ export default function DashboardCompetitor(): React.ReactElement {
                     </div>
                 </>
             )}
-            
+
             {(isActive || isJudging) && (
-                <SubmissionForm 
-                    teamID={session.user.teamID ?? undefined}
-                    readonly={!isActive}
-                    onUpdate={handleUpdate}
-                >
+                <SubmissionForm teamID={session.user.teamID ?? undefined} readonly={!isActive} onUpdate={handleUpdate}>
                     {isActive && (
                         <>
                             <p className="serifBold med">Hackathon is Active</p>
