@@ -1,6 +1,6 @@
 /**
  * Judge Toolbox Component
- * Rewrite with TypeScript on 2026/3/10 (1773140683)
+ * Rewrite with TypeScript on 2026/3/10
  *
  * Provides a set of tools for judges to edit submission metadata.
  * Allows editing of title and technologies fields directly in the database.
@@ -23,6 +23,7 @@
 
 import styles from "./JudgeToolbox.module.css"
 import React from "react"
+import { siteConfig } from "@/config/siteConfig"
 
 /**
  * Interface for submission data
@@ -131,7 +132,7 @@ const JudgeToolbox = ({ submission, onUpdate }: JudgeToolboxProps): React.ReactE
     return (
         <div className={`${styles.wrap} smallMed judgeTools serifBold`}>
             <span className="small cRed">
-                Judge Tools
+                {siteConfig.judgeToolbox.title}
                 <br />
             </span>
             <span
@@ -145,7 +146,7 @@ const JudgeToolbox = ({ submission, onUpdate }: JudgeToolboxProps): React.ReactE
                     }
                 }}
             >
-                Edit Title
+                {siteConfig.judgeToolbox.editTitle}
             </span>
             <span
                 className="button"
@@ -158,7 +159,7 @@ const JudgeToolbox = ({ submission, onUpdate }: JudgeToolboxProps): React.ReactE
                     }
                 }}
             >
-                Edit Techs
+                {siteConfig.judgeToolbox.editTechs}
             </span>
             <span
                 className="button"
@@ -171,7 +172,7 @@ const JudgeToolbox = ({ submission, onUpdate }: JudgeToolboxProps): React.ReactE
                     }
                 }}
             >
-                Add Comment
+                {siteConfig.judgeToolbox.addComment}
             </span>
         </div>
     )

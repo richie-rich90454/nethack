@@ -1,19 +1,14 @@
 // config/siteConfig.ts
 
 export interface SiteConfig {
-    // General site info
     siteTitle: string
-    siteDescription: string
-
-    // Navigation
     nav: {
         home: string
         login: string
+        logout: string
         dashboard: string
         showcase: string
     }
-
-    // Home page
     home: {
         welcomeHeading: string
         introText: string
@@ -25,20 +20,25 @@ export interface SiteConfig {
             submissionCloses: string
         }
     }
-
-    // Login page
     login: {
         heading: string
         description: string
         emailNote: string
-        accountTypeLabels: Record<number, string> // e.g., {0: "Visitor/Voter", 1: "Competitor", 2: "Judge"}
+        accountTypeLabels: Record<number, string>
         signUpPrompt: string
         signUpApprovedNote: string
+        signInButton: string
+        signOutButton: string
+        loadingText: string
+        notLoggedInText: string
+        yourAccountInfo: string
+        nameLabel: string
+        emailLabel: string
+        accountTypeLabel: string
+        teamIdLabel: string
     }
-
-    // Dashboard – competitor
     dashboardCompetitor: {
-        heading: string
+        heading: string // use {name} placeholder
         intro: string
         phaseIndicator: {
             closed: { label: string; tooltip: string }
@@ -58,10 +58,8 @@ export interface SiteConfig {
             message: string
         }
     }
-
-    // Dashboard – judge
     dashboardJudge: {
-        heading: string
+        heading: string // use {name} placeholder
         intro: string
         judgingNotes: string[]
         additionalNotes: string[]
@@ -70,8 +68,6 @@ export interface SiteConfig {
             description: string
         }
     }
-
-    // Showcase page
     showcase: {
         heading: string
         description: string
@@ -86,8 +82,22 @@ export interface SiteConfig {
         }
         closing: string
     }
-
-    // Submission form
+    submission: {
+        developedBy: string
+        builtUsing: string
+        chosenPrompt: string
+        untitled: string
+        noTechnologies: string
+        noPrompt: string
+        codeNotSubmitted: string
+        videoNotSubmitted: string
+        viewGithub: string
+        viewCode: string
+        viewVideo: string
+        downloadCode: string
+        compressedFolder: string
+        shareUrl: string
+    }
     submissionForm: {
         checklistTitle: string
         yourTeamLabel: string
@@ -102,26 +112,30 @@ export interface SiteConfig {
         githubPlaceholder: string
         saveButtonAria: string
     }
-
-    // Footer
+    countdown: {
+        timeUntilPrefix: string
+    }
+    judgeToolbox: {
+        title: string
+        editTitle: string
+        editTechs: string
+        addComment: string
+    }
     footer: {
         copyright: string
     }
-
-    // External URLs
     externalUrls: {
         signUpForm: string
     }
 }
 
-// Default configuration – matches your current text
 export const defaultSiteConfig: SiteConfig = {
-    siteTitle: "BIBS·C Network Hackathon",
-    siteDescription: "The official portal for the annual BIBS·C Network Hackathon.",
+    siteTitle: "Network Hackathon Site",
 
     nav: {
         home: "Home",
         login: "Login",
+        logout: "Logout",
         dashboard: "Dashboard",
         showcase: "Showcase"
     },
@@ -129,7 +143,7 @@ export const defaultSiteConfig: SiteConfig = {
     home: {
         welcomeHeading: "Welcome to the 2nd Annual BIBS·C Network Hackathon",
         introText:
-            "We are all about understanding and applying technology. In a Hackathon, you are given limited time to draw on your skills and produce an original product. Your product may be focused on anything from programming to hardware to art - so long as it answers the competition's prompts.",
+            'We are all about <span class="serifBold">understanding</span> and <span class="serifBold">applying</span> technology. In a Hackathon, you are given limited time to draw on your skills and produce an original product. Your product may be focused on anything from programming to hardware to art - so long as it answers the competition\'s prompts.',
         statusText:
             "The 2025 Competition has begun! If you have registered, please login to your Hackathon account to view your project Dashboard and submit materials. Please note that this site experience as a beta test.",
         signUpUrl: "https://forms.cloud.microsoft/r/3t7EywybWw",
@@ -150,11 +164,20 @@ export const defaultSiteConfig: SiteConfig = {
             2: "Judge"
         },
         signUpPrompt: "Signed up and approved? Please sign out and then login to view your dashboard!",
-        signUpApprovedNote: ""
+        signUpApprovedNote: "",
+        signInButton: "Sign in",
+        signOutButton: "Sign out",
+        loadingText: "Loading...",
+        notLoggedInText: "You are not currently logged in.",
+        yourAccountInfo: "Your Account Information",
+        nameLabel: "Name:",
+        emailLabel: "Email:",
+        accountTypeLabel: "Account type:",
+        teamIdLabel: "Team ID:"
     },
 
     dashboardCompetitor: {
-        heading: "Dashboard for {name}", // {name} will be replaced with user's name
+        heading: "Dashboard for {name}",
         intro: "As a competitor, this is where you can view the progress of the competition and your project.",
         phaseIndicator: {
             closed: {
@@ -210,13 +233,13 @@ export const defaultSiteConfig: SiteConfig = {
     showcase: {
         heading: "Project Showcase (2025R1)",
         description:
-            "The projects on this page are all original student work, submitted as part of the 2nd Annual BIBS·C Network Hackathon. Participants were given 1 week to develop a project from scratch that responds to one of the Hackathon prompts - from conceptualization to implementation to presentation, students took charge of their projects.",
+            'The projects on this page are all <span class="serifBold">original student work</span>, submitted as part of the 2nd Annual BIBS·C Network Hackathon. Participants were given 1 week to develop a project from scratch that responds to one of the Hackathon prompts - from conceptualization to implementation to presentation, students took charge of their projects.',
         longDescription:
             "Out of 24 qualifying projects from 65 students across 5 schools, these projects were selected by a panel of judges as exemplary and representative work. A Hackathon is all about applying technology in unique ways to solve practical problems, so projects were assessed on their use of technology, originality, presentation, topicality, and usability. Whenever possible, we have placed the interactive version of their project's on this site; code download is also available. We encourage you to reach out to these students via Teams if you want to learn more about their projects!",
         top3: {
             title: "Our Top 3:",
             description:
-                "Our judges were very impressed with the quality of the project submissions this Round, and it was difficult to rank the Finalists. The following projects are all compelling in their own way: Natural Selection Simulation takes first place because of how impressively it embodies the 'Theory and Reality' prompt, powerfully demonstrating the power of computational simulation in modeling and communicating scientific theories. Next, Local-Server-Chat explores the very fundamentals of the technology that is found all around us and so often taken for granted, creating a chat server usable by anyone. N-Body Simulation is an exciting project that uses visualization to bring gravitation and our solar system to life."
+                'Our judges were very impressed with the quality of the project submissions this Round, and it was difficult to rank the Finalists. The following projects are all compelling in their own way: <span class="serifBold">Natural Selection Simulation</span> takes first place because of how impressively it embodies the "Theory and Reality" prompt, powerfully demonstrating the power of computational simulation in modeling and communicating scientific theories. Next, <span class="serifBold">Local-Server-Chat</span> explores the very fundamentals of the technology that is found all around us and so often taken for granted, creating a chat server usable by anyone. <span class="serifBold">N-Body Simulation</span> is an exciting project that uses visualization to bring gravitation and our solar system to life.'
         },
         honorableMentions: {
             title: "The remaining Finalists (Honorable Mentions):",
@@ -225,6 +248,23 @@ export const defaultSiteConfig: SiteConfig = {
         },
         closing:
             "We are immensely proud of all of our participants, and we can honestly say that we learned something new from each project. We will be trying to put up more projects for public viewing in the future, but for now we hope you enjoyed this exhibition of the power of technology."
+    },
+
+    submission: {
+        developedBy: "Developed by",
+        builtUsing: "Built using",
+        chosenPrompt: "Chosen prompt",
+        untitled: "Untitled Submission",
+        noTechnologies: "No Technologies Listed",
+        noPrompt: "No Prompt Selected",
+        codeNotSubmitted: "[Code NOT SUBMITTED]",
+        videoNotSubmitted: "[Video NOT SUBMITTED]",
+        viewGithub: "[View GitHub]",
+        viewCode: "[View Code]",
+        viewVideo: "[View Video]",
+        downloadCode: "Download code:",
+        compressedFolder: "Compressed Folder",
+        shareUrl: "Share URL:"
     },
 
     submissionForm: {
@@ -242,6 +282,17 @@ export const defaultSiteConfig: SiteConfig = {
         saveButtonAria: "Save"
     },
 
+    countdown: {
+        timeUntilPrefix: "Time until"
+    },
+
+    judgeToolbox: {
+        title: "Judge Tools",
+        editTitle: "Edit Title",
+        editTechs: "Edit Techs",
+        addComment: "Add Comment"
+    },
+
     footer: {
         copyright: "© 2026 BISZ Developers' Club."
     },
@@ -250,3 +301,6 @@ export const defaultSiteConfig: SiteConfig = {
         signUpForm: "https://forms.cloud.microsoft/r/3t7EywybWw"
     }
 }
+
+// Optional: allow user overrides
+export const siteConfig = defaultSiteConfig

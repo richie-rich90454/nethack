@@ -1,6 +1,6 @@
 /**
  * Submission Present Component
- * Rewrite with TypeScript on 2026/3/10 (1773140907)
+ * Rewrite with TypeScript on 2026/3/10
  *
  * Displays a project submission in a presentation format for the showcase page.
  * Includes project image, title, description, and links to the live project and code.
@@ -23,29 +23,20 @@
 
 import React from "react"
 import styles from "./SubmissionPresent.module.css"
-import Link from "next/link"
+import { siteConfig } from "@/config/siteConfig"
 
 /**
  * Interface for submission data
  */
 interface SubmissionData {
-    /** Team identifier */
     teamID: string
-    /** Project title */
     title: string | null
-    /** Team members */
     members?: string
-    /** Project description */
     description: string
-    /** GitHub repository URL */
     github: string
-    /** Hackathon prompt selection */
     prompt: string | null
-    /** Technologies used (comma-separated) */
     technologies: string | null
-    /** Code submission type or URL */
     sub_code?: string
-    /** Additional properties */
     [key: string]: unknown
 }
 
@@ -118,7 +109,7 @@ const SubmissionPresent = ({ submission, override }: SubmissionPresentProps): Re
                 <div className={styles.text}>
                     <p className="cWhite medBig serifBold">
                         {submission.title === null ? (
-                            <span className="cRed">Untitled Submission</span>
+                            <span className="cRed">{siteConfig.submission.untitled}</span>
                         ) : (
                             submission.title
                         )}
@@ -126,13 +117,14 @@ const SubmissionPresent = ({ submission, override }: SubmissionPresentProps): Re
                     </p>
                     <hr />
                     <p className="cWhite ">
-                        Developed by <span className="serifBold cBlue">{submission.members || "Unknown"}</span>
+                        {siteConfig.submission.developedBy}{" "}
+                        <span className="serifBold cBlue">{submission.members || "Unknown"}</span>
                     </p>
                     <p className="cWhite">
-                        Built using{" "}
+                        {siteConfig.submission.builtUsing}{" "}
                         <span className="serifBold cGreen">
                             {submission.technologies === null ? (
-                                <span className="cRed">No Technologies Listed</span>
+                                <span className="cRed">{siteConfig.submission.noTechnologies}</span>
                             ) : (
                                 submission.technologies
                             )}
@@ -140,12 +132,14 @@ const SubmissionPresent = ({ submission, override }: SubmissionPresentProps): Re
                     </p>
 
                     <p className="cWhite">
-                        <span className="cYellow serifBold">{submission.prompt || "No prompt"} </span>|{" "}
-                        {submission.description}
+                        <span className="cYellow serifBold">
+                            {submission.prompt || siteConfig.submission.noPrompt}{" "}
+                        </span>
+                        | {submission.description}
                     </p>
                     <br />
                     <p>
-                        Share URL:{" "}
+                        {siteConfig.submission.shareUrl}{" "}
                         <a
                             className="console"
                             href={`https://nethack.biszweb.club/showcase#${submission.teamID}`}
@@ -156,10 +150,10 @@ const SubmissionPresent = ({ submission, override }: SubmissionPresentProps): Re
                         </a>
                     </p>
                     <p>
-                        Download code:{" "}
+                        {siteConfig.submission.downloadCode}{" "}
                         {submission.sub_code === "Github" ? (
                             <a href={submission.github} target="_blank" rel="noopener noreferrer">
-                                View on Github
+                                {siteConfig.submission.viewGithub}
                             </a>
                         ) : (
                             <a
@@ -167,7 +161,7 @@ const SubmissionPresent = ({ submission, override }: SubmissionPresentProps): Re
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                Compressed Folder
+                                {siteConfig.submission.compressedFolder}
                             </a>
                         )}
                     </p>

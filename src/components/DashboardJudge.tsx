@@ -1,115 +1,107 @@
-import React from "react"
-import CountdownMini from "@/src/components/CountdownMini"
 import { useCompetition } from "@/src/context/CompetitionContext"
+import { useEffect, useState } from "react"
+import Submission from "./Submission"
 import { useSession } from "next-auth/react"
 import SubmissionForm from "./SubmissionForm"
+import styles from "./DashboardJudge.module.css"
+import { siteConfig } from "@/config/siteConfig"
 
-/**
- * Dashboard Competitor Component
- * Rewrite with TypeScript in 2026/3/10 (1773140553)
- *
- * Displays the competitor dashboard with competition phase information
- * and project submission form. Only accessible to users with access level 1.
- *
- * @component
- * @returns {JSX.Element} Competitor dashboard
- */
-export default function DashboardCompetitor(): React.ReactElement {
-    const { data: session } = useSession()
+interface ProjectSubmission {
+    id: number
+    teamID: string
+    title: string
+    description: string
+    github: string
+    prompt: string
+    technologies: string
+    round?: string
+    submission_date?: string
+    status?: string
+    [key: string]: unknown
+}
+
+export default function DashboardJudge(): React.ReactElement {
     const { competitionState } = useCompetition()
+    const { data: session } = useSession()
 
-    const isClosed = competitionState === "closed"
-    const isActive = competitionState === "active"
-    const isJudging = competitionState === "judging"
+    const [entries, setEntries] = useState<ProjectSubmission[]>([])
+    const [editing, setEditing] = useState<string>("")
 
-    // Safety check - should not happen due to parent component logic
+    const fetchEntries = async (): Promise<void> => {
+        try {
+            const response = await fetch("/api/sql/pullProject")
+            if (response.ok) {
+                const data = (await response.json()) as ProjectSubmission[]
+                setEntries(data)
+            } else {
+                console.error("Failed to fetch entries")
+            }
+        } catch (error) {
+            console.error("Error fetching entries: ", error)
+        }
+    }
+
+    const refreshData = async (): Promise<void> => {
+        setEditing("")
+        await fetchEntries()
+    }
+
+    useEffect(() => {
+        fetchEntries()
+    }, [])
+
     if (!session?.user) {
         return <p>Loading user information...</p>
     }
 
-    /**
-     * Refresh function passed to SubmissionForm
-     * Can be used to refresh data after submission
-     */
-    const handleUpdate = async (): Promise<void> => {
-        // For competitors, we might want to refresh something in the future
-        // Currently just a placeholder
-        console.log("Submission updated")
-    }
-
     return (
         <>
-            <h1>Dashboard for {session.user.name}</h1>
+            <p>
+                <span className="cWhite serifBold big">
+                    {siteConfig.dashboardJudge.heading.replace("{name}", session.user.name || "")}
+                </span>
+            </p>
             <hr />
-            <p className="cBlue">
-                As a <span className="serifBold">competitor</span>, this is where you can view the progress of the
-                competition and your project.
-            </p>
-            <p className="cYellow padEnd">
-                The 2025 Network Hackathon is currently in the&nbsp;
-                <span className={`qBox ${competitionState === "closed" ? "serifBold serifUnderline" : ""}`}>
-                    Closed
-                    <span className="tooltip">
-                        The Hackathon is <span className="serifBold">Closed</span>. It is currently not accepting work,
-                        meaning you may not edit or submit files at this time.
-                    </span>
-                </span>
-                &nbsp;&gt;&nbsp;
-                <span className={`qBox ${competitionState === "active" ? "serifBold serifUnderline" : ""}`}>
-                    Active
-                    <span className="tooltip">
-                        The Hackathon is <span className="serifBold">Active</span>. You have this time to complete all
-                        aspects of your project submission. Be mindful of the stated deadline and carefully follow the
-                        instructions given on this page.
-                    </span>
-                </span>
-                &nbsp;&gt;&nbsp;
-                <span className={`qBox ${competitionState === "judging" ? "serifBold serifUnderline" : ""}`}>
-                    Review
-                    <span className="tooltip">
-                        The Hackathon is <span className="serifBold">Under Review</span>. You are no longer able to edit
-                        your submission as it is being reviewed by judges and packaged for presentation.
-                    </span>
-                </span>{" "}
-                phase.
-            </p>
+            <p className="cBlue">{siteConfig.dashboardJudge.intro}</p>
+            <br />
+            <p className="serifBold">{siteConfig.dashboardJudge.judgingNotes[0]}</p>
+            <ul>
+                {siteConfig.dashboardJudge.judgingNotes.map((note, i) => (
+                    <li key={i}>{note}</li>
+                ))}
+            </ul>
+            <br />
+            <p className="serifBold">Some additional notes:</p>
+            <ul>
+                {siteConfig.dashboardJudge.additionalNotes.map((note, i) => (
+                    <li key={i}>{note}</li>
+                ))}
+            </ul>
 
-            {isClosed && (
-                <>
-                    <br />
-                    <div className="projBox cYellow padBottom">
-                        <p className="serifBold med">Hackathon is Closed</p>
-                        <p>
-                            Time remaining:{" "}
-                            <span className="bSmooth console">
-                                <CountdownMini targetDate="2025-02-17T08:59:59Z" />
-                            </span>
-                        </p>
-                    </div>
-                </>
-            )}
-
-            {(isActive || isJudging) && (
-                <SubmissionForm teamID={session.user.teamID ?? undefined} readonly={!isActive} onUpdate={handleUpdate}>
-                    {isActive && (
-                        <>
-                            <p className="serifBold med">Hackathon is Active</p>
-                            <p>
-                                Time remaining:{" "}
-                                <span className="bSmooth console">
-                                    <CountdownMini targetDate="2025-05-30T23:59:59+0800" />
-                                </span>
-                            </p>
-                        </>
-                    )}
-                    {isJudging && (
-                        <>
-                            <p className="serifBold med">Hackathon is Under Review</p>
-                            <p>Edits can no longer be made.</p>
-                        </>
-                    )}
-                </SubmissionForm>
-            )}
+            <div className={styles.entries}>
+                {entries.map((entry: ProjectSubmission) =>
+                    entry.teamID === editing ? (
+                        <SubmissionForm
+                            key={entry.teamID}
+                            teamID={entry.teamID}
+                            readonly={false}
+                            onUpdate={refreshData}
+                        >
+                            <p className="serifBold med">{siteConfig.dashboardJudge.editForm.title}</p>
+                            <p>{siteConfig.dashboardJudge.editForm.description}</p>
+                        </SubmissionForm>
+                    ) : (
+                        entry.round === "25R2" && (
+                            <Submission
+                                key={entry.teamID}
+                                submission={entry}
+                                user={session.user}
+                                onEdit={(): void => setEditing(entry.teamID)}
+                            />
+                        )
+                    )
+                )}
+            </div>
         </>
     )
 }

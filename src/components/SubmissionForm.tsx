@@ -1,4 +1,5 @@
 import React, { useEffect, useState, ChangeEvent, FormEvent } from "react"
+import { siteConfig } from "@/config/siteConfig"
 
 /**
  * Icon components for form actions
@@ -28,9 +29,6 @@ const iconCheck: React.ReactElement = (
     </span>
 )
 
-/**
- * Interface for submission data from API
- */
 interface SubmissionData {
     id?: number
     teamID: string
@@ -43,29 +41,13 @@ interface SubmissionData {
     [key: string]: unknown
 }
 
-/**
- * Props for SubmissionForm component
- */
 interface SubmissionFormProps {
-    /** Child elements to render above the form */
     children?: React.ReactNode
-    /** Team ID for the submission */
     teamID?: string
-    /** Whether the form is read-only */
     readonly: boolean
-    /** Callback function after successful update */
     onUpdate: () => void
 }
 
-/**
- * Submission Form Component
- *
- * Provides a form for competitors to submit and edit their project details.
- * Judges may also use this form in read-only mode or for editing.
- *
- * @param {SubmissionFormProps} props - Component props
- * @returns {JSX.Element} Submission form
- */
 export default function SubmissionForm({
     children,
     teamID,
@@ -79,9 +61,6 @@ export default function SubmissionForm({
     const [prompt, setPrompt] = useState<string>("")
     const [technologies, setTechnologies] = useState<string>("")
 
-    /**
-     * Fetch existing submission data for this team
-     */
     const fetchEntry = async (): Promise<void> => {
         if (!teamID) return
 
@@ -99,11 +78,8 @@ export default function SubmissionForm({
         }
     }
 
-    /**
-     * Handle form submission to update project data
-     */
     const editEntry = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
-        event.preventDefault() // Do not submit the form
+        event.preventDefault()
 
         if (readonly || !teamID) return
 
@@ -138,12 +114,10 @@ export default function SubmissionForm({
         }
     }
 
-    // Fetch entry on component mount
     useEffect(() => {
         fetchEntry()
-    }, []) // empty array means this runs only once on mount, not on re-render
+    }, [])
 
-    // If no teamID, don't render
     if (!teamID) {
         return <></>
     }
@@ -154,9 +128,9 @@ export default function SubmissionForm({
                 <div className="leftBox">
                     <div className="projBox cYellow padBottom">{children}</div>
                     <div className="projBox console cBlue">
-                        <p className="serifBold med">Project Checklist</p>
+                        <p className="serifBold med">{siteConfig.submissionForm.checklistTitle}</p>
                         <p>
-                            Your team: <span className="serifBold">{members}</span>
+                            {siteConfig.submissionForm.yourTeamLabel} <span className="serifBold">{members}</span>
                         </p>
                         <br />
                         <p className="wrapCheckbox">
@@ -164,29 +138,23 @@ export default function SubmissionForm({
                                 <input type="checkbox" />
                                 {iconCheck}
                             </label>
-                            {/* TODO: this. Custom checkbox implemented below. Checklist should contain all required
-                             *       Hackathon deliverables (video, code, title/description) etc */}
-                            {/* TODO: file upload. See Pitch Perfect */}
-                            Checklist Coming Soon
+                            {siteConfig.submissionForm.checklistComingSoon}
                         </p>
-                        {/* <p className="wrapCheckbox"><label className="labelCheckbox">
-                            <input type="checkbox" />
-                            {iconCheck} 
-                        </label>
-                        Hello Test</p> */}
                     </div>
                 </div>
                 <div className="rightBox">
-                    {/* TODO: refactor this. This entire form should be a Component. Pass an argument to the Component
-                     *       to state whether the form should be editable. */}
                     <form onSubmit={editEntry}>
                         <div className="projBox console">
-                            {!readonly && <button type="submit">{iconSave}</button>}
+                            {!readonly && (
+                                <button type="submit" aria-label={siteConfig.submissionForm.saveButtonAria}>
+                                    {iconSave}
+                                </button>
+                            )}
                             <span className="inputWrap">
                                 <input
                                     className="titleInput txtBox medBig serifBold"
                                     type="text"
-                                    placeholder="Project Title"
+                                    placeholder={siteConfig.submissionForm.projectTitlePlaceholder}
                                     value={title}
                                     onChange={(e: ChangeEvent<HTMLInputElement>): void => setTitle(e.target.value)}
                                     readOnly={readonly}
@@ -195,10 +163,10 @@ export default function SubmissionForm({
                             <div className="flexBox clientWrap">
                                 <div className="leftBoxInv">
                                     <span className="inputWrap">
-                                        Project Description
+                                        {siteConfig.submissionForm.descriptionLabel}
                                         <textarea
                                             className="txtBox txtArea med serifItalic"
-                                            placeholder="Describe your project in 3-8 sentences."
+                                            placeholder={siteConfig.submissionForm.descriptionPlaceholder}
                                             value={description}
                                             onChange={(e: ChangeEvent<HTMLTextAreaElement>): void =>
                                                 setDescription(e.target.value)
@@ -210,7 +178,7 @@ export default function SubmissionForm({
                                 </div>
 
                                 <div className="rightBoxInv">
-                                    Prompt Select
+                                    {siteConfig.submissionForm.promptSelectLabel}
                                     <div className="txtArea promptArea">
                                         <p className="wrapRadio">
                                             <label className="labelRadio">
@@ -229,10 +197,10 @@ export default function SubmissionForm({
                                         </p>
                                     </div>
                                     <span className="inputWrap">
-                                        List of technologies (optional)
+                                        {siteConfig.submissionForm.technologiesLabel}
                                         <textarea
                                             className="txtBox txtArea med serifItalic"
-                                            placeholder="e.g. Javascript, Python, numpy, Scratch"
+                                            placeholder={siteConfig.submissionForm.technologiesPlaceholder}
                                             value={technologies}
                                             onChange={(e: ChangeEvent<HTMLTextAreaElement>): void =>
                                                 setTechnologies(e.target.value)
@@ -242,10 +210,10 @@ export default function SubmissionForm({
                                         />
                                     </span>
                                     <span className="inputWrap">
-                                        Link to Github (optional)
+                                        {siteConfig.submissionForm.githubLabel}
                                         <textarea
                                             className="txtBox txtArea med serifItalic"
-                                            placeholder="https://..."
+                                            placeholder={siteConfig.submissionForm.githubPlaceholder}
                                             value={github}
                                             onChange={(e: ChangeEvent<HTMLTextAreaElement>): void =>
                                                 setGithub(e.target.value)

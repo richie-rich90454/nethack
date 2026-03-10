@@ -4,6 +4,7 @@ import React from "react"
 import { signIn, signOut, useSession } from "next-auth/react"
 import { useCompetition } from "@/src/context/CompetitionContext"
 import Link from "next/link"
+import { siteConfig } from "@/config/siteConfig"
 
 /**
  * Login Page Component
@@ -38,19 +39,14 @@ const Login = (): React.ReactElement => {
     return (
         <div>
             <p>
-                <span className="cWhite serifBold big">User Login</span>
+                <span className="cWhite serifBold big">{siteConfig.login.heading}</span>
             </p>
             <hr />
-            <p className="cBlue">
-                This is the portal for <span className="serifBold">competitor, voter, and judge</span> account login.
-            </p>
-            <p className="cYellow">
-                Please note you should login using your <span className="console">@basischina.com</span> Microsoft email
-                account.
-            </p>
+            <p className="cBlue">{siteConfig.login.description}</p>
+            <p className="cYellow">{siteConfig.login.emailNote}</p>
             <div className="console lightBox loginBox cBlack">
                 {status === "loading" ? (
-                    <p className="center">Loading...</p>
+                    <p className="center">{siteConfig.login.loadingText}</p>
                 ) : session ? (
                     <>
                         <p className="center">
@@ -62,26 +58,26 @@ const Login = (): React.ReactElement => {
                                 tabIndex={0}
                                 onKeyDown={e => e.key === "Enter" && handleSignOut()}
                             >
-                                Sign out
+                                {siteConfig.login.signOutButton}
                             </span>
                         </p>
                         <br />
-                        <p className="serifBold">Your Account Information</p>
-                        <p>Name: {session.user.name}</p>
-                        <p>Email: {session.user.email}</p>
+                        <p className="serifBold">{siteConfig.login.yourAccountInfo}</p>
                         <p>
-                            Account type:{" "}
-                            {session.user.access === 0
-                                ? "Visitor/Voter"
-                                : session.user.access === 1
-                                  ? "Competitor"
-                                  : session.user.access === 2
-                                    ? "Judge"
-                                    : session.user.access === 9
-                                      ? "Admin"
-                                      : "Unknown"}
+                            {siteConfig.login.nameLabel} {session.user.name}
                         </p>
-                        {session.user.access === 1 && session.user.teamID && <p>Team ID: {session.user.teamID}</p>}
+                        <p>
+                            {siteConfig.login.emailLabel} {session.user.email}
+                        </p>
+                        <p>
+                            {siteConfig.login.accountTypeLabel}{" "}
+                            {siteConfig.login.accountTypeLabels[session.user.access] || "Unknown"}
+                        </p>
+                        {session.user.access === 1 && session.user.teamID && (
+                            <p>
+                                {siteConfig.login.teamIdLabel} {session.user.teamID}
+                            </p>
+                        )}
                         <br />
                         {session.user.access >= 1 && (
                             <p className="center">
@@ -94,7 +90,7 @@ const Login = (): React.ReactElement => {
                             <>
                                 <p className="center">
                                     <a
-                                        href="https://forms.cloud.microsoft/r/3t7EywybWw"
+                                        href={siteConfig.externalUrls.signUpForm}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                     >
@@ -102,16 +98,14 @@ const Login = (): React.ReactElement => {
                                     </a>
                                 </p>
                                 <br />
-                                <p className="serifItalic">
-                                    Signed up and approved? Please sign out and then login to view your dashboard!
-                                </p>
+                                <p className="serifItalic">{siteConfig.login.signUpPrompt}</p>
                             </>
                         )}
                     </>
                 ) : (
                     <>
                         <p className="center">
-                            You are not currently logged in.{" "}
+                            {siteConfig.login.notLoggedInText}{" "}
                             <span
                                 className="button serifBold"
                                 onClick={handleSignIn}
@@ -119,7 +113,7 @@ const Login = (): React.ReactElement => {
                                 tabIndex={0}
                                 onKeyDown={e => e.key === "Enter" && handleSignIn()}
                             >
-                                Sign in
+                                {siteConfig.login.signInButton}
                             </span>
                         </p>
                     </>

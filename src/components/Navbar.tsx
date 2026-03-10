@@ -20,6 +20,7 @@ import React from "react"
 import Link from "next/link"
 import styles from "./Navbar.module.css"
 import { useSession } from "next-auth/react"
+import { siteConfig } from "@/config/siteConfig"
 
 /**
  * Navigation Bar Component
@@ -36,14 +37,14 @@ const Navbar = (): React.ReactElement => {
         <div className={styles.nav}>
             <div className={styles.wrap}>
                 {/* Application title linking to home page */}
-                <Link href="/">BIBS·C Network Hackathon</Link>
+                <Link href="/">{siteConfig.siteTitle}</Link>
 
                 {/* Flexible spacer to push auth link to the right */}
                 <span className={styles.fill}></span>
 
                 {/* Dynamic auth link: shows "Logout" when authenticated, "Login" otherwise */}
                 <Link href="/login" className="med">
-                    {authStatus === "authenticated" ? "Logout" : "Login"}
+                    {authStatus === "authenticated" ? siteConfig.nav.logout : siteConfig.nav.login}
                 </Link>
             </div>
         </div>

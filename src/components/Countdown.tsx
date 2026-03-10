@@ -1,6 +1,6 @@
 /**
  * Countdown Component
- * Rewrite with TypeScript on 2026/3/10 (1773140296)
+ * Rewrite with TypeScript on 2026/3/10
  *
  * Displays a real-time countdown timer to a specified target date with formatted
  * time display (days:hours:minutes:seconds) and automatic updates every second.
@@ -23,6 +23,7 @@
 
 import React, { useEffect, useState } from "react"
 import styles from "./Countdown.module.css"
+import { siteConfig } from "@/config/siteConfig"
 
 /**
  * Interface for the time left object
@@ -63,7 +64,6 @@ const Countdown = ({ targetDate, label }: CountdownProps): React.ReactElement =>
      */
     const calculateTimeLeft = (): TimeLeft => {
         const target = new Date(targetDate)
-        // Adjust for timezone offset to ensure accurate calculation
         const now = new Date()
         const difference = target.getTime() - now.getTime() + target.getTimezoneOffset() * 60 * 1000
         let timeLeft: TimeLeft
@@ -112,7 +112,7 @@ const Countdown = ({ targetDate, label }: CountdownProps): React.ReactElement =>
         <div className={styles.wrap}>
             {/* Countdown label with event description */}
             <div className={styles.label}>
-                Time until <b>{label}</b>
+                {siteConfig.countdown.timeUntilPrefix} <b>{label}</b>
             </div>
 
             {/* Formatted countdown display DD:HH:MM:SS */}

@@ -1,6 +1,6 @@
 /**
  * Countdown Mini Component
- * Rewrite with TypeScript on 2026/3/10 (1773140320)
+ * Rewrite with TypeScript on 2026/3/10
  *
  * A compact version of the countdown timer that displays only the formatted time
  * without labels. Updates automatically every second.
@@ -19,6 +19,7 @@
 
 import React, { useEffect, useState } from "react"
 import styles from "./Countdown.module.css"
+import { siteConfig } from "@/config/siteConfig"
 
 /**
  * Interface for the time left object
