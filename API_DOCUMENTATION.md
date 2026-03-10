@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides comprehensive documentation for all API endpoints in the BIBS·C Network Hackathon Portal. The API follows RESTful principles and uses Next.js API Routes for implementation.
+This document provides comprehensive documentation for all API endpoints in the BIBS·C Network Hackathon Portal. The API follows RESTful principles, is implemented using Next.js App Router, and is fully typed with TypeScript. All endpoints (except authentication) enforce role‑based access control.
 
 ## Base URL
 
@@ -13,18 +13,18 @@ All API endpoints are relative to the application base URL:
 
 ## Authentication
 
-All API endpoints (except authentication endpoints) require valid authentication. The application uses NextAuth with Azure AD for authentication.
+All API endpoints (except authentication endpoints) require valid authentication. The application uses NextAuth with Azure AD, which manages sessions via HTTP‑only cookies.
 
 ### Authentication Headers
 
-API requests automatically include authentication via HTTP-only cookies set by NextAuth. No manual header configuration is required for browser-based requests.
+No manual header configuration is required for browser‑based requests. Server‑side requests (e.g., from `getServerSession`) also rely on the same cookie mechanism.
 
 ### Authentication Flow
 
-1. User authenticates via `/api/auth/[...nextauth]` endpoints
+1. User authenticates via `/api/auth/[...nextauth]`
 2. NextAuth sets session cookies
-3. Subsequent API requests automatically include authentication
-4. Server validates session before processing requests
+3. Subsequent API requests automatically include the session
+4. Each endpoint validates the session and user permissions
 
 ## Response Format
 
@@ -34,15 +34,18 @@ API requests automatically include authentication via HTTP-only cookies set by N
 {
     "data": {
         /* response data */
-    }
+    } // or a direct array/object
 }
 ```
+
+Many endpoints return the data directly (without a wrapper) for simplicity.
 
 ### Error Response
 
 ```json
 {
     "error": "Error message describing the issue",
+    "details": "Optional additional details",
     "status": 400
 }
 ```
@@ -61,31 +64,33 @@ API requests automatically include authentication via HTTP-only cookies set by N
 
 ## Authentication Endpoints
 
-### GET/POST `/api/auth/[...nextauth]`
+### GET|POST `/api/auth/[...nextauth]`
 
 NextAuth authentication endpoints for Azure AD integration.
 
-**Description**: Handles OAuth 2.0 authentication flow with Azure Active Directory.
+**Description**: Handles the OAuth 2.0 authentication flow with Azure Active Directory. The dynamic route `[...nextauth]` captures all authentication‑related requests.
 
 **Request Methods**: GET, POST
 
-**Authentication**: None required (public endpoint)
+**Authentication**: None required (public)
 
-**Response**: NextAuth handles redirects and session management
+**Response**: NextAuth manages redirects, session creation, and JSON responses as needed.
 
-**Configuration**: See `app/api/auth/[...nextauth]/route.js` for detailed configuration including:
+**Implementation Details**:  
+See `app/api/auth/[...nextauth]/route.ts` for the full configuration. Key features:
 
-- Azure AD provider setup
-- JWT callbacks for token enrichment
-- Session callbacks for user data
+- Azure AD provider with required scopes (`openid profile email User.Read`)
+- JWT callback that enriches the token with `access`, `teamID`, and `accessToken`
+- Session callback that transfers enriched data to the client‑side session
+- User access level (0, 1, 2+) is fetched from the database via `getUser(email)`
 
 ## Database Operation Endpoints
 
+All database endpoints are located under `/api/sql/` and require authentication. They use a connection pool (`app/api/sql/database.ts`) and parameterized queries to prevent SQL injection.
+
 ### GET `/api/sql/phase`
 
-Retrieves the current competition phase from the database.
-
-**Description**: Fetches the current competition state/phase for display throughout the application.
+Retrieves the current competition phase from the `phases` table.
 
 **Request Method**: GET
 
@@ -95,7 +100,7 @@ Retrieves the current competition phase from the database.
 
 ```json
 {
-  "phase": "active" | "registration" | "submission" | "judging" | "completed"
+    "phase": "closed" | "active" | "judging"
 }
 ```
 
@@ -103,66 +108,72 @@ Retrieves the current competition phase from the database.
 
 ```javascript
 fetch("/api/sql/phase")
-    .then(response => response.json())
+    .then(res => res.json())
     .then(data => console.log(data.phase))
 ```
 
 **Implementation Details**:
 
-- Used by `CompetitionContext` provider
-- Cached client-side for application state management
-- Returns string representing current competition phase
+- Queries the `phases` table and returns the `phase` of the most recent (or active) record.
+- Used by `CompetitionContext` to manage application‑wide phase state.
+- No caching implemented; each request hits the database.
 
 ### GET `/api/sql/pullProject`
 
-Retrieves project submissions from the database (judges only).
-
-**Description**: Fetches all project submissions for judging purposes. Restricted to users with access level 2+ (judges/admins).
+Retrieves project submissions from the `hacks` table. Supports an optional `search` parameter to filter by `teamID`.
 
 **Request Method**: GET
 
-**Authentication**: Required (access level 2+)
+**Authentication**: Required (access level ≥ 2 for full list; access level 1 can only fetch their own team via `search`)
 
-**Response**:
+**Query Parameters**:
+
+| Parameter | Type   | Description                         | Required |
+| --------- | ------ | ----------------------------------- | -------- |
+| `search`  | string | `teamID` to filter a single project | No       |
+
+**Response** (without `search`):
 
 ```json
 [
     {
         "id": 1,
-        "teamID": "team-001",
-        "project_name": "Project Title",
-        "description": "Project description",
-        "submission_url": "https://example.com/project",
+        "teamID": "c0ad4f19",
+        "title": "Natural Selection Simulation",
+        "description": "A simulation of evolutionary processes...",
+        "github": "https://github.com/...",
+        "prompt": "Game Jam",
+        "technologies": "JavaScript, p5.js",
+        "members": "Alice, Bob",
+        "sub_code": "Github",
+        "sub_video": "https://youtu.be/...",
+        "round": "25R2",
         "submission_date": "2025-05-15T10:30:00.000Z",
         "status": "pending"
     }
 ]
 ```
 
-**Example Request**:
+**Response** (with `search`): an array containing the single matching record, or an empty array if not found.
+
+**Example Requests**:
 
 ```javascript
+// Fetch all projects (judges only)
 fetch("/api/sql/pullProject")
-    .then(response => response.json())
-    .then(projects => {
-        projects.forEach(project => {
-            console.log(`Team: ${project.teamID}, Project: ${project.project_name}`)
-        })
-    })
+
+// Fetch a specific team's project
+fetch("/api/sql/pullProject?search=c0ad4f19")
 ```
 
 **Implementation Details**:
 
-- Requires `session.user.access >= 2`
-- Returns array of project objects
-- Includes submission metadata and status
-- Used in judge dashboard components
+- Judges (`access > 1`) can retrieve all records; competitors (`access = 1`) can only retrieve their own team’s record (by including `search`).
+- Returns an empty array if no records match.
 
 ### POST `/api/sql/editProject`
 
-Creates or updates project submissions in the database.
-
-**Description**: Handles project submission creation and updates. Available to competitors (access level 1) for their own team submissions.
+Creates or updates a project submission in the `hacks` table.
 
 **Request Method**: POST
 
@@ -172,85 +183,81 @@ Creates or updates project submissions in the database.
 
 ```json
 {
-    "teamID": "team-001",
-    "project_name": "Project Title",
-    "description": "Project description",
-    "submission_url": "https://example.com/project"
+    "teamID": "c0ad4f19",
+    "title": "Updated Project Title",
+    "description": "Updated description...",
+    "github": "https://github.com/...",
+    "prompt": "Game Jam",
+    "technologies": "JavaScript, React"
 }
 ```
 
-**Required Fields**:
+**Required Fields**: `teamID`, `title`, `description`, `github`, `prompt`, `technologies`  
+(Note: `github` and `technologies` are required by the form, but the database allows NULL; the component sends them as strings.)
 
-- `teamID`: Team identifier (must match user's teamID)
-- `project_name`: Project title/name
-- `description`: Project description
-- `submission_url`: URL to project materials
-
-**Response**:
+**Response** (success):
 
 ```json
 {
-    "success": true,
-    "message": "Project submitted successfully",
-    "projectId": 123
+    "message": "Update successful"
+}
+```
+
+**Response** (failure – no matching team):
+
+```json
+{
+    "message": "No team found with the given ID"
 }
 ```
 
 **Error Responses**:
 
-- 400: Missing required fields or invalid data
+- 400: Malformed JSON or missing fields
 - 401: Not authenticated
-- 403: User doesn't have permission to edit this team's project
-- 500: Database error
+- 403: User’s `teamID` does not match the submitted `teamID` (unless user is a judge)
+- 500: Database error with `details`
 
 **Example Request**:
 
 ```javascript
 const projectData = {
-    teamID: "team-001",
-    project_name: "AI Assistant",
-    description: "An intelligent assistant for hackathon participants",
-    submission_url: "https://github.com/team-001/ai-assistant"
+    teamID: "c0ad4f19",
+    title: "AI Assistant",
+    description: "An intelligent assistant...",
+    github: "https://github.com/team-001/ai-assistant",
+    prompt: "Game Jam",
+    technologies: "Python, Flask"
 }
 
 fetch("/api/sql/editProject", {
     method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(projectData)
 })
-    .then(response => response.json())
-    .then(result => {
-        if (result.success) {
-            console.log(`Project submitted with ID: ${result.projectId}`)
-        } else {
-            console.error(`Error: ${result.message}`)
-        }
+    .then(res => res.json())
+    .then(data => {
+        if (res.ok) console.log(data.message)
+        else console.error(data.error)
     })
 ```
 
 **Implementation Details**:
 
-- Validates user has permission to edit specified team's project
-- Checks for required fields and data validation
-- Handles both new submissions and updates
-- Returns success/error message with project ID
+- Uses an `UPDATE` query; assumes the record already exists (inserts are handled separately).
+- Returns `affectedRows` to determine success.
+- Judges (`access > 1`) can edit any project; competitors can only edit their own team’s project (the `teamID` in the body must match `session.user.teamID`).
 
 ## Database Utility Functions
 
-### `getConnection()`
+All database utilities reside in `app/api/sql/database.ts` and are written in TypeScript with generic return types.
 
-**Location**: `app/api/sql/database.js`
+### `getConnection(): Promise<PoolConnection>`
 
-**Description**: Acquires a database connection from the connection pool.
+Acquires a database connection from the connection pool. Always release the connection in a `finally` block.
 
-**Returns**: `Promise<mysql.PoolConnection>`
-
-**Usage**:
-
-```javascript
-import getConnection from "@/api/sql/database"
+```typescript
+import getConnection from "@/app/api/sql/database"
 
 const connection = await getConnection()
 try {
@@ -261,31 +268,12 @@ try {
 }
 ```
 
-**Important**: Always release the connection using `connection.release()` in a finally block.
+### `getUser(email: string): Promise<{ access: number; teamID: string | null } | null>`
 
-### `getUser(email)`
+Retrieves a user’s access level and team ID from the `users` table. Used by NextAuth during sign‑in.
 
-**Location**: `app/api/sql/database.js`
-
-**Description**: Retrieves user information by email address.
-
-**Parameters**:
-
-- `email` (string): User email address (case-insensitive)
-
-**Returns**: `Promise<Object|null>`
-
-```javascript
-{
-  access: 1,      // User access level
-  teamID: "team-001"  // Team identifier
-}
-```
-
-**Usage**:
-
-```javascript
-import { getUser } from "@/api/sql/database"
+```typescript
+import { getUser } from "@/app/api/sql/database"
 
 const user = await getUser("user@example.com")
 if (user) {
@@ -293,301 +281,159 @@ if (user) {
 }
 ```
 
-**Implementation Details**:
+### `query<T extends RowDataPacket[]>(sql: string, params?: any[]): Promise<T>`
 
-- Used by NextAuth during authentication
-- Normalizes email to lowercase for consistent lookup
-- Returns null if user not found
-- Logs database errors to console
+Executes a raw SQL query with parameterized values. Returns the result rows typed as `T`.
 
-### `query(sql, params)`
+```typescript
+import { query } from "@/app/api/sql/database"
 
-**Location**: `app/api/sql/database.js`
-
-**Description**: Executes a SQL query using the connection pool.
-
-**Parameters**:
-
-- `sql` (string): SQL query string
-- `params` (Array): Query parameters for prepared statements
-
-**Returns**: `Promise<Array>` Query results
-
-**Usage**:
-
-```javascript
-import { query } from "@/api/sql/database"
-
-// Simple query
-const users = await query("SELECT * FROM users WHERE access = ?", [1])
-
-// Insert with parameters
-await query("INSERT INTO projects (teamID, project_name) VALUES (?, ?)", ["team-001", "Project Name"])
+const users = await query<{ id: number; email: string }[]>("SELECT id, email FROM users WHERE access = ?", [1])
 ```
-
-**Implementation Details**:
-
-- Uses parameterized queries to prevent SQL injection
-- Returns query results directly
-- Throws errors for database issues
-- Suitable for simple queries without transactions
 
 ## Error Handling
 
-### Authentication Errors
+All endpoints follow a consistent error handling pattern:
 
-**401 Unauthorized**: User is not authenticated
+- **Authentication errors**: Return 401 if no session, 403 if insufficient permissions.
+- **Validation errors**: Return 400 with a descriptive message.
+- **Database errors**: Return 500 with a generic message (details logged server‑side).
 
-```json
-{
-    "error": "Authentication required",
-    "status": 401
-}
-```
-
-**403 Forbidden**: User lacks required permissions
+Example error response (403):
 
 ```json
 {
-    "error": "Insufficient permissions",
-    "status": 403
-}
-```
-
-### Client Errors
-
-**400 Bad Request**: Invalid request data
-
-```json
-{
-    "error": "Missing required field: project_name",
-    "status": 400
-}
-```
-
-**404 Not Found**: Resource not found
-
-```json
-{
-    "error": "Project not found",
-    "status": 404
-}
-```
-
-### Server Errors
-
-**500 Internal Server Error**: Server-side issue
-
-```json
-{
-    "error": "Database connection failed",
-    "status": 500
+    "error": "Forbidden",
+    "details": "You do not have permission to edit this project."
 }
 ```
 
 ## Rate Limiting
 
-Currently, the API does not implement rate limiting. For production deployment, consider implementing:
+Currently, the API does not implement rate limiting. For production, consider adding middleware‑based rate limiting (e.g., using `express-rate-limit` with Next.js middleware or a reverse proxy).
 
-1. **IP-based rate limiting** for public endpoints
-2. **User-based rate limiting** for authenticated endpoints
-3. **Endpoint-specific limits** based on resource intensity
+## CORS
 
-## CORS Configuration
-
-The API is configured for same-origin requests only. For cross-origin requests in development:
-
-1. Configure CORS headers in Next.js middleware
-2. Specify allowed origins in production
-3. Consider preflight request handling for complex requests
+The API is configured for same‑origin requests only. No CORS headers are set; all requests must originate from the same domain. If cross‑origin access is required, implement a custom middleware in `app/middleware.ts`.
 
 ## Database Schema Reference
 
+The application uses three main tables: `users`, `hacks`, and `phases`. (See the main README for full schemas.)
+
 ### Users Table
 
-```sql
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    access INT DEFAULT 0,
-    teamID VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
+| Column       | Type         | Description                       |
+| ------------ | ------------ | --------------------------------- |
+| `id`         | INT          | Primary key                       |
+| `email`      | VARCHAR(255) | Unique user email                 |
+| `access`     | INT          | 0=visitor, 1=competitor, 2+=judge |
+| `teamID`     | VARCHAR(255) | Team identifier for competitors   |
+| `members`    | VARCHAR(255) | Optional team member names        |
+| `created_at` | TIMESTAMP    | Account creation time             |
 
-**Field Descriptions**:
+### Hacks Table
 
-- `email`: Primary user identifier (case-insensitive)
-- `access`: Permission level (0=visitor, 1=competitor, 2+=judge)
-- `teamID`: Team association for competitors
-- `created_at`: Account creation timestamp
+| Column            | Type         | Description                              |
+| ----------------- | ------------ | ---------------------------------------- |
+| `id`              | INT          | Primary key                              |
+| `teamID`          | VARCHAR(255) | Team identifier (matches `users.teamID`) |
+| `title`           | VARCHAR(255) | Project title                            |
+| `description`     | TEXT         | Project description                      |
+| `github`          | VARCHAR(500) | GitHub URL                               |
+| `prompt`          | VARCHAR(255) | Selected prompt                          |
+| `technologies`    | TEXT         | Comma‑separated technologies             |
+| `members`         | VARCHAR(255) | Team members (denormalized)              |
+| `sub_code`        | VARCHAR(500) | Code submission URL or `"Github"`        |
+| `sub_video`       | VARCHAR(500) | Video submission URL                     |
+| `round`           | VARCHAR(10)  | Competition round                        |
+| `submission_date` | TIMESTAMP    | Timestamp of submission                  |
+| `status`          | VARCHAR(50)  | Submission status                        |
 
-### Projects Table (Example)
+### Phases Table
 
-```sql
-CREATE TABLE projects (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    teamID VARCHAR(255) NOT NULL,
-    project_name VARCHAR(255),
-    description TEXT,
-    submission_url VARCHAR(500),
-    submission_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(50) DEFAULT 'pending'
-);
-```
-
-**Field Descriptions**:
-
-- `teamID`: Reference to submitting team
-- `project_name`: Submission title
-- `description`: Project description
-- `submission_url`: Link to project materials
-- `submission_date`: Submission timestamp
-- `status`: Review status (pending, reviewed, approved, rejected)
+| Column       | Type        | Description                       |
+| ------------ | ----------- | --------------------------------- |
+| `id`         | INT         | Primary key                       |
+| `phase`      | VARCHAR(50) | `closed`, `active`, or `judging`  |
+| `start_date` | TIMESTAMP   | Optional phase start              |
+| `end_date`   | TIMESTAMP   | Optional phase end                |
+| `is_active`  | BOOLEAN     | Whether this is the current phase |
 
 ## Testing API Endpoints
 
-### Using curl
-
-**Test authentication**:
+### Using cURL
 
 ```bash
-# This will redirect to Azure AD login
-curl -v http://localhost:3000/api/auth/signin
-```
-
-**Test phase endpoint** (requires authentication cookies):
-
-```bash
-# After authenticating in browser, copy cookies
+# Test phase endpoint (after obtaining a session cookie)
 curl -H "Cookie: next-auth.session-token=YOUR_TOKEN" \
   http://localhost:3000/api/sql/phase
 ```
 
-### Using Browser Developer Tools
+### Using Browser DevTools
 
-1. Open browser Developer Tools (F12)
-2. Navigate to Network tab
-3. Perform actions in the application
-4. Inspect API requests and responses
+1. Log in to the application.
+2. Open DevTools (F12) → Network tab.
+3. Perform actions that trigger API calls (e.g., loading the dashboard).
+4. Inspect request and response details.
 
-### Using Postman/Insomnia
+### Using Postman / Insomnia
 
-1. Configure authentication via OAuth 2.0 with Azure AD
-2. Set base URL to `http://localhost:3000/api`
-3. Test endpoints with appropriate authentication
+- Configure OAuth 2.0 with Azure AD to obtain a session.
+- Set the base URL to `http://localhost:3000/api`.
+- Include the session cookie in requests (Postman can manage cookies automatically if you visit the site first).
+
+## TypeScript Integration
+
+All API routes are written in TypeScript and export typed request/response handlers:
+
+- `NextRequest` and `NextResponse` from `next/server`
+- Database results are typed using interfaces (e.g., `ProjectSubmission`, `UserRow`)
+- The `query` function is generic, preserving type safety
+
+Example of a typed API route:
+
+```typescript
+import { NextRequest, NextResponse } from "next/server"
+import { query } from "@/app/api/sql/database"
+
+interface PhaseRow extends RowDataPacket {
+    phase: string
+}
+
+export async function GET(req: NextRequest) {
+    const [rows] = await query<PhaseRow[]>("SELECT phase FROM phases LIMIT 1")
+    return NextResponse.json({ phase: rows[0]?.phase ?? "unknown" })
+}
+```
 
 ## Performance Considerations
 
-### Database Optimization
-
-1. **Indexes**: Ensure proper indexes on frequently queried columns:
-
-    ```sql
-    CREATE INDEX idx_users_email ON users(email);
-    CREATE INDEX idx_projects_teamID ON projects(teamID);
-    CREATE INDEX idx_projects_status ON projects(status);
-    ```
-
-2. **Query Optimization**: Use EXPLAIN to analyze query performance
-3. **Connection Pooling**: Configure appropriate pool size based on expected load
-
-### API Optimization
-
-1. **Response Caching**: Implement caching for static data
-2. **Pagination**: Add pagination for large result sets
-3. **Compression**: Enable gzip compression for API responses
-4. **Monitoring**: Track API response times and error rates
+- **Indexes**: Ensure indexes on `email` (users), `teamID` (hacks), and `phase` (phases).
+- **Connection pool**: The pool size is set to 20; adjust based on expected concurrency.
+- **Query optimization**: Use `EXPLAIN` to analyze slow queries.
+- **Caching**: Static data like the competition phase could be cached with a short TTL; not currently implemented.
 
 ## Security Considerations
 
-### Input Validation
+- **SQL injection**: All queries use parameterized statements (via `mysql2`).
+- **Authentication**: Every non‑auth endpoint verifies the session and checks permissions.
+- **Data validation**: Request bodies are validated before being used in queries.
+- **Error messages**: Production errors omit stack traces and sensitive details.
+- **CSP**: A Content Security Policy is set in `next.config.ts` (see main README).
 
-All API endpoints should validate:
+## Versioning and Deprecation
 
-1. **Required fields**: Check for missing required parameters
-2. **Data types**: Validate parameter types and formats
-3. **Length limits**: Enforce maximum lengths for string fields
-4. **SQL injection**: Use parameterized queries exclusively
+The API currently does not use versioning. Future breaking changes will be introduced under a `/v1/` prefix, and deprecated endpoints will be supported for one release cycle with clear warnings.
 
-### Authentication Security
+## Support
 
-1. **Session Management**: Rely on NextAuth for secure session handling
-2. **Token Validation**: Validate JWT tokens on each request
-3. **Role Verification**: Check user access level for protected endpoints
-4. **Team Ownership**: Verify users can only access their own team's data
+For issues, consult:
 
-### Database Security
+- Server logs (`npm run dev` or production logs)
+- Browser console for client‑side errors
+- Database logs (enable general log if needed)
+- The project’s GitHub repository for known issues
 
-1. **Least Privilege**: Database user should have minimal required permissions
-2. **Connection Security**: Use SSL for database connections in production
-3. **Error Handling**: Generic error messages to prevent information leakage
-4. **Audit Logging**: Log sensitive operations for security monitoring
+---
 
-## Versioning
-
-Current API version: **v1**
-
-The API does not currently implement versioning in the URL. For future versions, consider:
-
-- URL versioning: `/api/v1/endpoint`
-- Header versioning: `Accept: application/vnd.nethack.v1+json`
-- Parameter versioning: `?version=1`
-
-## Deprecation Policy
-
-When introducing breaking changes:
-
-1. Maintain backward compatibility for one major release cycle
-2. Document deprecated endpoints with migration guides
-3. Provide ample notice before removing deprecated functionality
-4. Log usage of deprecated endpoints for migration tracking
-
-## Monitoring and Metrics
-
-### Key Metrics to Monitor
-
-1. **Response Times**: Average and p95 response times per endpoint
-2. **Error Rates**: 4xx and 5xx error percentages
-3. **Authentication Success Rate**: Login success/failure ratio
-4. **Database Performance**: Query execution times and connection pool usage
-5. **Endpoint Usage**: Request volume per endpoint
-
-### Logging
-
-API endpoints should log:
-
-1. **Request details**: Method, path, parameters (sanitized)
-2. **User context**: User ID, access level, team ID
-3. **Performance metrics**: Processing time, database query time
-4. **Errors**: Detailed error information for debugging
-5. **Security events**: Authentication failures, permission violations
-
-## Support and Troubleshooting
-
-### Common Issues
-
-**Authentication Issues**:
-
-- Verify Azure AD application configuration
-- Check redirect URIs match deployment URL
-- Ensure NEXTAUTH_SECRET is properly set
-
-**Database Issues**:
-
-- Verify MySQL service is running
-- Check database connection credentials
-- Review database error logs
-
-**API Response Issues**:
-
-- Check browser console for CORS errors
-- Verify request payload matches expected format
-- Check server logs for detailed error information
-
-### Getting Help
-
-1. **Check Documentation**: Review this document and code comments
-2. **Examine Logs**: Check server and database logs for errors
-3. **Reproduce Issue**: Create minimal test case to reproduce the problem
-4. **Contact Support**: Reach out to development team with detailed issue description
+_This documentation was last updated on March 10, 2026, to reflect the TypeScript migration and configuration‑driven design._
