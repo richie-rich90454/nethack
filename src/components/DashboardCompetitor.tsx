@@ -1,12 +1,6 @@
-import React from "react"
-import CountdownMini from "@/src/components/CountdownMini"
-import { useCompetition } from "@/src/context/CompetitionContext"
-import { useSession } from "next-auth/react"
-import SubmissionForm from "./SubmissionForm"
-import { siteConfig } from "@/config/siteConfig"
-
 /**
  * Dashboard Competitor Component
+ * Rewrite with TypeScript on 2026/3/10
  *
  * Displays the competitor dashboard with competition phase information
  * and project submission form. Only accessible to users with access level 1.
@@ -14,6 +8,14 @@ import { siteConfig } from "@/config/siteConfig"
  * @component
  * @returns {JSX.Element} Competitor dashboard
  */
+
+import React from "react"
+import CountdownMini from "@/src/components/CountdownMini"
+import { useCompetition } from "@/src/context/CompetitionContext"
+import { useSession } from "next-auth/react"
+import SubmissionForm from "./SubmissionForm"
+import { siteConfig } from "@/config/siteConfig"
+
 export default function DashboardCompetitor(): React.ReactElement {
     const { data: session } = useSession()
     const { competitionState } = useCompetition()
@@ -63,7 +65,9 @@ export default function DashboardCompetitor(): React.ReactElement {
                         <p>
                             {siteConfig.dashboardCompetitor.closedMessage.timeRemainingLabel}{" "}
                             <span className="bSmooth console">
-                                <CountdownMini targetDate="2025-02-17T08:59:59Z" />
+                                <CountdownMini
+                                    targetDate={siteConfig.dashboardCompetitor.closedMessage.countdownDate}
+                                />
                             </span>
                         </p>
                     </div>
@@ -78,7 +82,9 @@ export default function DashboardCompetitor(): React.ReactElement {
                             <p>
                                 {siteConfig.dashboardCompetitor.activeMessage.timeRemainingLabel}{" "}
                                 <span className="bSmooth console">
-                                    <CountdownMini targetDate="2025-05-30T23:59:59+0800" />
+                                    <CountdownMini
+                                        targetDate={siteConfig.dashboardCompetitor.activeMessage.countdownDate}
+                                    />
                                 </span>
                             </p>
                         </>

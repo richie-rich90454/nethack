@@ -1,3 +1,16 @@
+/**
+ * Dashboard Page Component
+ * Rewrite with TypeScript on 2026/3/10
+ *
+ * Main dashboard view that displays different content based on user access level:
+ * - Access 0: Visitors/Voters (no access)
+ * - Access 1: Competitors (submission dashboard)
+ * - Access 2+: Judges (judging dashboard)
+ *
+ * @component
+ * @returns {JSX.Element} Dashboard page
+ */
+
 "use client"
 
 import React from "react"
@@ -8,10 +21,10 @@ import { useCompetition } from "@/src/context/CompetitionContext"
 import Submission from "@/src/components/Submission"
 import DashboardCompetitor from "@/src/components/DashboardCompetitor"
 import DashboardJudge from "@/src/components/DashboardJudge"
+import { siteConfig } from "@/config/siteConfig"
 
 /**
  * Interface representing a project entry from the database
- * Rewrite with TypeScript in 2026/3/10 (1773139731)
  */
 interface ProjectEntry {
     id: number
@@ -29,25 +42,16 @@ interface ProjectEntry {
 /**
  * Dashboard Page Component
  *
- * Main dashboard view that displays different content based on user access level:
- * - Access 0: Visitors/Voters (no access)
- * - Access 1: Competitors (submission dashboard)
- * - Access 2+: Judges (judging dashboard)
+ * Main dashboard view that displays different content based on user access level.
  *
  * @returns {JSX.Element} Dashboard page
  */
 const Dashboard = (): React.ReactElement => {
     const { data: session, status: authStatus } = useSession()
-    const { competitionState } = useCompetition() // Now correctly accessing competitionState
+    const competition = useCompetition()
     const [entries, setEntries] = useState<ProjectEntry[]>([])
-
-    // TODO: implement edit mode and view mode? prevent accidental changes
     const [edit, setEdit] = useState<boolean>(false)
 
-    /**
-     * Fetch project entries from the database
-     * Only judges (access > 1) can fetch all entries
-     */
     const fetchEntries = async (): Promise<void> => {
         if (session) {
             try {
@@ -66,15 +70,10 @@ const Dashboard = (): React.ReactElement => {
         }
     }
 
-    /**
-     * Refresh data callback passed to child components
-     * Called by onUpdate through Submission > JudgeToolbox
-     */
     const refreshData = (): void => {
         fetchEntries()
     }
 
-    // Fetch entries when session changes
     useEffect(() => {
         fetchEntries()
     }, [session])
@@ -85,12 +84,7 @@ const Dashboard = (): React.ReactElement => {
                 <>
                     {/* handle access level 0 - visitor/voter */}
                     {session.user.access < 1 && (
-                        <>
-                            <p>
-                                Your account (<span className="serifBold">Visitor/Voter</span>) does not grant you
-                                access to this page.
-                            </p>
-                        </>
+                        <p dangerouslySetInnerHTML={{ __html: siteConfig.dashboard.accessDenied }} />
                     )}
                     {/* handle access level 1 - competitor */}
                     {session.user.access === 1 && <DashboardCompetitor />}
@@ -98,21 +92,14 @@ const Dashboard = (): React.ReactElement => {
                     {session.user.access > 1 && <DashboardJudge />}
                 </>
             ) : authStatus === "loading" ? (
-                <>
-                    <p>Loading...</p>
-                </>
+                <p>{siteConfig.dashboard.loading}</p>
             ) : (
-                <>
-                    <p>
-                        You need to{" "}
-                        <b>
-                            <Link className="button bGray" href="/login">
-                                Login
-                            </Link>
-                        </b>{" "}
-                        to access this page.
-                    </p>
-                </>
+                <p>
+                    {siteConfig.dashboard.loginRequired.replace(
+                        "{link}",
+                        `<Link href="/login" className="button bGray">${siteConfig.dashboard.loginLinkText}</Link>`
+                    )}
+                </p>
             )}
         </>
     )

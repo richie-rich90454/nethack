@@ -14,6 +14,7 @@ export interface SiteConfig {
         introText: string
         statusText: string
         signUpUrl: string
+        countdownDates: string[] // ISO date strings for countdowns
         countdownLabels: {
             registrationCloses: string
             promptsRelease: string
@@ -37,6 +38,12 @@ export interface SiteConfig {
         accountTypeLabel: string
         teamIdLabel: string
     }
+    dashboard: {
+        accessDenied: string // shown when user access level < 1
+        loading: string // shown while auth status loading
+        loginRequired: string // shown when not logged in
+        loginLinkText: string // text for login link
+    }
     dashboardCompetitor: {
         heading: string // use {name} placeholder
         intro: string
@@ -48,10 +55,12 @@ export interface SiteConfig {
         closedMessage: {
             title: string
             timeRemainingLabel: string
+            countdownDate: string // ISO date for countdown when closed
         }
         activeMessage: {
             title: string
             timeRemainingLabel: string
+            countdownDate: string // ISO date for countdown when active
         }
         judgingMessage: {
             title: string
@@ -72,6 +81,7 @@ export interface SiteConfig {
         heading: string
         description: string
         longDescription: string
+        winners: string[] // team IDs of projects to display
         top3: {
             title: string
             description: string
@@ -106,6 +116,7 @@ export interface SiteConfig {
         descriptionLabel: string
         descriptionPlaceholder: string
         promptSelectLabel: string
+        prompts: string[] // list of available prompt values
         technologiesLabel: string
         technologiesPlaceholder: string
         githubLabel: string
@@ -147,6 +158,11 @@ export const defaultSiteConfig: SiteConfig = {
         statusText:
             "The 2025 Competition has begun! If you have registered, please login to your Hackathon account to view your project Dashboard and submit materials. Please note that this site experience as a beta test.",
         signUpUrl: "https://forms.cloud.microsoft/r/3t7EywybWw",
+        countdownDates: [
+            "2025-06-04T23:59:59+0800", // Registration Closes (one week before submission)
+            "2025-06-05T23:59:59+0800", // Prompts Release (one day later)
+            "2025-06-11T23:59:59+0800" // Submission Closes (your requested date)
+        ],
         countdownLabels: {
             registrationCloses: "Registration Closes",
             promptsRelease: "Prompts Release",
@@ -176,6 +192,14 @@ export const defaultSiteConfig: SiteConfig = {
         teamIdLabel: "Team ID:"
     },
 
+    dashboard: {
+        accessDenied:
+            'Your account (<span class="serifBold">Visitor/Voter</span>) does not grant you access to this page.',
+        loading: "Loading...",
+        loginRequired: "You need to {link} to access this page.",
+        loginLinkText: "Login"
+    },
+
     dashboardCompetitor: {
         heading: "Dashboard for {name}",
         intro: "As a competitor, this is where you can view the progress of the competition and your project.",
@@ -198,11 +222,13 @@ export const defaultSiteConfig: SiteConfig = {
         },
         closedMessage: {
             title: "Hackathon is Closed",
-            timeRemainingLabel: "Time remaining:"
+            timeRemainingLabel: "Time remaining:",
+            countdownDate: "2025-02-17T08:59:59Z" // keep as is (past date)
         },
         activeMessage: {
             title: "Hackathon is Active",
-            timeRemainingLabel: "Time remaining:"
+            timeRemainingLabel: "Time remaining:",
+            countdownDate: "2025-06-11T23:59:59+0800" // matches submission close
         },
         judgingMessage: {
             title: "Hackathon is Under Review",
@@ -236,6 +262,7 @@ export const defaultSiteConfig: SiteConfig = {
             'The projects on this page are all <span class="serifBold">original student work</span>, submitted as part of the 2nd Annual BIBS·C Network Hackathon. Participants were given 1 week to develop a project from scratch that responds to one of the Hackathon prompts - from conceptualization to implementation to presentation, students took charge of their projects.',
         longDescription:
             "Out of 24 qualifying projects from 65 students across 5 schools, these projects were selected by a panel of judges as exemplary and representative work. A Hackathon is all about applying technology in unique ways to solve practical problems, so projects were assessed on their use of technology, originality, presentation, topicality, and usability. Whenever possible, we have placed the interactive version of their project's on this site; code download is also available. We encourage you to reach out to these students via Teams if you want to learn more about their projects!",
+        winners: ["c0ad4f19", "d34f1c1d", "dbb3b35b", "012ba255", "17b07c3a", "46ff65b7", "f4da2d19", "7fea1e8e"],
         top3: {
             title: "Our Top 3:",
             description:
@@ -275,6 +302,7 @@ export const defaultSiteConfig: SiteConfig = {
         descriptionLabel: "Project Description",
         descriptionPlaceholder: "Describe your project in 3-8 sentences.",
         promptSelectLabel: "Prompt Select",
+        prompts: ["Game Jam"], // extend as needed
         technologiesLabel: "List of technologies (optional)",
         technologiesPlaceholder: "e.g. Javascript, Python, numpy, Scratch",
         githubLabel: "Link to Github (optional)",

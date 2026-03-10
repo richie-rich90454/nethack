@@ -65,16 +65,7 @@ const Showcase = (): React.ReactElement => {
     const fetchEntries = async (): Promise<void> => {
         try {
             // TODO: prob modify database schema (i.e. make new fields) so this can be done in 1 api call
-            const winners: string[] = [
-                "c0ad4f19",
-                "d34f1c1d",
-                "dbb3b35b",
-                "012ba255",
-                "17b07c3a",
-                "46ff65b7",
-                "f4da2d19",
-                "7fea1e8e"
-            ]
+            const winners: string[] = siteConfig.showcase.winners
 
             const all: ProjectSubmission[] = []
 
@@ -103,7 +94,7 @@ const Showcase = (): React.ReactElement => {
     }, [])
 
     // Check if entries is an array (not a string) and has at least 8 items
-    const hasEntries = Array.isArray(entries) && entries.length >= 8
+    const hasEntries = Array.isArray(entries) && entries.length >= siteConfig.showcase.winners.length
 
     return (
         <>
@@ -156,34 +147,26 @@ const Showcase = (): React.ReactElement => {
                             <span className="cWhite serifBold med">{siteConfig.showcase.honorableMentions.title}</span>
                         </p>
                         <p className="cWhite">{siteConfig.showcase.honorableMentions.description}</p>
-                        <div className="border green">
-                            <SubmissionPresent key="3" submission={entries[3]} override={0} />
-                            <div className="award">{iconAward}</div>
-                        </div>
-                        <div className="border green">
-                            <SubmissionPresent key="4" submission={entries[4]} override={0} />
-                            <div className="award">{iconAward}</div>
-                        </div>
-                        <div className="border green">
-                            <SubmissionPresent
-                                key="5"
-                                submission={entries[5]}
-                                override={`/25R1/${entries[5].teamID}/vid.mp4`}
-                            />
-                            <div className="award">{iconAward}</div>
-                        </div>
-                        <div className="border green">
-                            <SubmissionPresent
-                                key="6"
-                                submission={entries[6]}
-                                override="https://david-why.tech/bmplogicsim/"
-                            />
-                            <div className="award">{iconAward}</div>
-                        </div>
-                        <div className="border green">
-                            <SubmissionPresent key="7" submission={entries[7]} override={0} />
-                            <div className="award">{iconAward}</div>
-                        </div>
+                        {entries.slice(3).map((entry, index) => (
+                            <div key={index + 3} className="border green">
+                                <SubmissionPresent
+                                    key={index + 3}
+                                    submission={entry}
+                                    override={
+                                        index === 3
+                                            ? `/25R1/${entry.teamID}/vid.mp4`
+                                            : index === 4
+                                              ? 0
+                                              : index === 5
+                                                ? `/25R1/${entry.teamID}/vid.mp4`
+                                                : index === 6
+                                                  ? "https://david-why.tech/bmplogicsim/"
+                                                  : 0
+                                    }
+                                />
+                                <div className="award">{iconAward}</div>
+                            </div>
+                        ))}
                         <br />
                         <p className="cWhite">{siteConfig.showcase.closing}</p>
                     </>

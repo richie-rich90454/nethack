@@ -1,9 +1,24 @@
+/**
+ * Submission Form Component
+ * Rewrite with TypeScript on 2026/3/10
+ *
+ * Provides a form for competitors to submit and edit their project details.
+ * Judges may also use this form in read-only mode or for editing.
+ *
+ * @component
+ * @param {Object} props - Component properties
+ * @param {React.ReactNode} props.children - Child elements to render above the form
+ * @param {string} props.teamID - Team ID for the submission
+ * @param {boolean} props.readonly - Whether the form is read-only
+ * @param {Function} props.onUpdate - Callback function after successful update
+ * @returns {JSX.Element} Submission form
+ */
+
 import React, { useEffect, useState, ChangeEvent, FormEvent } from "react"
 import { siteConfig } from "@/config/siteConfig"
 
 /**
  * Icon components for form actions
- * Rewrite with TypeScript on 2026/3/10 (1773140856)
  */
 const iconSave: React.ReactElement = (
     <span className="iconSave">
@@ -29,6 +44,9 @@ const iconCheck: React.ReactElement = (
     </span>
 )
 
+/**
+ * Interface for submission data from API
+ */
 interface SubmissionData {
     id?: number
     teamID: string
@@ -41,6 +59,9 @@ interface SubmissionData {
     [key: string]: unknown
 }
 
+/**
+ * Props for SubmissionForm component
+ */
 interface SubmissionFormProps {
     children?: React.ReactNode
     teamID?: string
@@ -180,21 +201,23 @@ export default function SubmissionForm({
                                 <div className="rightBoxInv">
                                     {siteConfig.submissionForm.promptSelectLabel}
                                     <div className="txtArea promptArea">
-                                        <p className="wrapRadio">
-                                            <label className="labelRadio">
-                                                <input
-                                                    type="radio"
-                                                    value="Game Jam"
-                                                    checked={prompt === "Game Jam"}
-                                                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                                                        setPrompt(e.target.value)
-                                                    }
-                                                    disabled={readonly}
-                                                />
-                                                <span className="iconRadio"></span>
-                                            </label>
-                                            Game Jam
-                                        </p>
+                                        {siteConfig.submissionForm.prompts.map((promptValue, index) => (
+                                            <p key={index} className="wrapRadio">
+                                                <label className="labelRadio">
+                                                    <input
+                                                        type="radio"
+                                                        value={promptValue}
+                                                        checked={prompt === promptValue}
+                                                        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                                                            setPrompt(e.target.value)
+                                                        }
+                                                        disabled={readonly}
+                                                    />
+                                                    <span className="iconRadio"></span>
+                                                </label>
+                                                {promptValue}
+                                            </p>
+                                        ))}
                                     </div>
                                     <span className="inputWrap">
                                         {siteConfig.submissionForm.technologiesLabel}

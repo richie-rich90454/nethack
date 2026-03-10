@@ -29,11 +29,7 @@ import { siteConfig } from "@/config/siteConfig"
  * @returns {JSX.Element} Home page
  */
 const Home = (): React.ReactElement => {
-    const countdownDates: string[] = [
-        "2025-05-16T23:59:59+0800",
-        "2025-05-17T23:59:59+0800",
-        "2025-05-30T23:59:59+0800"
-    ]
+    const countdownDates: string[] = siteConfig.home.countdownDates
 
     const { status, data: session } = useSession()
 
