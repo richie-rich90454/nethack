@@ -31,8 +31,23 @@ export default function DashboardJudge(): React.ReactElement {
         try {
             const response = await fetch("/api/sql/pullProject")
             if (response.ok) {
-                const data = (await response.json()) as ProjectSubmission[]
-                setEntries(data)
+                const data = await response.json()
+                // Transform each item to match Submission component's expectations
+                const transformed = data.map((item: any) => ({
+                    id: item.id,
+                    teamID: item.teamID,
+                    title: item.project_name || "Untitled",
+                    description: item.description || "",
+                    github: item.submission_url || "",
+                    prompt: "", // Add a default or map from somewhere
+                    technologies: "", // Add a default or map from somewhere
+                    members: "", // Add if available
+                    sub_code: "Github", // or "NOT SUBMITTED" as needed
+                    sub_video: "NOT SUBMITTED",
+                    submission_date: item.submission_date,
+                    status: item.status
+                }))
+                setEntries(transformed)
             } else {
                 console.error("Failed to fetch entries")
             }

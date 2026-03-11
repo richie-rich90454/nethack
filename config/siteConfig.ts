@@ -159,9 +159,9 @@ export const defaultSiteConfig: SiteConfig = {
             "The 2025 Competition has begun! If you have registered, please login to your Hackathon account to view your project Dashboard and submit materials. Please note that this site experience as a beta test.",
         signUpUrl: "https://forms.cloud.microsoft/r/3t7EywybWw",
         countdownDates: [
-            "2025-06-04T23:59:59+0800", // Registration Closes (one week before submission)
-            "2025-06-05T23:59:59+0800", // Prompts Release (one day later)
-            "2025-06-11T23:59:59+0800" // Submission Closes (your requested date)
+            "2026-03-09T16:03:42+0800", // Registration Closes (one week before submission)
+            "2026-03-10T16:30:42+0800", // Prompts Release (one day later)
+            "2026-03-17T23:59:59+0800" // Submission Closes (your requested date)
         ],
         countdownLabels: {
             registrationCloses: "Registration Closes",

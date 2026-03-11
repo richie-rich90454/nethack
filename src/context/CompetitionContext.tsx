@@ -65,8 +65,8 @@ export const CompetitionProvider = ({ children }: CompetitionProviderProps): Rea
         try {
             const response = await fetch("/api/sql/phase")
             if (response.ok) {
-                const data = (await response.json()) as { phase: string }
-                setCompetitionState(data.phase)
+                const data = (await response.json()) as { phase_name: string }
+                setCompetitionState(data.phase_name)
             } else {
                 console.error("Failed to fetch competition phase")
             }
