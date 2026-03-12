@@ -4,7 +4,7 @@
 	gap: 1rem;
 	padding: 1rem;
 	background: rgba(0, 0, 0, 0.2);
-	border-radius: 4px;
+	border-radius: var(--border-radius);
 }
 
 .editSection {
@@ -43,7 +43,7 @@
 	background: #222;
 	color: #fff;
 	border: 1px solid #555;
-	border-radius: 4px;
+	border-radius: var(--border-radius);
 	font-family: inherit;
 	resize: vertical;
 }

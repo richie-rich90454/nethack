@@ -1,0 +1,69 @@
+.wrapper {
+	width: 100%;
+	max-width: 1400px;
+	margin: 0 auto;
+}
+
+.wrapper :global(.flexBox) {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2rem;
+	align-items: flex-start;
+}
+
+.wrapper :global(.leftBox) {
+	flex: 1 1 300px;
+	background: #1e1e1e;
+	border-radius: 3dvh;
+	padding: 1.5rem;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.wrapper :global(.rightBox) {
+	flex: 2 1 500px;
+	background: #1a1a1a;
+	border-radius: 3dvh;
+	padding: 1.5rem;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.wrapper :global(.projBox) {
+	background: #2a2a2a;
+	border: 1px solid #444;
+	border-radius: 3dvh;
+	padding: 1rem;
+	margin-bottom: 1.5rem;
+}
+
+.wrapper :global(.projBox.cYellow) {
+	border-left: 4px solid #ffc000;
+}
+
+.wrapper :global(.projBox.console) {
+	background: #222;
+	border: 1px solid #555;
+}
+
+.wrapper :global(.bSmooth.console) {
+	display: inline-block;
+	background: #2d2d2d;
+	padding: 0.2rem 1rem;
+	border-radius: 2dvh;
+	font-family: "Monaspace Xenon", monospace;
+}
+
+.wrapper :global(.wrapCheckbox) {
+	background: #333;
+	padding: 0.5rem;
+	border-radius: 2dvh;
+}
+
+@media (max-width: 768px) {
+	.wrapper :global(.flexBox) {
+		flex-direction: column;
+	}
+	.wrapper :global(.leftBox),
+	.wrapper :global(.rightBox) {
+		width: 100%;
+	}
+}

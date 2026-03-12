@@ -1,35 +1,92 @@
-.wrap {
-	padding-bottom: 0px;
-	padding-top: 0px;
-	border-radius: 3dvh;
+.wrapper {
+	width: 100%;
 }
-.header {
+
+.wrapper :global(.flexBox) {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2rem;
+	align-items: flex-start;
+}
+
+.wrapper :global(.leftBoxInv) {
+	flex: 1 1 60%;
+	min-width: 300px;
+	background: #1e1e1e;
+	border-radius: 3dvh;
+	padding: 1.5rem;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.wrapper :global(.rightBoxInv) {
+	flex: 1 1 30%;
+	min-width: 250px;
+	background: #1a1a1a;
+	border-radius: 3dvh;
+	padding: 1.5rem;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.wrapper :global(.titleInput) {
+	width: 100%;
+	background: #2a2a2a;
+	border: 1px solid #444;
+	border-radius: 2dvh;
+	padding: 0.5rem 1rem;
+	color: var(--foreground);
+	font-size: 1.2rem;
+}
+
+.wrapper :global(.txtArea) {
+	background: #2a2a2a;
+	border: 1px solid #444;
+	border-radius: 2dvh;
+	padding: 0.5rem 1rem;
+	color: var(--foreground);
+	width: 100%;
+	resize: vertical;
+}
+
+.wrapper :global(.promptArea) {
+	background: #2a2a2a;
+	border: 1px solid #444;
+	border-radius: 2dvh;
+	padding: 0.5rem 1rem;
+	margin: 0.5rem 0;
+}
+
+.wrapper :global(.wrapRadio) {
+	margin: 0.3rem 0;
+}
+
+.wrapper :global(.labelRadio) {
 	display: flex;
 	align-items: center;
+	gap: 0.3rem;
+	cursor: pointer;
 }
-.filler {
-	flex: 1 0 0;
+
+.wrapper :global(.iconRadio) {
+	font-size: 1.2rem;
 }
-.edit {
-	flex: 0 0 auto;
+
+.wrapper :global(.inputWrap) {
+	display: block;
+	margin: 1rem 0;
 }
-.outline {
-	background: #000;
-	border-radius: 3dvh;
-	padding: 5px 10px;
-	/* padding-right: 10%; */
-	position: relative;
+
+.wrapper :global(.inputWrap label) {
+	display: block;
+	margin-bottom: 0.3rem;
+	color: var(--blue);
 }
-.toolbox {
-	position: absolute;
-	top: 0;
-	right: 0;
-}
-.toolboxWrap {
-	margin: 5px;
-	margin-top: -3px;
-	text-align: center;
-}
-.padBottom {
-	margin-bottom: 10px;
+
+@media (max-width: 768px) {
+	.wrapper :global(.flexBox) {
+		flex-direction: column;
+	}
+	.wrapper :global(.leftBoxInv),
+	.wrapper :global(.rightBoxInv) {
+		width: 100%;
+	}
 }

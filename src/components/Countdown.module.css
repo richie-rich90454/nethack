@@ -1,14 +1,21 @@
 .wrap {
-	margin: 10px 0px;
+	margin: 10px 0;
 	background: #151515;
-	width: 60vw;
+	width: min(60vw, 800px);
 	padding: 20px;
-	border-radius: 3dvh;
+	border-radius: var(--border-radius);
+	overflow: hidden;
 }
+
 .countdown {
-	font-size: 8vw;
-	margin: -5px 0px;
+	font-size: clamp(2rem, 10vw, 6rem);
+	line-height: 1.2;
+	margin: -5px 0;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
+
 .label {
-	font-size: 1.25vw;
+	font-size: clamp(12px, 1.25vw, 18px);
 }

@@ -4,10 +4,17 @@
 	--yellow: #ffc000;
 	--blue: #32a5e4;
 	--purple: #e461f5;
+	--border-radius: 1.5dvh;
+	--spacing-unit: 1rem;
 }
+
 * {
-	border-radius: 3dvh;
+	border-radius: var(--border-radius);
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
 }
+
 html,
 body {
 	height: 100vh;
@@ -18,15 +25,15 @@ body {
 body {
 	color: var(--foreground);
 	background: var(--background);
-	font-family: "Monaspace Neon";
+	font-family: "Monaspace Neon", sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	overflow-y: scroll;
 	line-height: 1.5;
-	font-size: 1.25vw;
+	font-size: clamp(14px, 1.25vw, 20px);
 	font-feature-settings:
 		"cv01" 1,
-		/* turn off the dot inside a "0" glyph */ "calt" 1; /* turn on "texture healing" */
+		"calt" 1;
 }
 
 ::-webkit-scrollbar {
@@ -39,13 +46,6 @@ body {
 	background: var(--foreground);
 }
 
-* {
-	box-sizing: border-box;
-	padding: 0;
-	margin: 0;
-}
-
-/* site aesthetic */
 a {
 	color: inherit;
 	text-decoration: none;
@@ -60,7 +60,7 @@ a {
 	text-overflow: ellipsis;
 }
 p {
-	font-size: 1.25vw;
+	font-size: inherit;
 }
 hr {
 	width: 100%;
@@ -71,7 +71,7 @@ hr {
 li {
 	list-style-type: "- ";
 	list-style-position: inside;
-	font-size: 1.25vw;
+	font-size: inherit;
 }
 .txtBox {
 	background: rgba(0, 0, 0, 0);
@@ -83,12 +83,12 @@ li {
 }
 .txtArea {
 	border: 1px solid var(--foreground);
-	border-radius: 3dvh;
+	border-radius: var(--border-radius);
 	width: 100%;
 }
 .border {
 	padding: 4px;
-	border-radius: 3dvh;
+	border-radius: var(--border-radius);
 	position: relative;
 	margin-top: 10px;
 	transition: 0.5s ease;
@@ -124,14 +124,13 @@ li {
 }
 
 .titleInput {
-	width: 35vw;
+	width: min(35vw, 500px);
 }
 .promptArea {
 	margin-bottom: 0.5vw;
 }
 
 textarea {
-	/* height: 5vw; */
 	resize: vertical;
 }
 
@@ -174,7 +173,6 @@ textarea {
 	content: "◉";
 }
 
-/* custom classes */
 .cGreen {
 	color: var(--foreground);
 }
@@ -211,7 +209,7 @@ textarea {
 
 .bSmooth {
 	background: #353535;
-	border-radius: 3dvh;
+	border-radius: var(--border-radius);
 	padding: 2px;
 	padding-bottom: 0px;
 }
@@ -221,19 +219,19 @@ textarea {
 }
 
 .small {
-	font-size: 0.75vw;
+	font-size: clamp(10px, 0.75vw, 14px);
 }
 .smallMed {
-	font-size: 1vw;
+	font-size: clamp(12px, 1vw, 18px);
 }
 .med {
-	font-size: 1.5vw;
+	font-size: clamp(16px, 1.5vw, 24px);
 }
 .medBig {
-	font-size: 2vw;
+	font-size: clamp(20px, 2vw, 32px);
 }
 .big {
-	font-size: 2.5vw;
+	font-size: clamp(24px, 2.5vw, 40px);
 }
 
 .serifBold {
@@ -245,20 +243,17 @@ textarea {
 .serifUnderline {
 	text-decoration: underline;
 }
-
 .link {
 	text-decoration: underline;
 }
-
 .padEnd {
 	padding-bottom: 10px;
 }
 
-/* elements */
 .lightBox {
 	background: #dadada;
 	padding: 10px;
-	border-radius: 3dvh;
+	border-radius: var(--border-radius);
 }
 
 .qBox {
@@ -273,11 +268,12 @@ textarea {
 .tooltip {
 	visibility: hidden;
 	width: 20vw;
+	min-width: 200px;
 	background-color: rgba(0, 0, 0, 0.7);
 	color: #fff;
-	font-size: 1vw;
+	font-size: clamp(12px, 1vw, 16px);
 	text-align: center;
-	border-radius: 3dvh;
+	border-radius: var(--border-radius);
 	padding: 5px;
 	position: absolute;
 	z-index: 1;
@@ -309,11 +305,12 @@ textarea {
 .padBottom {
 	margin-bottom: 10px;
 }
+
 .projBox {
 	width: 100%;
 	background: #000;
 	padding: 10px;
-	border-radius: 3dvh;
+	border-radius: var(--border-radius);
 	position: relative;
 }
 .projBox button {
@@ -332,7 +329,9 @@ textarea {
 }
 .flexBox {
 	display: flex;
-	align-items: top;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	gap: 1rem;
 }
 
 .inputWrap {
@@ -344,32 +343,30 @@ textarea {
 	right: 0;
 }
 
-/* layout */
 .biggestWrap {
 	display: flex;
 	flex-direction: column;
 	min-height: 100vh;
 }
 .bigWrap {
-	width: 85vw;
+	width: min(85vw, 1400px);
 	padding: 20px;
 	padding-top: 10px;
-	margin: auto;
-	margin-top: 10px;
+	margin: 10px auto;
 	background: #252525;
+	border-radius: var(--border-radius);
 }
 
-/* pages */
 .loginBox {
-	width: 50%;
-	margin: auto;
-	margin-top: 5px;
+	width: min(50%, 400px);
+	margin: 5px auto;
 }
 .button {
-	padding: 2px;
+	padding: 2px 8px;
 	border: 2px solid #303030;
-	border-radius: 3dvh;
+	border-radius: var(--border-radius);
 	cursor: pointer;
+	display: inline-block;
 }
 .loginBox hr {
 	margin-top: -2px;
@@ -392,9 +389,7 @@ textarea {
 
 @font-face {
 	font-family: "Monaspace Neon";
-	src:
-		url("/fonts/MonaspaceNeonVar.woff2") format("woff2 supports variations"),
-		url("/fonts/MonaspaceNeonVar.woff2") format("woff2-variations");
+	src: url("/fonts/MonaspaceNeonVar.woff2") format("woff2-variations");
 	font-weight: 200 800;
 	font-stretch: 100% 125%;
 	font-style: oblique 0deg 11deg;
@@ -407,13 +402,9 @@ textarea {
 	font-style: italic;
 	font-display: swap;
 }
-
 @font-face {
 	font-family: "Monaspace Xenon";
-	src:
-		url("/fonts/MonaspaceXenonVar.woff2")
-			format("woff2 supports variations"),
-		url("/fonts/MonaspaceXenonVar.woff2") format("woff2-variations");
+	src: url("/fonts/MonaspaceXenonVar.woff2") format("woff2-variations");
 	font-weight: 200 800;
 	font-stretch: 100% 125%;
 	font-style: oblique 0deg 11deg;

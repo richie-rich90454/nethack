@@ -1,20 +1,10 @@
-/**
- * Dashboard Competitor Component
- * Rewrite with TypeScript on 2026/3/10
- *
- * Displays the competitor dashboard with competition phase information
- * and project submission form. Only accessible to users with access level 1.
- *
- * @component
- * @returns {JSX.Element} Competitor dashboard
- */
-
 import React from "react"
 import CountdownMini from "@/src/components/CountdownMini"
 import { useCompetition } from "@/src/context/CompetitionContext"
 import { useSession } from "next-auth/react"
 import SubmissionForm from "./SubmissionForm"
 import { siteConfig } from "@/config/siteConfig"
+import styles from "./DashboardCompetitor.module.css"
 
 export default function DashboardCompetitor(): React.ReactElement {
 	const { data: session } = useSession()
@@ -29,12 +19,11 @@ export default function DashboardCompetitor(): React.ReactElement {
 	}
 
 	const handleUpdate = async (): Promise<void> => {
-		// For competitors, we might want to refresh something in the future
 		console.log("Submission updated")
 	}
 
 	return (
-		<>
+		<div className={styles.wrapper}>
 			<h1>
 				{siteConfig.dashboardCompetitor.heading.replace(
 					"{name}",
@@ -159,6 +148,6 @@ export default function DashboardCompetitor(): React.ReactElement {
 					)}
 				</SubmissionForm>
 			)}
-		</>
+		</div>
 	)
 }

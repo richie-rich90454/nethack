@@ -5,19 +5,15 @@
 }
 .wrap {
 	background: rgba(10, 10, 10, 0.8);
-	font-size: 2.6vw;
+	font-size: clamp(18px, 2.6vw, 48px);
 	display: flex;
 	align-items: center;
 	padding: 0 1vw;
-	/* font-weight: bold; */
+	font-family: "Monaspace Xenon", monospace;
+	color: #fff;
 	border-radius: 0 !important;
 }
 
-.wrap {
-	font-family: "Monaspace Xenon", monospace;
-	color: #fff;
-}
-
 .fill {
-	flex: 1 0 0;
+	flex: 1;
 }
