@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import React from "react"
-import { signIn, signOut, useSession } from "next-auth/react"
-import { useCompetition } from "@/src/context/CompetitionContext"
-import Link from "next/link"
-import { siteConfig } from "@/config/siteConfig"
+import React from "react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useCompetition } from "@/src/context/CompetitionContext";
+import Link from "next/link";
+import { siteConfig } from "@/config/siteConfig";
 
 /**
  * Login Page Component
@@ -19,22 +19,22 @@ import { siteConfig } from "@/config/siteConfig"
  * @returns {JSX.Element} Login page
  */
 const Login = (): React.ReactElement => {
-	const { data: session, status } = useSession()
-	const { competitionState } = useCompetition()
+	const { data: session, status } = useSession();
+	const { competitionState } = useCompetition();
 
 	/**
 	 * Handle sign out with span click
 	 */
 	const handleSignOut = (): void => {
-		signOut()
-	}
+		signOut();
+	};
 
 	/**
 	 * Handle sign in with span click
 	 */
 	const handleSignIn = (): void => {
-		signIn("azure-ad")
-	}
+		signIn("azure-ad");
+	};
 
 	return (
 		<div>
@@ -139,7 +139,7 @@ const Login = (): React.ReactElement => {
 				)}
 			</div>
 		</div>
-	)
-}
+	);
+};
 
-export default Login
+export default Login;

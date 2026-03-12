@@ -1,0 +1,178 @@
+.wrapper {
+	width: 100%;
+}
+
+.wrapper :global(.leftBox),
+.wrapper :global(.rightBox) {
+	background: #1e1e1e;
+	border-radius: var(--border-radius);
+	padding: 1.5rem;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.wrapper :global(.leftBox:hover),
+.wrapper :global(.rightBox:hover) {
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.wrapper :global(.leftBox .projBox) {
+	background: #252525;
+	border: 1px solid #333;
+	box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+	margin-bottom: 1rem;
+}
+.wrapper :global(.leftBox .projBox:last-child) {
+	margin-bottom: 0;
+}
+.wrapper :global(.leftBox .projBox.console) {
+	background: #1a1a1a;
+	border-left: 3px solid var(--blue);
+}
+
+.wrapper :global(.rightBox .projBox.console) {
+	background: #1a1a1a;
+	padding: 1.5rem;
+}
+
+.wrapper :global(.flexBox.clientWrap) {
+	display: flex;
+	flex-wrap: nowrap;
+	gap: 1rem;
+	align-items: stretch;
+	margin-bottom: 1.5rem;
+}
+
+.wrapper :global(.leftBoxInv) {
+	flex: 2 1 60%;
+	min-width: 250px;
+	background: #1e1e1e;
+	border-radius: calc(var(--border-radius) * 0.8);
+	padding: 1rem;
+	box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+	display: flex;
+	flex-direction: column;
+}
+
+.wrapper :global(.rightBoxInv) {
+	flex: 1 1 30%;
+	min-width: 200px;
+	background: #1e1e1e;
+	border-radius: calc(var(--border-radius) * 0.8);
+	padding: 1rem;
+	box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+	display: flex;
+	flex-direction: column;
+}
+
+.wrapper :global(.txtArea) {
+	width: 100%;
+	height: 200px;
+	min-height: 200px;
+	max-height: 200px;
+	resize: none;
+	overflow-y: auto;
+	background: #222;
+	border: 1px solid #444;
+	border-radius: calc(var(--border-radius) * 0.6);
+	padding: 0.8rem;
+	color: var(--foreground);
+	font-family: inherit;
+}
+
+.wrapper :global(.rightBoxInv .txtArea) {
+	height: 100px;
+	min-height: 100px;
+	max-height: 100px;
+}
+
+.wrapper :global(.titleInput) {
+	width: 100%;
+	background: #222;
+	border: 1px solid #444;
+	border-radius: calc(var(--border-radius) * 0.6);
+	padding: 0.8rem 1rem;
+	font-size: 1.5rem;
+	color: var(--foreground);
+	margin-bottom: 1rem;
+}
+
+.wrapper :global(.txtBox:focus),
+.wrapper :global(.titleInput:focus) {
+	border-color: var(--foreground) !important;
+	box-shadow: 0 0 0 2px rgba(50, 174, 84, 0.3) !important;
+	outline: none;
+}
+
+.saveButton {
+	background: #2a2a2a;
+	color: var(--foreground);
+	border: 2px solid var(--foreground);
+	border-radius: 4px;
+	padding: 0.5rem 1rem;
+	font-weight: bold;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.3rem;
+	width: auto;
+	margin-top: 0;
+	transition: background-color 0.2s;
+	box-shadow: none;
+}
+
+.saveButton:hover {
+	background: var(--foreground);
+	color: #1a1a1a;
+	box-shadow: none;
+	transform: none;
+}
+.buttonContainer {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 0;
+}
+
+.wrapper :global(.promptArea) {
+	background: #222;
+	border: 1px solid #444;
+	padding: 0.8rem;
+	border-radius: calc(var(--border-radius) * 0.6);
+}
+.wrapper :global(.wrapRadio) {
+	margin: 0.3rem 0;
+	display: flex;
+	align-items: center;
+	gap: 0.3rem;
+}
+.wrapper :global(.labelRadio) {
+	color: #ddd;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+}
+.wrapper :global(.iconRadio) {
+	color: var(--yellow);
+	font-size: 1.2rem;
+	margin-right: 0.3rem;
+}
+@media (max-width: 768px) {
+	.wrapper :global(.flexBox) {
+		flex-direction: column;
+	}
+	.wrapper :global(.leftBox),
+	.wrapper :global(.rightBox) {
+		width: 100%;
+	}
+	.wrapper :global(.flexBox.clientWrap) {
+		flex-wrap: wrap;
+	}
+	.wrapper :global(.leftBoxInv),
+	.wrapper :global(.rightBoxInv) {
+		flex: 1 1 100%;
+		width: 100%;
+	}
+	.buttonContainer {
+		justify-content: center;
+	}
+}

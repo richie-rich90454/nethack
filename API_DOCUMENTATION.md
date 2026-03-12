@@ -109,7 +109,7 @@ Retrieves the current competition phase from the `phases` table.
 ```javascript
 fetch("/api/sql/phase")
 	.then((res) => res.json())
-	.then((data) => console.log(data.phase))
+	.then((data) => console.log(data.phase));
 ```
 
 **Implementation Details**:
@@ -160,10 +160,10 @@ Retrieves project submissions from the `hacks` table. Supports an optional `sear
 
 ```javascript
 // Fetch all projects (judges only)
-fetch("/api/sql/pullProject")
+fetch("/api/sql/pullProject");
 
 // Fetch a specific team's project
-fetch("/api/sql/pullProject?search=c0ad4f19")
+fetch("/api/sql/pullProject?search=c0ad4f19");
 ```
 
 **Implementation Details**:
@@ -228,7 +228,7 @@ const projectData = {
 	github: "https://github.com/team-001/ai-assistant",
 	prompt: "Game Jam",
 	technologies: "Python, Flask",
-}
+};
 
 fetch("/api/sql/editProject", {
 	method: "POST",
@@ -237,9 +237,9 @@ fetch("/api/sql/editProject", {
 })
 	.then((res) => res.json())
 	.then((data) => {
-		if (res.ok) console.log(data.message)
-		else console.error(data.error)
-	})
+		if (res.ok) console.log(data.message);
+		else console.error(data.error);
+	});
 ```
 
 **Implementation Details**:
@@ -257,14 +257,14 @@ All database utilities reside in `app/api/sql/database.ts` and are written in Ty
 Acquires a database connection from the connection pool. Always release the connection in a `finally` block.
 
 ```typescript
-import getConnection from "@/app/api/sql/database"
+import getConnection from "@/app/api/sql/database";
 
-const connection = await getConnection()
+const connection = await getConnection();
 try {
-	const [rows] = await connection.query("SELECT * FROM users")
-	return rows
+	const [rows] = await connection.query("SELECT * FROM users");
+	return rows;
 } finally {
-	connection.release()
+	connection.release();
 }
 ```
 
@@ -273,11 +273,11 @@ try {
 Retrieves a user’s access level and team ID from the `users` table. Used by NextAuth during sign‑in.
 
 ```typescript
-import { getUser } from "@/app/api/sql/database"
+import { getUser } from "@/app/api/sql/database";
 
-const user = await getUser("user@example.com")
+const user = await getUser("user@example.com");
 if (user) {
-	console.log(`Access: ${user.access}, Team: ${user.teamID}`)
+	console.log(`Access: ${user.access}, Team: ${user.teamID}`);
 }
 ```
 
@@ -286,12 +286,12 @@ if (user) {
 Executes a raw SQL query with parameterized values. Returns the result rows typed as `T`.
 
 ```typescript
-import { query } from "@/app/api/sql/database"
+import { query } from "@/app/api/sql/database";
 
 const users = await query<{ id: number; email: string }[]>(
 	"SELECT id, email FROM users WHERE access = ?",
 	[1],
-)
+);
 ```
 
 ## Error Handling
@@ -396,16 +396,16 @@ All API routes are written in TypeScript and export typed request/response handl
 Example of a typed API route:
 
 ```typescript
-import { NextRequest, NextResponse } from "next/server"
-import { query } from "@/app/api/sql/database"
+import { NextRequest, NextResponse } from "next/server";
+import { query } from "@/app/api/sql/database";
 
 interface PhaseRow extends RowDataPacket {
-	phase: string
+	phase: string;
 }
 
 export async function GET(req: NextRequest) {
-	const [rows] = await query<PhaseRow[]>("SELECT phase FROM phases LIMIT 1")
-	return NextResponse.json({ phase: rows[0]?.phase ?? "unknown" })
+	const [rows] = await query<PhaseRow[]>("SELECT phase FROM phases LIMIT 1");
+	return NextResponse.json({ phase: rows[0]?.phase ?? "unknown" });
 }
 ```
 

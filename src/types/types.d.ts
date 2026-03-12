@@ -8,8 +8,8 @@
  * @module types
  */
 
-import "next-auth"
-import "next-auth/jwt"
+import "next-auth";
+import "next-auth/jwt";
 
 // ========================================================
 // Environment Variables
@@ -22,29 +22,29 @@ declare namespace NodeJS {
 	interface ProcessEnv {
 		// Database Configuration
 		/** MySQL database username */
-		SQL_USERNAME: string
+		SQL_USERNAME: string;
 		/** MySQL database password */
-		SQL_PASSWORD: string
+		SQL_PASSWORD: string;
 
 		// NextAuth Configuration
 		/** Secret for encrypting JWT tokens and sessions */
-		NEXTAUTH_SECRET: string
+		NEXTAUTH_SECRET: string;
 		/** Base URL for NextAuth callbacks (e.g., http://localhost:3000) */
-		NEXTAUTH_URL: string
+		NEXTAUTH_URL: string;
 
 		// Azure AD Configuration
 		/** Azure AD application client ID */
-		AZURE_AD_CLIENT_ID: string
+		AZURE_AD_CLIENT_ID: string;
 		/** Azure AD application client secret */
-		AZURE_AD_CLIENT_SECRET: string
+		AZURE_AD_CLIENT_SECRET: string;
 		/** Azure AD tenant ID */
-		AZURE_AD_TENANT_ID: string
+		AZURE_AD_TENANT_ID: string;
 
 		// Optional: Database connection details if needed
 		/** Database host (optional, defaults to localhost) */
-		DB_HOST?: string
+		DB_HOST?: string;
 		/** Database name (optional, if not using default) */
-		DB_NAME?: string
+		DB_NAME?: string;
 	}
 }
 
@@ -63,15 +63,15 @@ declare module "next-auth" {
 	 */
 	interface User {
 		/** Access level: 0=visitor/voter, 1=competitor, 2+=judge/admin */
-		access: number
+		access: number;
 		/** Team identifier for competitors (null for non-competitors) */
-		teamID: string | null
+		teamID: string | null;
 		/** Optional: User's display name */
-		name?: string | null
+		name?: string | null;
 		/** Optional: User's email (primary identifier) */
-		email?: string | null
+		email?: string | null;
 		/** Optional: User's avatar image URL */
-		image?: string | null
+		image?: string | null;
 	}
 
 	/**
@@ -80,24 +80,24 @@ declare module "next-auth" {
 	 */
 	interface Session {
 		/** Azure AD access token for authenticated API calls */
-		accessToken?: string
+		accessToken?: string;
 		/** User information with competition-specific fields */
 		user: {
 			/** User's unique identifier (from database or NextAuth) */
-			id?: string
+			id?: string;
 			/** User's email address (primary identifier) */
-			email: string
+			email: string;
 			/** Access level: 0=visitor, 1=competitor, 2+=judge */
-			access: number
+			access: number;
 			/** Team identifier for competitors */
-			teamID: string | null
+			teamID: string | null;
 			/** User's display name from Azure AD */
-			name?: string | null
+			name?: string | null;
 			/** User's avatar image URL from Azure AD */
-			image?: string | null
-		}
+			image?: string | null;
+		};
 		/** Session expiry timestamp */
-		expires: string
+		expires: string;
 	}
 
 	/**
@@ -105,21 +105,21 @@ declare module "next-auth" {
 	 */
 	interface Profile {
 		/** Azure AD object ID */
-		oid?: string
+		oid?: string;
 		/** User's preferred username */
-		preferred_username?: string
+		preferred_username?: string;
 		/** User's given name (first name) */
-		given_name?: string
+		given_name?: string;
 		/** User's family name (last name) */
-		family_name?: string
+		family_name?: string;
 		/** User's email address */
-		email?: string
+		email?: string;
 		/** User's display name */
-		name?: string
+		name?: string;
 		/** User's avatar image URL */
-		picture?: string
+		picture?: string;
 		/** Additional Azure AD fields */
-		[claim: string]: unknown
+		[claim: string]: unknown;
 	}
 }
 
@@ -130,23 +130,23 @@ declare module "next-auth/jwt" {
 	 */
 	interface JWT {
 		/** User's access level for competition */
-		access: number
+		access: number;
 		/** User's team identifier */
-		teamID: string | null
+		teamID: string | null;
 		/** User's email address */
-		email: string
+		email: string;
 		/** Azure AD access token for API calls */
-		accessToken?: string
+		accessToken?: string;
 		/** User's display name */
-		name?: string | null
+		name?: string | null;
 		/** JWT issued at timestamp */
-		iat?: number
+		iat?: number;
 		/** JWT expiration timestamp */
-		exp?: number
+		exp?: number;
 		/** JWT subject (user identifier) */
-		sub?: string
+		sub?: string;
 		/** Additional JWT fields from NextAuth */
-		[key: string]: unknown
+		[key: string]: unknown;
 	}
 }
 
@@ -168,19 +168,19 @@ declare namespace DB {
 	 */
 	interface User {
 		/** Auto-incrementing primary key */
-		id: number
+		id: number;
 		/** User's email address (unique) */
-		email: string
+		email: string;
 		/** Access level: 0=visitor, 1=competitor, 2+=judge */
-		access: number
+		access: number;
 		/** Team identifier for competitors (null if not in a team) */
-		teamID: string | null
+		teamID: string | null;
 		/** Timestamp when the user record was created */
-		created_at: Date
+		created_at: Date;
 		/** Optional: Last login timestamp */
-		last_login?: Date | null
+		last_login?: Date | null;
 		/** Optional: User's display name */
-		name?: string | null
+		name?: string | null;
 	}
 
 	/**
@@ -189,25 +189,25 @@ declare namespace DB {
 	 */
 	interface Project {
 		/** Auto-incrementing primary key */
-		id: number
+		id: number;
 		/** Team identifier that owns this project */
-		teamID: string
+		teamID: string;
 		/** Name/title of the project */
-		project_name: string
+		project_name: string;
 		/** Detailed project description */
-		description: string | null
+		description: string | null;
 		/** URL to project repository, demo, or submission */
-		submission_url: string
+		submission_url: string;
 		/** Timestamp when the project was submitted */
-		submission_date: Date
+		submission_date: Date;
 		/** Current submission status */
-		status: "pending" | "reviewed" | "accepted" | "rejected"
+		status: "pending" | "reviewed" | "accepted" | "rejected";
 		/** Optional: Feedback from judges */
-		feedback?: string | null
+		feedback?: string | null;
 		/** Optional: Final score if judged */
-		score?: number | null
+		score?: number | null;
 		/** Optional: Last updated timestamp */
-		updated_at?: Date | null
+		updated_at?: Date | null;
 	}
 
 	/**
@@ -216,17 +216,17 @@ declare namespace DB {
 	 */
 	interface Phase {
 		/** Phase identifier */
-		id: number
+		id: number;
 		/** Phase name (e.g., "submission", "judging", "results") */
-		phase: string
+		phase: string;
 		/** Phase start timestamp */
-		start_date?: Date | null
+		start_date?: Date | null;
 		/** Phase end timestamp */
-		end_date?: Date | null
+		end_date?: Date | null;
 		/** Whether the phase is currently active */
-		is_active?: boolean
+		is_active?: boolean;
 		/** Additional phase configuration */
-		config?: Record<string, unknown> | null
+		config?: Record<string, unknown> | null;
 	}
 
 	/**
@@ -234,19 +234,19 @@ declare namespace DB {
 	 */
 	interface Team {
 		/** Unique team identifier */
-		teamID: string
+		teamID: string;
 		/** Team display name */
-		team_name: string
+		team_name: string;
 		/** Team description or tagline */
-		description?: string | null
+		description?: string | null;
 		/** Team creation timestamp */
-		created_at: Date
+		created_at: Date;
 		/** Team leader's email */
-		leader_email: string
+		leader_email: string;
 		/** Team member emails (JSON array or comma-separated) */
-		members?: string | null
+		members?: string | null;
 		/** Whether team is active in competition */
-		is_active?: boolean
+		is_active?: boolean;
 	}
 }
 
@@ -264,18 +264,18 @@ declare namespace DB {
  */
 declare type ApiResponse<T = any> = {
 	/** Whether the request was successful */
-	success: boolean
+	success: boolean;
 	/** Response data payload (present on success) */
-	data?: T
+	data?: T;
 	/** Error message (present on failure) */
-	error?: string
+	error?: string;
 	/** Optional user-friendly message */
-	message?: string
+	message?: string;
 	/** Optional status code */
-	status?: number
+	status?: number;
 	/** Optional timestamp */
-	timestamp?: string
-}
+	timestamp?: string;
+};
 
 /**
  * Paginated API response wrapper.
@@ -283,20 +283,20 @@ declare type ApiResponse<T = any> = {
  */
 declare type PaginatedResponse<T = any> = {
 	/** Whether the request was successful */
-	success: boolean
+	success: boolean;
 	/** Array of items for current page */
-	data?: T[]
+	data?: T[];
 	/** Current page number (1-based) */
-	page: number
+	page: number;
 	/** Number of items per page */
-	limit: number
+	limit: number;
 	/** Total number of items across all pages */
-	total: number
+	total: number;
 	/** Total number of pages */
-	totalPages: number
+	totalPages: number;
 	/** Optional error message */
-	error?: string
-}
+	error?: string;
+};
 
 // ========================================================
 // Component Props Types
@@ -310,7 +310,7 @@ declare type PaginatedResponse<T = any> = {
  */
 declare interface ChildrenProps {
 	/** React child nodes */
-	children: React.ReactNode
+	children: React.ReactNode;
 }
 
 /**
@@ -318,7 +318,7 @@ declare interface ChildrenProps {
  */
 declare interface ClassNameProps {
 	/** Additional CSS class names */
-	className?: string
+	className?: string;
 }
 
 /**
@@ -326,7 +326,7 @@ declare interface ClassNameProps {
  */
 declare interface StyledProps extends ClassNameProps {
 	/** Inline styles */
-	style?: React.CSSProperties
+	style?: React.CSSProperties;
 }
 
 // ========================================================
@@ -337,21 +337,21 @@ declare interface StyledProps extends ClassNameProps {
  * Unlike Partial<T>, this works well with nested objects.
  */
 declare type DeepPartial<T> = {
-	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
-}
+	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
 
 /**
  * Utility type to make all properties of T readonly.
  */
 declare type DeepReadonly<T> = {
-	readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P]
-}
+	readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P];
+};
 
 /**
  * Utility type to extract the element type from an array.
  */
 declare type ArrayElement<T extends readonly unknown[]> =
-	T extends readonly (infer U)[] ? U : never
+	T extends readonly (infer U)[] ? U : never;
 
 // ========================================================
 // Global Constants and Enums

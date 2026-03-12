@@ -13,10 +13,10 @@
  * @module auth
  */
 
-import NextAuth, { NextAuthOptions } from "next-auth"
-import AzureADProvider from "next-auth/providers/azure-ad"
-import CredentialsProvider from "next-auth/providers/credentials"
-import { getUser } from "@/app/api/sql/database"
+import NextAuth, { NextAuthOptions } from "next-auth";
+import AzureADProvider from "next-auth/providers/azure-ad";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { getUser } from "@/app/api/sql/database";
 
 /**
  * NextAuth Configuration Options
@@ -72,13 +72,13 @@ export const authOptions: NextAuthOptions = {
 						 * if found. The password is ignored (development only).
 						 */
 						async authorize(credentials) {
-							if (!credentials?.email) return null
+							if (!credentials?.email) return null;
 
 							// Fetch user from the `users` table by email
 							const user = await getUser(
 								credentials.email.toLowerCase(),
-							)
-							if (!user) return null // email not found – reject login
+							);
+							if (!user) return null; // email not found – reject login
 
 							// Return minimal user object – will be passed to the jwt callback
 							return {
@@ -86,7 +86,7 @@ export const authOptions: NextAuthOptions = {
 								email: credentials.email.toLowerCase(),
 								access: (user as any).access,
 								teamID: (user as any).teamID,
-							}
+							};
 						},
 					}),
 				]
@@ -111,46 +111,46 @@ export const authOptions: NextAuthOptions = {
 			// ----- Credentials flow (development) -----
 			if (user) {
 				// user comes from the authorize() callback
-				token.email = user.email ?? ""
-				token.name = user.email // display name – can be changed later
-				token.access = (user as any).access
-				token.teamID = (user as any).teamID
+				token.email = user.email ?? "";
+				token.name = user.email; // display name – can be changed later
+				token.access = (user as any).access;
+				token.teamID = (user as any).teamID;
 			}
 
 			// ----- Azure AD flow (production) -----
 			if (account && profile) {
 				// Store Azure AD access token (if needed later)
-				token.accessToken = account.access_token
-				token.name = profile?.name
-				token.email = profile?.email ?? ""
+				token.accessToken = account.access_token;
+				token.name = profile?.name;
+				token.email = profile?.email ?? "";
 
 				// Default competition values (visitor)
-				token.access = 0
-				token.teamID = null
+				token.access = 0;
+				token.teamID = null;
 
 				// Fetch competition‑specific data from the database using the email
 				if (profile?.email) {
 					const competition = await getUser(
 						profile.email.toLowerCase(),
-					)
+					);
 					if (competition) {
 						token.access = (
 							competition as {
-								access: number
-								teamID: string | null
+								access: number;
+								teamID: string | null;
 							}
-						).access
+						).access;
 						token.teamID = (
 							competition as {
-								access: number
-								teamID: string | null
+								access: number;
+								teamID: string | null;
 							}
-						).teamID
+						).teamID;
 					}
 				}
 			}
 
-			return token
+			return token;
 		},
 
 		/**
@@ -164,16 +164,16 @@ export const authOptions: NextAuthOptions = {
 		 */
 		async session({ session, token }) {
 			// Copy fields from token to session
-			session.accessToken = token.accessToken as string | undefined
-			session.user.name = token.name as string | undefined | null
-			session.user.email = token.email as string
-			session.user.access = token.access as number // competition access level
-			session.user.teamID = token.teamID as string | null // team identifier
+			session.accessToken = token.accessToken as string | undefined;
+			session.user.name = token.name as string | undefined | null;
+			session.user.email = token.email as string;
+			session.user.access = token.access as number; // competition access level
+			session.user.teamID = token.teamID as string | null; // team identifier
 
-			return session
+			return session;
 		},
 	},
-}
+};
 
 /**
  * NextAuth Handler
@@ -181,5 +181,5 @@ export const authOptions: NextAuthOptions = {
  * Creates the NextAuth handler with the above configuration.
  * Exports GET and POST handlers for the dynamic route.
  */
-const handler = NextAuth(authOptions)
-export { handler as GET, handler as POST }
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };

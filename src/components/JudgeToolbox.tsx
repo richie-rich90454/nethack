@@ -23,40 +23,40 @@
  * @returns {JSX.Element} Full judging panel
  */
 
-"use client"
+"use client";
 
-import styles from "./JudgeToolbox.module.css"
-import React, { useState, useEffect } from "react"
-import { siteConfig } from "@/config/siteConfig"
+import styles from "./JudgeToolbox.module.css";
+import React, { useState, useEffect } from "react";
+import { siteConfig } from "@/config/siteConfig";
 
 /**
  * Interface for submission data (as provided by parent)
  */
 interface Submission {
-	teamID: string
-	title: string
-	description: string
-	github: string
-	prompt: string
-	technologies: string
-	[key: string]: unknown
+	teamID: string;
+	title: string;
+	description: string;
+	github: string;
+	prompt: string;
+	technologies: string;
+	[key: string]: unknown;
 }
 
 /**
  * Interface for judge data fetched from the backend
  */
 interface JudgeData {
-	score?: number
-	comment?: string
-	reviewed?: boolean
+	score?: number;
+	comment?: string;
+	reviewed?: boolean;
 }
 
 /**
  * Props for JudgeToolbox component
  */
 interface JudgeToolboxProps {
-	submission: Submission
-	onUpdate: () => void
+	submission: Submission;
+	onUpdate: () => void;
 }
 
 /**
@@ -67,10 +67,10 @@ const JudgeToolbox = ({
 	onUpdate,
 }: JudgeToolboxProps): React.ReactElement => {
 	// State for judge-specific fields
-	const [score, setScore] = useState<number>(5)
-	const [comment, setComment] = useState<string>("")
-	const [loading, setLoading] = useState<boolean>(false)
-	const [saved, setSaved] = useState<boolean>(false)
+	const [score, setScore] = useState<number>(5);
+	const [comment, setComment] = useState<string>("");
+	const [loading, setLoading] = useState<boolean>(false);
+	const [saved, setSaved] = useState<boolean>(false);
 
 	// Fetch existing judge data on mount
 	useEffect(() => {
@@ -78,24 +78,24 @@ const JudgeToolbox = ({
 			try {
 				const response = await fetch(
 					`/api/sql/getJudgeData?teamID=${submission.teamID}`,
-				)
+				);
 				if (response.ok) {
-					const data = (await response.json()) as JudgeData
-					setScore(data.score ?? 5)
-					setComment(data.comment ?? "")
+					const data = (await response.json()) as JudgeData;
+					setScore(data.score ?? 5);
+					setComment(data.comment ?? "");
 				}
 			} catch (error) {
-				console.error("Error fetching judge data:", error)
+				console.error("Error fetching judge data:", error);
 			}
-		}
-		fetchJudgeData()
-	}, [submission.teamID])
+		};
+		fetchJudgeData();
+	}, [submission.teamID]);
 
 	/**
 	 * Save judge score and comment to the database
 	 */
 	const handleSaveJudgeData = async () => {
-		setLoading(true)
+		setLoading(true);
 		try {
 			const response = await fetch("/api/sql/saveJudgeData", {
 				method: "POST",
@@ -105,20 +105,20 @@ const JudgeToolbox = ({
 					score,
 					comment,
 				}),
-			})
+			});
 			if (response.ok) {
-				setSaved(true)
-				setTimeout(() => setSaved(false), 2000)
-				onUpdate() // refresh parent if needed
+				setSaved(true);
+				setTimeout(() => setSaved(false), 2000);
+				onUpdate(); // refresh parent if needed
 			} else {
-				console.error("Failed to save judge data")
+				console.error("Failed to save judge data");
 			}
 		} catch (error) {
-			console.error("Error saving judge data:", error)
+			console.error("Error saving judge data:", error);
 		} finally {
-			setLoading(false)
+			setLoading(false);
 		}
-	}
+	};
 
 	/**
 	 * Update submission title/technologies (existing functionality)
@@ -131,40 +131,40 @@ const JudgeToolbox = ({
 			github: submission.github,
 			prompt: submission.prompt,
 			technologies: newTech,
-		}
+		};
 		try {
 			const response = await fetch("/api/sql/editProject", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(data),
-			})
+			});
 			if (response.ok) {
-				onUpdate()
+				onUpdate();
 			} else {
-				const result = (await response.json()) as { message?: string }
-				console.error("Error: " + (result.message || "Unknown error"))
+				const result = (await response.json()) as { message?: string };
+				console.error("Error: " + (result.message || "Unknown error"));
 			}
 		} catch (error) {
-			console.error("Error:", error)
+			console.error("Error:", error);
 		}
-	}
+	};
 
 	const handleEditTitle = () => {
-		const newTitle = prompt("Enter a new title:", submission.title)
+		const newTitle = prompt("Enter a new title:", submission.title);
 		if (newTitle && newTitle !== submission.title) {
-			changeEntries(newTitle, submission.technologies)
+			changeEntries(newTitle, submission.technologies);
 		}
-	}
+	};
 
 	const handleEditTechs = () => {
 		const newTech = prompt(
 			"Enter a new technologies list:",
 			submission.technologies,
-		)
+		);
 		if (newTech && newTech !== submission.technologies) {
-			changeEntries(submission.title, newTech)
+			changeEntries(submission.title, newTech);
 		}
-	}
+	};
 
 	return (
 		<div className={`${styles.wrap} smallMed judgeTools serifBold`}>
@@ -235,7 +235,7 @@ const JudgeToolbox = ({
 				</button>
 			</div>
 		</div>
-	)
-}
+	);
+};
 
-export default JudgeToolbox
+export default JudgeToolbox;

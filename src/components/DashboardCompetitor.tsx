@@ -1,26 +1,26 @@
-import React from "react"
-import CountdownMini from "@/src/components/CountdownMini"
-import { useCompetition } from "@/src/context/CompetitionContext"
-import { useSession } from "next-auth/react"
-import SubmissionForm from "./SubmissionForm"
-import { siteConfig } from "@/config/siteConfig"
-import styles from "./DashboardCompetitor.module.css"
+import React from "react";
+import CountdownMini from "@/src/components/CountdownMini";
+import { useCompetition } from "@/src/context/CompetitionContext";
+import { useSession } from "next-auth/react";
+import SubmissionForm from "./SubmissionForm";
+import { siteConfig } from "@/config/siteConfig";
+import styles from "./DashboardCompetitor.module.css";
 
 export default function DashboardCompetitor(): React.ReactElement {
-	const { data: session } = useSession()
-	const { competitionState } = useCompetition()
+	const { data: session } = useSession();
+	const { competitionState } = useCompetition();
 
-	const isClosed = competitionState === "closed"
-	const isActive = competitionState === "active"
-	const isJudging = competitionState === "judging"
+	const isClosed = competitionState === "closed";
+	const isActive = competitionState === "active";
+	const isJudging = competitionState === "judging";
 
 	if (!session?.user) {
-		return <p>Loading user information...</p>
+		return <p>Loading user information...</p>;
 	}
 
 	const handleUpdate = async (): Promise<void> => {
-		console.log("Submission updated")
-	}
+		console.log("Submission updated");
+	};
 
 	return (
 		<div className={styles.wrapper}>
@@ -149,5 +149,5 @@ export default function DashboardCompetitor(): React.ReactElement {
 				</SubmissionForm>
 			)}
 		</div>
-	)
+	);
 }

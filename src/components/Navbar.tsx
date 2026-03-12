@@ -14,13 +14,13 @@
  * @returns {JSX.Element} Rendered navigation bar with application title and auth link
  */
 
-"use client"
+"use client";
 
-import React from "react"
-import Link from "next/link"
-import styles from "./Navbar.module.css"
-import { useSession } from "next-auth/react"
-import { siteConfig } from "@/config/siteConfig"
+import React from "react";
+import Link from "next/link";
+import styles from "./Navbar.module.css";
+import { useSession } from "next-auth/react";
+import { siteConfig } from "@/config/siteConfig";
 
 /**
  * Navigation Bar Component
@@ -31,7 +31,7 @@ import { siteConfig } from "@/config/siteConfig"
  */
 const Navbar = (): React.ReactElement => {
 	// Get authentication status from NextAuth session
-	const { status: authStatus } = useSession()
+	const { status: authStatus } = useSession();
 
 	return (
 		<div className={styles.nav}>
@@ -50,7 +50,7 @@ const Navbar = (): React.ReactElement => {
 				</Link>
 			</div>
 		</div>
-	)
-}
+	);
+};
 
-export default Navbar
+export default Navbar;

@@ -6,7 +6,7 @@
  * @see https://nextjs.org/docs/app/api-reference/next-config-js
  */
 
-import type { NextConfig } from "next"
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
 	// React Strict Mode helps identify potential problems in development
@@ -61,7 +61,7 @@ const nextConfig: NextConfig = {
 					},
 				],
 			},
-		]
+		];
 	},
 
 	// Build-time optimizations
@@ -82,6 +82,6 @@ const nextConfig: NextConfig = {
 	// async redirects() {
 	//   return []
 	// },
-}
+};
 
-export default nextConfig
+export default nextConfig;

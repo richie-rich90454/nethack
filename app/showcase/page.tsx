@@ -9,27 +9,27 @@
  * @returns {JSX.Element} Showcase page
  */
 
-"use client"
+"use client";
 
-import React from "react"
-import { useEffect, useState } from "react"
-import SubmissionPresent from "@/src/components/SubmissionPresent"
-import { siteConfig } from "@/config/siteConfig"
+import React from "react";
+import { useEffect, useState } from "react";
+import SubmissionPresent from "@/src/components/SubmissionPresent";
+import { siteConfig } from "@/config/siteConfig";
 
 /**
  * Interface representing a project submission from the database
  */
 interface ProjectSubmission {
-	id: number
-	teamID: string
-	title: string
-	description: string
-	github: string
-	prompt: string
-	technologies: string
-	submission_date?: string
-	status?: string
-	[key: string]: unknown
+	id: number;
+	teamID: string;
+	title: string;
+	description: string;
+	github: string;
+	prompt: string;
+	technologies: string;
+	submission_date?: string;
+	status?: string;
+	[key: string]: unknown;
 }
 
 /**
@@ -47,7 +47,7 @@ const iconAward: React.ReactElement = (
 		<path d="m8 0 1.669.864 1.858.282.842 1.68 1.337 1.32L13.4 6l.306 1.854-1.337 1.32-.842 1.68-1.858.282L8 12l-1.669-.864-1.858-.282-.842-1.68-1.337-1.32L2.6 6l-.306-1.854 1.337-1.32.842-1.68L6.331.864z" />
 		<path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1z" />
 	</svg>
-)
+);
 
 /**
  * Showcase Page Component
@@ -59,7 +59,7 @@ const iconAward: React.ReactElement = (
 const Showcase = (): React.ReactElement => {
 	const [entries, setEntries] = useState<ProjectSubmission[] | string>(
 		"Loading...",
-	)
+	);
 
 	/**
 	 * Fetch project entries for all winner team IDs
@@ -67,42 +67,42 @@ const Showcase = (): React.ReactElement => {
 	const fetchEntries = async (): Promise<void> => {
 		try {
 			// TODO: prob modify database schema (i.e. make new fields) so this can be done in 1 api call
-			const winners: string[] = siteConfig.showcase.winners
+			const winners: string[] = siteConfig.showcase.winners;
 
-			const all: ProjectSubmission[] = []
+			const all: ProjectSubmission[] = [];
 
 			for (let i = 0; i < winners.length; i++) {
 				const response = await fetch(
 					"/api/sql/pullProject?search=" + winners[i],
-				)
+				);
 
 				if (response.ok) {
-					const data = (await response.json()) as ProjectSubmission[]
+					const data = (await response.json()) as ProjectSubmission[];
 					if (data && data.length > 0) {
-						all.push(data[0])
+						all.push(data[0]);
 					}
 				} else {
 					console.error(
 						"Failed to fetch entries for team: " + winners[i],
-					)
+					);
 				}
 			}
 
-			setEntries(all)
+			setEntries(all);
 		} catch (error) {
-			console.error("Error fetching entries: ", error)
-			setEntries("Error loading entries")
+			console.error("Error fetching entries: ", error);
+			setEntries("Error loading entries");
 		}
-	}
+	};
 
 	useEffect(() => {
-		fetchEntries()
-	}, [])
+		fetchEntries();
+	}, []);
 
 	// Check if entries is an array (not a string) and has at least 8 items
 	const hasEntries =
 		Array.isArray(entries) &&
-		entries.length >= siteConfig.showcase.winners.length
+		entries.length >= siteConfig.showcase.winners.length;
 
 	return (
 		<>
@@ -209,7 +209,7 @@ const Showcase = (): React.ReactElement => {
 				)}
 			</div>
 		</>
-	)
-}
+	);
+};
 
-export default Showcase
+export default Showcase;

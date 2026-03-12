@@ -12,11 +12,11 @@
  * @returns {JSX.Element} Rendered footer with copyright notice
  */
 
-"use client"
+"use client";
 
-import React from "react"
-import styles from "./Footer.module.css"
-import { siteConfig } from "@/config/siteConfig"
+import React from "react";
+import styles from "./Footer.module.css";
+import { siteConfig } from "@/config/siteConfig";
 
 /**
  * Footer Component
@@ -33,7 +33,7 @@ const Footer = (): React.ReactElement => {
 				{siteConfig.footer.copyright}
 			</div>
 		</div>
-	)
-}
+	);
+};
 
-export default Footer
+export default Footer;

@@ -12,22 +12,22 @@
  * @returns {JSX.Element} Root HTML structure with providers
  */
 
-"use client"
+"use client";
 
-import React, { ReactNode } from "react"
-import "./globals.css"
-import Navbar from "@/src/components/Navbar"
-import Footer from "@/src/components/Footer"
-import { SessionProvider } from "next-auth/react"
-import { CompetitionProvider } from "@/src/context/CompetitionContext"
-import { siteConfig } from "@/config/siteConfig"
+import React, { ReactNode } from "react";
+import "./globals.css";
+import Navbar from "@/src/components/Navbar";
+import Footer from "@/src/components/Footer";
+import { SessionProvider } from "next-auth/react";
+import { CompetitionProvider } from "@/src/context/CompetitionContext";
+import { siteConfig } from "@/config/siteConfig";
 
 /**
  * Props for the RootLayout component
  */
 interface RootLayoutProps {
 	/** Child pages/components to render */
-	children: ReactNode
+	children: ReactNode;
 }
 
 /**
@@ -76,5 +76,5 @@ export default function RootLayout({
 				</SessionProvider>
 			</body>
 		</html>
-	)
+	);
 }

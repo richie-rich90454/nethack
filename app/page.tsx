@@ -10,13 +10,13 @@
  * @returns {JSX.Element} Home page with competition info and navigation
  */
 
-"use client"
+"use client";
 
-import React from "react"
-import Countdown from "@/src/components/Countdown"
-import { useSession } from "next-auth/react"
-import Link from "next/link"
-import { siteConfig } from "@/config/siteConfig"
+import React from "react";
+import Countdown from "@/src/components/Countdown";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { siteConfig } from "@/config/siteConfig";
 
 /**
  * Home Page Component
@@ -29,9 +29,9 @@ import { siteConfig } from "@/config/siteConfig"
  * @returns {JSX.Element} Home page
  */
 const Home = (): React.ReactElement => {
-	const countdownDates: string[] = siteConfig.home.countdownDates
+	const countdownDates: string[] = siteConfig.home.countdownDates;
 
-	const { status, data: session } = useSession()
+	const { status, data: session } = useSession();
 
 	return (
 		<div>
@@ -82,7 +82,7 @@ const Home = (): React.ReactElement => {
 				/>
 			</center>
 		</div>
-	)
-}
+	);
+};
 
-export default Home
+export default Home;

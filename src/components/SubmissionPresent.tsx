@@ -19,25 +19,25 @@
  * @returns {JSX.Element} Submission presentation card
  */
 
-"use client"
+"use client";
 
-import React from "react"
-import styles from "./SubmissionPresent.module.css"
-import { siteConfig } from "@/config/siteConfig"
+import React from "react";
+import styles from "./SubmissionPresent.module.css";
+import { siteConfig } from "@/config/siteConfig";
 
 /**
  * Interface for submission data
  */
 interface SubmissionData {
-	teamID: string
-	title: string | null
-	members?: string
-	description: string
-	github: string
-	prompt: string | null
-	technologies: string | null
-	sub_code?: string
-	[key: string]: unknown
+	teamID: string;
+	title: string | null;
+	members?: string;
+	description: string;
+	github: string;
+	prompt: string | null;
+	technologies: string | null;
+	sub_code?: string;
+	[key: string]: unknown;
 }
 
 /**
@@ -45,9 +45,9 @@ interface SubmissionData {
  */
 interface SubmissionPresentProps {
 	/** Submission data object */
-	submission: SubmissionData
+	submission: SubmissionData;
 	/** Override URL for video/project link (0 for none) */
-	override: string | number
+	override: string | number;
 }
 
 /**
@@ -65,7 +65,7 @@ const iconPlay: React.ReactElement = (
 		<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
 		<path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445" />
 	</svg>
-)
+);
 
 /**
  * Submission Present Component
@@ -82,7 +82,7 @@ const SubmissionPresent = ({
 }: SubmissionPresentProps): React.ReactElement => {
 	// Safety check - if no submission, return empty fragment
 	if (!submission) {
-		return <></>
+		return <></>;
 	}
 
 	/**
@@ -91,14 +91,14 @@ const SubmissionPresent = ({
 	const getLinkUrl = (): string => {
 		if (override) {
 			if (typeof override === "string") {
-				return override
+				return override;
 			}
 			// If override is 0 (number), use default path
 		}
-		return `/25R1/${submission.teamID}/${submission.title}.html`
-	}
+		return `/25R1/${submission.teamID}/${submission.title}.html`;
+	};
 
-	const linkUrl = getLinkUrl()
+	const linkUrl = getLinkUrl();
 
 	return (
 		<div className={`${styles.wrap} displayBox`}>
@@ -186,7 +186,7 @@ const SubmissionPresent = ({
 				</div>
 			</div>
 		</div>
-	)
-}
+	);
+};
 
-export default SubmissionPresent
+export default SubmissionPresent;

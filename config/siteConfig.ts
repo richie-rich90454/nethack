@@ -1,143 +1,143 @@
 // config/siteConfig.ts
 
 export interface SiteConfig {
-	siteTitle: string
+	siteTitle: string;
 	nav: {
-		home: string
-		login: string
-		logout: string
-		dashboard: string
-		showcase: string
-	}
+		home: string;
+		login: string;
+		logout: string;
+		dashboard: string;
+		showcase: string;
+	};
 	home: {
-		welcomeHeading: string
-		introText: string
-		statusText: string
-		signUpUrl: string
-		countdownDates: string[] // ISO date strings for countdowns
+		welcomeHeading: string;
+		introText: string;
+		statusText: string;
+		signUpUrl: string;
+		countdownDates: string[]; // ISO date strings for countdowns
 		countdownLabels: {
-			registrationCloses: string
-			promptsRelease: string
-			submissionCloses: string
-		}
-	}
+			registrationCloses: string;
+			promptsRelease: string;
+			submissionCloses: string;
+		};
+	};
 	login: {
-		heading: string
-		description: string
-		emailNote: string
-		accountTypeLabels: Record<number, string>
-		signUpPrompt: string
-		signUpApprovedNote: string
-		signInButton: string
-		signOutButton: string
-		loadingText: string
-		notLoggedInText: string
-		yourAccountInfo: string
-		nameLabel: string
-		emailLabel: string
-		accountTypeLabel: string
-		teamIdLabel: string
-	}
+		heading: string;
+		description: string;
+		emailNote: string;
+		accountTypeLabels: Record<number, string>;
+		signUpPrompt: string;
+		signUpApprovedNote: string;
+		signInButton: string;
+		signOutButton: string;
+		loadingText: string;
+		notLoggedInText: string;
+		yourAccountInfo: string;
+		nameLabel: string;
+		emailLabel: string;
+		accountTypeLabel: string;
+		teamIdLabel: string;
+	};
 	dashboard: {
-		accessDenied: string // shown when user access level < 1
-		loading: string // shown while auth status loading
-		loginRequired: string // shown when not logged in
-		loginLinkText: string // text for login link
-	}
+		accessDenied: string; // shown when user access level < 1
+		loading: string; // shown while auth status loading
+		loginRequired: string; // shown when not logged in
+		loginLinkText: string; // text for login link
+	};
 	dashboardCompetitor: {
-		heading: string // use {name} placeholder
-		intro: string
+		heading: string; // use {name} placeholder
+		intro: string;
 		phaseIndicator: {
-			closed: { label: string; tooltip: string }
-			active: { label: string; tooltip: string }
-			judging: { label: string; tooltip: string }
-		}
+			closed: { label: string; tooltip: string };
+			active: { label: string; tooltip: string };
+			judging: { label: string; tooltip: string };
+		};
 		closedMessage: {
-			title: string
-			timeRemainingLabel: string
-			countdownDate: string // ISO date for countdown when closed
-		}
+			title: string;
+			timeRemainingLabel: string;
+			countdownDate: string; // ISO date for countdown when closed
+		};
 		activeMessage: {
-			title: string
-			timeRemainingLabel: string
-			countdownDate: string // ISO date for countdown when active
-		}
+			title: string;
+			timeRemainingLabel: string;
+			countdownDate: string; // ISO date for countdown when active
+		};
 		judgingMessage: {
-			title: string
-			message: string
-		}
-	}
+			title: string;
+			message: string;
+		};
+	};
 	dashboardJudge: {
-		heading: string // use {name} placeholder
-		intro: string
-		judgingNotes: string[]
-		additionalNotes: string[]
+		heading: string; // use {name} placeholder
+		intro: string;
+		judgingNotes: string[];
+		additionalNotes: string[];
 		editForm: {
-			title: string
-			description: string
-		}
-	}
+			title: string;
+			description: string;
+		};
+	};
 	showcase: {
-		heading: string
-		description: string
-		longDescription: string
-		winners: string[] // team IDs of projects to display
+		heading: string;
+		description: string;
+		longDescription: string;
+		winners: string[]; // team IDs of projects to display
 		top3: {
-			title: string
-			description: string
-		}
+			title: string;
+			description: string;
+		};
 		honorableMentions: {
-			title: string
-			description: string
-		}
-		closing: string
-	}
+			title: string;
+			description: string;
+		};
+		closing: string;
+	};
 	submission: {
-		developedBy: string
-		builtUsing: string
-		chosenPrompt: string
-		untitled: string
-		noTechnologies: string
-		noPrompt: string
-		codeNotSubmitted: string
-		videoNotSubmitted: string
-		viewGithub: string
-		viewCode: string
-		viewVideo: string
-		downloadCode: string
-		compressedFolder: string
-		shareUrl: string
-	}
+		developedBy: string;
+		builtUsing: string;
+		chosenPrompt: string;
+		untitled: string;
+		noTechnologies: string;
+		noPrompt: string;
+		codeNotSubmitted: string;
+		videoNotSubmitted: string;
+		viewGithub: string;
+		viewCode: string;
+		viewVideo: string;
+		downloadCode: string;
+		compressedFolder: string;
+		shareUrl: string;
+	};
 	submissionForm: {
-		checklistTitle: string
-		yourTeamLabel: string
-		checklistComingSoon: string
-		projectTitlePlaceholder: string
-		descriptionLabel: string
-		descriptionPlaceholder: string
-		promptSelectLabel: string
-		prompts: string[] // list of available prompt values
-		technologiesLabel: string
-		technologiesPlaceholder: string
-		githubLabel: string
-		githubPlaceholder: string
-		saveButtonAria: string
-	}
+		checklistTitle: string;
+		yourTeamLabel: string;
+		checklistComingSoon: string;
+		projectTitlePlaceholder: string;
+		descriptionLabel: string;
+		descriptionPlaceholder: string;
+		promptSelectLabel: string;
+		prompts: string[]; // list of available prompt values
+		technologiesLabel: string;
+		technologiesPlaceholder: string;
+		githubLabel: string;
+		githubPlaceholder: string;
+		saveButtonAria: string;
+	};
 	countdown: {
-		timeUntilPrefix: string
-	}
+		timeUntilPrefix: string;
+	};
 	judgeToolbox: {
-		title: string
-		editTitle: string
-		editTechs: string
-		addComment: string
-	}
+		title: string;
+		editTitle: string;
+		editTechs: string;
+		addComment: string;
+	};
 	footer: {
-		copyright: string
-	}
+		copyright: string;
+	};
 	externalUrls: {
-		signUpForm: string
-	}
+		signUpForm: string;
+	};
 }
 
 export const defaultSiteConfig: SiteConfig = {
@@ -341,7 +341,7 @@ export const defaultSiteConfig: SiteConfig = {
 	externalUrls: {
 		signUpForm: "https://forms.cloud.microsoft/r/3t7EywybWw",
 	},
-}
+};
 
 // Optional: allow user overrides
-export const siteConfig = defaultSiteConfig
+export const siteConfig = defaultSiteConfig;

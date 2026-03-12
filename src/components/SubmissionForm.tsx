@@ -14,8 +14,9 @@
  * @returns {JSX.Element} Submission form
  */
 
-import React, { useEffect, useState, ChangeEvent, FormEvent } from "react"
-import { siteConfig } from "@/config/siteConfig"
+import React, { useEffect, useState, ChangeEvent, FormEvent } from "react";
+import { siteConfig } from "@/config/siteConfig";
+import styles from "./SubmissionForm.module.css";
 
 /**
  * Icon components for form actions
@@ -34,7 +35,7 @@ const iconSave: React.ReactElement = (
 			<path d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0M1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5m3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4zM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5z" />
 		</svg>
 	</span>
-)
+);
 
 const iconCheck: React.ReactElement = (
 	<span className="iconCheck">
@@ -48,31 +49,31 @@ const iconCheck: React.ReactElement = (
 			<path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0" />
 		</svg>
 	</span>
-)
+);
 
 /**
  * Interface for submission data from API
  */
 interface SubmissionData {
-	id?: number
-	teamID: string
-	title: string | null
-	members?: string
-	description: string | null
-	github: string | null
-	prompt: string | null
-	technologies: string | null
-	[key: string]: unknown
+	id?: number;
+	teamID: string;
+	title: string | null;
+	members?: string;
+	description: string | null;
+	github: string | null;
+	prompt: string | null;
+	technologies: string | null;
+	[key: string]: unknown;
 }
 
 /**
  * Props for SubmissionForm component
  */
 interface SubmissionFormProps {
-	children?: React.ReactNode
-	teamID?: string
-	readonly: boolean
-	onUpdate: () => void
+	children?: React.ReactNode;
+	teamID?: string;
+	readonly: boolean;
+	onUpdate: () => void;
 }
 
 export default function SubmissionForm({
@@ -81,36 +82,36 @@ export default function SubmissionForm({
 	readonly,
 	onUpdate,
 }: SubmissionFormProps): React.ReactElement {
-	const [members, setMembers] = useState<string>("")
-	const [title, setTitle] = useState<string>("")
-	const [description, setDescription] = useState<string>("")
-	const [github, setGithub] = useState<string>("")
-	const [prompt, setPrompt] = useState<string>("")
-	const [technologies, setTechnologies] = useState<string>("")
+	const [members, setMembers] = useState<string>("");
+	const [title, setTitle] = useState<string>("");
+	const [description, setDescription] = useState<string>("");
+	const [github, setGithub] = useState<string>("");
+	const [prompt, setPrompt] = useState<string>("");
+	const [technologies, setTechnologies] = useState<string>("");
 
 	const fetchEntry = async (): Promise<void> => {
-		if (!teamID) return
+		if (!teamID) return;
 
-		const response = await fetch("/api/sql/pullProject?search=" + teamID)
+		const response = await fetch("/api/sql/pullProject?search=" + teamID);
 		if (response.ok) {
-			const data = (await response.json()) as SubmissionData[]
-			setTitle(data[0]?.title || "")
-			setMembers(data[0]?.members || "")
-			setDescription(data[0]?.description || "")
-			setGithub(data[0]?.github || "")
-			setPrompt(data[0]?.prompt || "")
-			setTechnologies(data[0]?.technologies || "")
+			const data = (await response.json()) as SubmissionData[];
+			setTitle(data[0]?.title || "");
+			setMembers(data[0]?.members || "");
+			setDescription(data[0]?.description || "");
+			setGithub(data[0]?.github || "");
+			setPrompt(data[0]?.prompt || "");
+			setTechnologies(data[0]?.technologies || "");
 		} else {
-			console.error("Failed to fetch entry")
+			console.error("Failed to fetch entry");
 		}
-	}
+	};
 
 	const editEntry = async (
 		event: FormEvent<HTMLFormElement>,
 	): Promise<void> => {
-		event.preventDefault()
+		event.preventDefault();
 
-		if (readonly || !teamID) return
+		if (readonly || !teamID) return;
 
 		const data = {
 			teamID,
@@ -119,7 +120,7 @@ export default function SubmissionForm({
 			github,
 			prompt,
 			technologies,
-		}
+		};
 
 		try {
 			const response = await fetch("/api/sql/editProject", {
@@ -128,32 +129,33 @@ export default function SubmissionForm({
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(data),
-			})
+			});
 
-			const result = (await response.json()) as { message?: string }
+			const result = (await response.json()) as { message?: string };
 
 			if (response.ok) {
-				onUpdate()
-				fetchEntry()
+				onUpdate();
+				fetchEntry();
 			} else {
-				console.error("Error: " + (result.message || "Unknown error"))
+				console.error("Error: " + (result.message || "Unknown error"));
 			}
 		} catch (error) {
-			console.error("Error:", error)
+			console.error("Error:", error);
 		}
-	}
+	};
 
 	useEffect(() => {
-		fetchEntry()
-	}, [])
+		fetchEntry();
+	}, []);
 
 	if (!teamID) {
-		return <></>
+		return <></>;
 	}
 
 	return (
-		<>
+		<div className={styles.wrapper}>
 			<div className="flexBox">
+				{/* Left column – message + checklist */}
 				<div className="leftBox">
 					<div className="projBox cYellow padBottom">{children}</div>
 					<div className="projBox console cBlue">
@@ -174,19 +176,11 @@ export default function SubmissionForm({
 						</p>
 					</div>
 				</div>
+
+				{/* Right column – form fields */}
 				<div className="rightBox">
-					<form onSubmit={editEntry}>
+					<form id="submissionForm" onSubmit={editEntry}>
 						<div className="projBox console">
-							{!readonly && (
-								<button
-									type="submit"
-									aria-label={
-										siteConfig.submissionForm.saveButtonAria
-									}
-								>
-									{iconSave}
-								</button>
-							)}
 							<span className="inputWrap">
 								<input
 									className="titleInput txtBox medBig serifBold"
@@ -221,49 +215,54 @@ export default function SubmissionForm({
 											): void =>
 												setDescription(e.target.value)
 											}
-											rows={15}
+											rows={12}
 											readOnly={readonly}
 										/>
 									</span>
 								</div>
-
 								<div className="rightBoxInv">
-									{
-										siteConfig.submissionForm
-											.promptSelectLabel
-									}
-									<div className="txtArea promptArea">
-										{siteConfig.submissionForm.prompts.map(
-											(promptValue, index) => (
-												<p
-													key={index}
-													className="wrapRadio"
-												>
-													<label className="labelRadio">
-														<input
-															type="radio"
-															value={promptValue}
-															checked={
-																prompt ===
-																promptValue
-															}
-															onChange={(
-																e: ChangeEvent<HTMLInputElement>,
-															): void =>
-																setPrompt(
-																	e.target
-																		.value,
-																)
-															}
-															disabled={readonly}
-														/>
-														<span className="iconRadio"></span>
-													</label>
-													{promptValue}
-												</p>
-											),
-										)}
-									</div>
+									<span className="inputWrap">
+										{
+											siteConfig.submissionForm
+												.promptSelectLabel
+										}
+										<div className="txtArea promptArea">
+											{siteConfig.submissionForm.prompts.map(
+												(promptValue, index) => (
+													<p
+														key={index}
+														className="wrapRadio"
+													>
+														<label className="labelRadio">
+															<input
+																type="radio"
+																value={
+																	promptValue
+																}
+																checked={
+																	prompt ===
+																	promptValue
+																}
+																onChange={(
+																	e: ChangeEvent<HTMLInputElement>,
+																): void =>
+																	setPrompt(
+																		e.target
+																			.value,
+																	)
+																}
+																disabled={
+																	readonly
+																}
+															/>
+															<span className="iconRadio"></span>
+														</label>
+														{promptValue}
+													</p>
+												),
+											)}
+										</div>
+									</span>
 									<span className="inputWrap">
 										{
 											siteConfig.submissionForm
@@ -281,7 +280,7 @@ export default function SubmissionForm({
 											): void =>
 												setTechnologies(e.target.value)
 											}
-											rows={3}
+											rows={4}
 											readOnly={readonly}
 										/>
 									</span>
@@ -299,16 +298,28 @@ export default function SubmissionForm({
 											): void =>
 												setGithub(e.target.value)
 											}
-											rows={3}
+											rows={2}
 											readOnly={readonly}
 										/>
 									</span>
 								</div>
 							</div>
+							{!readonly && (
+								<div className={styles.buttonContainer}>
+									<button
+										type="submit"
+										form="submissionForm"
+										className={styles.saveButton}
+									>
+										{iconSave}
+										<span>Save</span>
+									</button>
+								</div>
+							)}
 						</div>
 					</form>
 				</div>
 			</div>
-		</>
-	)
+		</div>
+	);
 }

@@ -97,10 +97,10 @@ const pool = mysql.createPool({
 	waitForConnections: true,
 	connectionLimit: 20,
 	queueLimit: 0,
-})
+});
 
 export default async function getConnection() {
-	return await pool.getConnection()
+	return await pool.getConnection();
 }
 ```
 
@@ -154,8 +154,8 @@ export async function query<T extends RowDataPacket[]>(
 	sql: string,
 	params?: any[],
 ): Promise<T> {
-	const [rows] = await pool.query<T>(sql, params)
-	return rows
+	const [rows] = await pool.query<T>(sql, params);
+	return rows;
 }
 ```
 

@@ -8,7 +8,7 @@
  * @module CompetitionContext
  */
 
-"use client"
+"use client";
 
 import React, {
 	createContext,
@@ -16,14 +16,14 @@ import React, {
 	useState,
 	useEffect,
 	ReactNode,
-} from "react"
+} from "react";
 
 /**
  * Competition context value interface
  */
 interface CompetitionContextValue {
 	/** Current competition phase from backend */
-	competitionState: string | null
+	competitionState: string | null;
 }
 
 /**
@@ -31,7 +31,7 @@ interface CompetitionContextValue {
  */
 interface CompetitionProviderProps {
 	/** Child components to wrap */
-	children: ReactNode
+	children: ReactNode;
 }
 
 /**
@@ -40,7 +40,7 @@ interface CompetitionProviderProps {
  */
 const CompetitionContext = createContext<CompetitionContextValue | undefined>(
 	undefined,
-)
+);
 
 /**
  * Competition Provider Component
@@ -66,7 +66,7 @@ export const CompetitionProvider = ({
 	// State to hold current competition phase
 	const [competitionState, setCompetitionState] = useState<string | null>(
 		null,
-	)
+	);
 
 	/**
 	 * Fetches the current competition phase from the backend API
@@ -75,33 +75,33 @@ export const CompetitionProvider = ({
 	 */
 	const fetchCompetitionState = async (): Promise<void> => {
 		try {
-			const response = await fetch("/api/sql/phase")
+			const response = await fetch("/api/sql/phase");
 			if (response.ok) {
-				const data = (await response.json()) as { phase_name: string }
-				setCompetitionState(data.phase_name)
+				const data = (await response.json()) as { phase_name: string };
+				setCompetitionState(data.phase_name);
 			} else {
-				console.error("Failed to fetch competition phase")
+				console.error("Failed to fetch competition phase");
 			}
 		} catch (error) {
-			console.error("Error fetching competition phase: ", error)
+			console.error("Error fetching competition phase: ", error);
 		}
-	}
+	};
 
 	// Fetch competition state on component mount
 	useEffect(() => {
-		fetchCompetitionState()
-	}, []) // Empty dependency array ensures this runs only once on mount
+		fetchCompetitionState();
+	}, []); // Empty dependency array ensures this runs only once on mount
 
 	const value: CompetitionContextValue = {
 		competitionState,
-	}
+	};
 
 	return (
 		<CompetitionContext.Provider value={value}>
 			{children}
 		</CompetitionContext.Provider>
-	)
-}
+	);
+};
 
 /**
  * Custom hook to access competition context
@@ -120,13 +120,13 @@ export const CompetitionProvider = ({
  * @throws {Error} If used outside of CompetitionProvider
  */
 export const useCompetition = (): CompetitionContextValue => {
-	const context = useContext(CompetitionContext)
+	const context = useContext(CompetitionContext);
 
 	if (context === undefined) {
 		throw new Error(
 			"useCompetition must be used within a CompetitionProvider",
-		)
+		);
 	}
 
-	return context
-}
+	return context;
+};

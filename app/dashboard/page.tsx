@@ -11,32 +11,32 @@
  * @returns {JSX.Element} Dashboard page
  */
 
-"use client"
+"use client";
 
-import React from "react"
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import { useSession } from "next-auth/react"
-import { useCompetition } from "@/src/context/CompetitionContext"
-import Submission from "@/src/components/Submission"
-import DashboardCompetitor from "@/src/components/DashboardCompetitor"
-import DashboardJudge from "@/src/components/DashboardJudge"
-import { siteConfig } from "@/config/siteConfig"
+import React from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useCompetition } from "@/src/context/CompetitionContext";
+import Submission from "@/src/components/Submission";
+import DashboardCompetitor from "@/src/components/DashboardCompetitor";
+import DashboardJudge from "@/src/components/DashboardJudge";
+import { siteConfig } from "@/config/siteConfig";
 
 /**
  * Interface representing a project entry from the database
  */
 interface ProjectEntry {
-	id: number
-	teamID: string
-	title: string
-	description: string
-	github: string
-	prompt: string
-	technologies: string
-	submission_date?: string
-	status?: string
-	[key: string]: unknown
+	id: number;
+	teamID: string;
+	title: string;
+	description: string;
+	github: string;
+	prompt: string;
+	technologies: string;
+	submission_date?: string;
+	status?: string;
+	[key: string]: unknown;
 }
 
 /**
@@ -47,36 +47,36 @@ interface ProjectEntry {
  * @returns {JSX.Element} Dashboard page
  */
 const Dashboard = (): React.ReactElement => {
-	const { data: session, status: authStatus } = useSession()
-	const competition = useCompetition()
-	const [entries, setEntries] = useState<ProjectEntry[]>([])
-	const [edit, setEdit] = useState<boolean>(false)
+	const { data: session, status: authStatus } = useSession();
+	const competition = useCompetition();
+	const [entries, setEntries] = useState<ProjectEntry[]>([]);
+	const [edit, setEdit] = useState<boolean>(false);
 
 	const fetchEntries = async (): Promise<void> => {
 		if (session) {
 			try {
 				if (session.user.access > 1) {
-					const response = await fetch("/api/sql/pullProject")
+					const response = await fetch("/api/sql/pullProject");
 					if (response.ok) {
-						const data = (await response.json()) as ProjectEntry[]
-						setEntries(data)
+						const data = (await response.json()) as ProjectEntry[];
+						setEntries(data);
 					} else {
-						console.error("Failed to fetch entries")
+						console.error("Failed to fetch entries");
 					}
 				}
 			} catch (error) {
-				console.error("Error fetching entries: ", error)
+				console.error("Error fetching entries: ", error);
 			}
 		}
-	}
+	};
 
 	const refreshData = (): void => {
-		fetchEntries()
-	}
+		fetchEntries();
+	};
 
 	useEffect(() => {
-		fetchEntries()
-	}, [session])
+		fetchEntries();
+	}, [session]);
 
 	return (
 		<>
@@ -106,7 +106,7 @@ const Dashboard = (): React.ReactElement => {
 				</p>
 			)}
 		</>
-	)
-}
+	);
+};
 
-export default Dashboard
+export default Dashboard;

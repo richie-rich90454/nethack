@@ -19,24 +19,24 @@
  * @returns {JSX.Element} Rendered countdown timer with label and formatted time
  */
 
-"use client"
+"use client";
 
-import React, { useEffect, useState } from "react"
-import styles from "./Countdown.module.css"
-import { siteConfig } from "@/config/siteConfig"
+import React, { useEffect, useState } from "react";
+import styles from "./Countdown.module.css";
+import { siteConfig } from "@/config/siteConfig";
 
 /**
  * Interface for the time left object
  */
 interface TimeLeft {
 	/** Number of days remaining */
-	days: number
+	days: number;
 	/** Number of hours remaining (0-23) */
-	hours: number
+	hours: number;
 	/** Number of minutes remaining (0-59) */
-	minutes: number
+	minutes: number;
 	/** Number of seconds remaining (0-59) */
-	seconds: number
+	seconds: number;
 }
 
 /**
@@ -44,9 +44,9 @@ interface TimeLeft {
  */
 interface CountdownProps {
 	/** ISO 8601 date string for countdown target */
-	targetDate: string
+	targetDate: string;
 	/** Display label for the countdown event */
-	label: string
+	label: string;
 }
 
 /**
@@ -66,13 +66,13 @@ const Countdown = ({
 	 * @returns {TimeLeft} Time left object with days, hours, minutes, seconds
 	 */
 	const calculateTimeLeft = (): TimeLeft => {
-		const target = new Date(targetDate)
-		const now = new Date()
+		const target = new Date(targetDate);
+		const now = new Date();
 		const difference =
 			target.getTime() -
 			now.getTime() +
-			target.getTimezoneOffset() * 60 * 1000
-		let timeLeft: TimeLeft
+			target.getTimezoneOffset() * 60 * 1000;
+		let timeLeft: TimeLeft;
 
 		if (difference > 0) {
 			timeLeft = {
@@ -84,7 +84,7 @@ const Countdown = ({
 					(difference % (1000 * 60 * 60)) / (1000 * 60),
 				),
 				seconds: Math.floor((difference % (1000 * 60)) / 1000),
-			}
+			};
 		} else {
 			// Countdown has ended - show zeros
 			timeLeft = {
@@ -92,31 +92,31 @@ const Countdown = ({
 				hours: 0,
 				minutes: 0,
 				seconds: 0,
-			}
+			};
 		}
 
-		return timeLeft
-	}
+		return timeLeft;
+	};
 
 	// State to hold current time left values
-	const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft())
+	const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft());
 
 	// Set up interval to update countdown every second
 	useEffect(() => {
 		const timer = setInterval((): void => {
-			setTimeLeft(calculateTimeLeft())
-		}, 1000)
+			setTimeLeft(calculateTimeLeft());
+		}, 1000);
 
 		// Cleanup interval on component unmount
-		return (): void => clearInterval(timer)
-	}, [targetDate])
+		return (): void => clearInterval(timer);
+	}, [targetDate]);
 
 	/**
 	 * Format number to always have 2 digits with leading zero
 	 * @param {number} num - Number to format
 	 * @returns {string} Formatted 2-digit string
 	 */
-	const formatNumber = (num: number): string => String(num).padStart(2, "0")
+	const formatNumber = (num: number): string => String(num).padStart(2, "0");
 
 	return (
 		<div className={styles.wrap}>
@@ -135,7 +135,7 @@ const Countdown = ({
 				{new Date(targetDate).toString()}
 			</div>
 		</div>
-	)
-}
+	);
+};
 
-export default Countdown
+export default Countdown;

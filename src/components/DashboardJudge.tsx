@@ -1,41 +1,41 @@
-import { useCompetition } from "@/src/context/CompetitionContext"
-import { useEffect, useState } from "react"
-import Submission from "./Submission"
-import JudgeToolbox from "./JudgeToolbox"
-import { useSession } from "next-auth/react"
-import SubmissionForm from "./SubmissionForm"
-import styles from "./DashboardJudge.module.css"
-import { siteConfig } from "@/config/siteConfig"
+import { useCompetition } from "@/src/context/CompetitionContext";
+import { useEffect, useState } from "react";
+import Submission from "./Submission";
+import JudgeToolbox from "./JudgeToolbox";
+import { useSession } from "next-auth/react";
+import SubmissionForm from "./SubmissionForm";
+import styles from "./DashboardJudge.module.css";
+import { siteConfig } from "@/config/siteConfig";
 
 interface ProjectSubmission {
-	id: number
-	teamID: string
-	title: string
-	description: string
-	github: string
-	prompt: string
-	technologies: string
-	members?: string
-	sub_code?: string
-	sub_video?: string
-	round?: string
-	submission_date?: string
-	status?: string
-	[key: string]: unknown
+	id: number;
+	teamID: string;
+	title: string;
+	description: string;
+	github: string;
+	prompt: string;
+	technologies: string;
+	members?: string;
+	sub_code?: string;
+	sub_video?: string;
+	round?: string;
+	submission_date?: string;
+	status?: string;
+	[key: string]: unknown;
 }
 
 export default function DashboardJudge(): React.ReactElement {
-	const { competitionState } = useCompetition()
-	const { data: session } = useSession()
+	const { competitionState } = useCompetition();
+	const { data: session } = useSession();
 
-	const [entries, setEntries] = useState<ProjectSubmission[]>([])
-	const [editing, setEditing] = useState<string>("")
+	const [entries, setEntries] = useState<ProjectSubmission[]>([]);
+	const [editing, setEditing] = useState<string>("");
 
 	const fetchEntries = async (): Promise<void> => {
 		try {
-			const response = await fetch("/api/sql/pullProject")
+			const response = await fetch("/api/sql/pullProject");
 			if (response.ok) {
-				const data = await response.json()
+				const data = await response.json();
 				// Transform API response to match ProjectSubmission interface
 				const transformed: ProjectSubmission[] = data.map(
 					(item: any) => ({
@@ -54,27 +54,27 @@ export default function DashboardJudge(): React.ReactElement {
 						submission_date: item.submission_date,
 						status: item.status,
 					}),
-				)
-				setEntries(transformed)
+				);
+				setEntries(transformed);
 			} else {
-				console.error("Failed to fetch entries")
+				console.error("Failed to fetch entries");
 			}
 		} catch (error) {
-			console.error("Error fetching entries: ", error)
+			console.error("Error fetching entries: ", error);
 		}
-	}
+	};
 
 	const refreshData = async (): Promise<void> => {
-		setEditing("")
-		await fetchEntries()
-	}
+		setEditing("");
+		await fetchEntries();
+	};
 
 	useEffect(() => {
-		fetchEntries()
-	}, [])
+		fetchEntries();
+	}, []);
 
 	if (!session?.user) {
-		return <p>Loading user information...</p>
+		return <p>Loading user information...</p>;
 	}
 
 	return (
@@ -143,5 +143,5 @@ export default function DashboardJudge(): React.ReactElement {
 				)}
 			</div>
 		</>
-	)
+	);
 }

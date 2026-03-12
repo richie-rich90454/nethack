@@ -69,19 +69,19 @@ All user‑visible text, dates, and selectable options are defined in **`config/
 
 ### What You Can Customize
 
-| Section | Examples |
-| --- | --- |
-| **Site Identity** | `siteTitle`, navigation labels (`nav.home`, `nav.login`, etc.) |
-| **Home Page** | `home.welcomeHeading`, `home.introText`, `home.statusText`, `home.countdownDates` |
-| **Login Page** | `login.heading`, `login.description`, `login.emailNote`, `login.accountTypeLabels` |
-| **Dashboard (General)** | `dashboard.accessDenied`, `dashboard.loading`, `dashboard.loginRequired` |
-| **Competitor Dashboard** | Phase labels, tooltips, countdown dates, messages |
-| **Judge Dashboard** | Introductory text, judging notes, additional notes, edit form prompts |
-| **Showcase Page** | `showcase.heading`, `showcase.description`, `showcase.longDescription`, `showcase.winners` (team IDs) |
-| **Submission Form** | Field labels, placeholders, available prompts (`prompts` array) |
-| **Footer** | `footer.copyright` |
-| **External Links** | `externalUrls.signUpForm` |
-| **Countdown Dates** | All date strings (ISO 8601 with offset, e.g. `"2025-06-11T23:59:59+0800"`) |
+| Section                  | Examples                                                                                              |
+| ------------------------ | ----------------------------------------------------------------------------------------------------- |
+| **Site Identity**        | `siteTitle`, navigation labels (`nav.home`, `nav.login`, etc.)                                        |
+| **Home Page**            | `home.welcomeHeading`, `home.introText`, `home.statusText`, `home.countdownDates`                     |
+| **Login Page**           | `login.heading`, `login.description`, `login.emailNote`, `login.accountTypeLabels`                    |
+| **Dashboard (General)**  | `dashboard.accessDenied`, `dashboard.loading`, `dashboard.loginRequired`                              |
+| **Competitor Dashboard** | Phase labels, tooltips, countdown dates, messages                                                     |
+| **Judge Dashboard**      | Introductory text, judging notes, additional notes, edit form prompts                                 |
+| **Showcase Page**        | `showcase.heading`, `showcase.description`, `showcase.longDescription`, `showcase.winners` (team IDs) |
+| **Submission Form**      | Field labels, placeholders, available prompts (`prompts` array)                                       |
+| **Footer**               | `footer.copyright`                                                                                    |
+| **External Links**       | `externalUrls.signUpForm`                                                                             |
+| **Countdown Dates**      | All date strings (ISO 8601 with offset, e.g. `"2025-06-11T23:59:59+0800"`)                            |
 
 All strings can include HTML (e.g., `<span class="serifBold">`). The configuration is strongly typed – your IDE will provide autocompletion and prevent typos.
 
@@ -98,7 +98,7 @@ All strings can include HTML (e.g., `<span class="serifBold">`). The configurati
 In the `submissionForm.prompts` array, add your new prompt:
 
 ```typescript
-prompts: ["Game Jam", "AI for Good", "Open Innovation"]
+prompts: ["Game Jam", "AI for Good", "Open Innovation"];
 ```
 
 The submission form will automatically render radio buttons for each option.
@@ -245,12 +245,12 @@ All customizable text, dates, and external URLs are defined in `config/siteConfi
 
 ## API Endpoints
 
-| Endpoint | Method | Description |
-| --- | --- | --- |
-| `/api/auth/[...nextauth]` | GET, POST | NextAuth authentication (Azure AD) |
-| `/api/sql/phase` | GET | Retrieve current competition phase |
-| `/api/sql/pullProject` | GET | Fetch project submissions (optional `?search=teamID`) |
-| `/api/sql/editProject` | POST | Update a project submission |
+| Endpoint                  | Method    | Description                                           |
+| ------------------------- | --------- | ----------------------------------------------------- |
+| `/api/auth/[...nextauth]` | GET, POST | NextAuth authentication (Azure AD)                    |
+| `/api/sql/phase`          | GET       | Retrieve current competition phase                    |
+| `/api/sql/pullProject`    | GET       | Fetch project submissions (optional `?search=teamID`) |
+| `/api/sql/editProject`    | POST      | Update a project submission                           |
 
 All endpoints return JSON. Error responses include a `message` and, where applicable, `details`.
 

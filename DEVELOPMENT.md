@@ -186,13 +186,13 @@ nethack/
 
 ### Development Scripts
 
-| Script | Purpose | Usage |
-| --- | --- | --- |
-| `npm run dev` | Start development server with Turbopack | `npm run dev` |
-| `npm run build` | Create a production build | `npm run build` |
-| `npm start` | Run the production server | `npm start` |
-| `npm run lint` | Run ESLint | `npm run lint` |
-| `npm run format` | Format all files with Prettier | `npm run format` |
+| Script                 | Purpose                                  | Usage                  |
+| ---------------------- | ---------------------------------------- | ---------------------- |
+| `npm run dev`          | Start development server with Turbopack  | `npm run dev`          |
+| `npm run build`        | Create a production build                | `npm run build`        |
+| `npm start`            | Run the production server                | `npm start`            |
+| `npm run lint`         | Run ESLint                               | `npm run lint`         |
+| `npm run format`       | Format all files with Prettier           | `npm run format`       |
 | `npm run format:check` | Check formatting without writing changes | `npm run format:check` |
 
 ## TypeScript Development
@@ -207,12 +207,12 @@ The project uses strict TypeScript with the following features:
 ### Example Component with TypeScript
 
 ```tsx
-import React from "react"
-import styles from "./Example.module.css"
+import React from "react";
+import styles from "./Example.module.css";
 
 interface ExampleProps {
-	title: string
-	count?: number // optional prop
+	title: string;
+	count?: number; // optional prop
 }
 
 const Example = ({ title, count = 0 }: ExampleProps): React.ReactElement => {
@@ -221,41 +221,41 @@ const Example = ({ title, count = 0 }: ExampleProps): React.ReactElement => {
 			<h2>{title}</h2>
 			<p>Count: {count}</p>
 		</div>
-	)
-}
+	);
+};
 
-export default Example
+export default Example;
 ```
 
 ### Example API Route with TypeScript
 
 ```tsx
-import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
-import { query } from "@/app/api/sql/database"
-import { RowDataPacket } from "mysql2"
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { query } from "@/app/api/sql/database";
+import { RowDataPacket } from "mysql2";
 
 interface MyRow extends RowDataPacket {
-	id: number
-	name: string
+	id: number;
+	name: string;
 }
 
 export async function GET(req: NextRequest) {
-	const session = await getServerSession(authOptions)
+	const session = await getServerSession(authOptions);
 	if (!session) {
-		return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	}
 
 	try {
-		const [rows] = await query<MyRow[]>("SELECT id, name FROM mytable")
-		return NextResponse.json(rows)
+		const [rows] = await query<MyRow[]>("SELECT id, name FROM mytable");
+		return NextResponse.json(rows);
 	} catch (error) {
-		console.error("API error:", error)
+		console.error("API error:", error);
 		return NextResponse.json(
 			{ error: "Internal Server Error" },
 			{ status: 500 },
-		)
+		);
 	}
 }
 ```
@@ -275,7 +275,7 @@ const pool = mysql.createPool({
 	waitForConnections: true,
 	connectionLimit: 20,
 	queueLimit: 0,
-})
+});
 ```
 
 ### Query Patterns
@@ -283,26 +283,26 @@ const pool = mysql.createPool({
 1. **Using the pool directly (simple queries)**
 
     ```typescript
-    import { query } from "@/app/api/sql/database"
+    import { query } from "@/app/api/sql/database";
 
-    const users = await query("SELECT * FROM users WHERE access = ?", [1])
+    const users = await query("SELECT * FROM users WHERE access = ?", [1]);
     ```
 
 2. **Using a connection for transactions**
 
     ```typescript
-    import getConnection from "@/app/api/sql/database"
+    import getConnection from "@/app/api/sql/database";
 
-    const connection = await getConnection()
+    const connection = await getConnection();
     try {
-    	await connection.beginTransaction()
+    	await connection.beginTransaction();
     	// multiple queries
-    	await connection.commit()
+    	await connection.commit();
     } catch (error) {
-    	await connection.rollback()
-    	throw error
+    	await connection.rollback();
+    	throw error;
     } finally {
-    	connection.release()
+    	connection.release();
     }
     ```
 
@@ -339,13 +339,13 @@ Ensure your `.env.local` contains the correct values. The `NEXTAUTH_URL` must ma
 ### Session Usage in Components
 
 ```tsx
-import { useSession } from "next-auth/react"
+import { useSession } from "next-auth/react";
 
-const { data: session, status } = useSession()
+const { data: session, status } = useSession();
 
 if (status === "authenticated") {
-	console.log("Access level:", session.user.access)
-	console.log("Team ID:", session.user.teamID)
+	console.log("Access level:", session.user.access);
+	console.log("Team ID:", session.user.teamID);
 }
 ```
 
@@ -366,21 +366,21 @@ if (status === "authenticated") {
      * @param {string} props.exampleProp - Example property description
      * @returns {JSX.Element} Rendered component
      */
-    "use client"
-    import React from "react"
-    import styles from "./ComponentName.module.css"
+    "use client";
+    import React from "react";
+    import styles from "./ComponentName.module.css";
 
     interface ComponentNameProps {
-    	exampleProp: string
+    	exampleProp: string;
     }
 
     const ComponentName = ({
     	exampleProp,
     }: ComponentNameProps): React.ReactElement => {
-    	return <div className={styles.container}>{exampleProp}</div>
-    }
+    	return <div className={styles.container}>{exampleProp}</div>;
+    };
 
-    export default ComponentName
+    export default ComponentName;
     ```
 
 2. Create the corresponding CSS Module `ComponentName.module.css`:
@@ -404,22 +404,22 @@ if (status === "authenticated") {
 const handleSubmit = async (
 	event: React.FormEvent<HTMLFormElement>,
 ): Promise<void> => {
-	event.preventDefault()
+	event.preventDefault();
 	try {
 		const res = await fetch("/api/sql/editProject", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(formData),
-		})
+		});
 		if (res.ok) {
 			// handle success
 		} else {
 			// handle error
 		}
 	} catch (error) {
-		console.error("Submission error:", error)
+		console.error("Submission error:", error);
 	}
-}
+};
 ```
 
 ## API Development
@@ -430,26 +430,29 @@ const handleSubmit = async (
 2. Add a `route.ts` file with the following structure:
 
     ```tsx
-    import { NextRequest, NextResponse } from "next/server"
-    import { getServerSession } from "next-auth"
-    import { authOptions } from "@/app/api/auth/[...nextauth]/route"
-    import { query } from "@/app/api/sql/database"
+    import { NextRequest, NextResponse } from "next/server";
+    import { getServerSession } from "next-auth";
+    import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+    import { query } from "@/app/api/sql/database";
 
     export async function GET(req: NextRequest) {
-    	const session = await getServerSession(authOptions)
+    	const session = await getServerSession(authOptions);
     	if (!session) {
-    		return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    		return NextResponse.json(
+    			{ error: "Unauthorized" },
+    			{ status: 401 },
+    		);
     	}
 
     	try {
-    		const results = await query("SELECT * FROM example")
-    		return NextResponse.json(results)
+    		const results = await query("SELECT * FROM example");
+    		return NextResponse.json(results);
     	} catch (error) {
-    		console.error("API error:", error)
+    		console.error("API error:", error);
     		return NextResponse.json(
     			{ error: "Internal Server Error" },
     			{ status: 500 },
-    		)
+    		);
     	}
     }
 
@@ -463,12 +466,12 @@ const handleSubmit = async (
 Always validate incoming data:
 
 ```tsx
-const body = await req.json()
+const body = await req.json();
 if (!body.requiredField || typeof body.requiredField !== "string") {
 	return NextResponse.json(
 		{ error: "Missing or invalid requiredField" },
 		{ status: 400 },
-	)
+	);
 }
 ```
 
@@ -489,13 +492,13 @@ Return appropriate HTTP status codes and JSON error messages:
 Set up Jest and React Testing Library (currently not configured; you may add them). Example test:
 
 ```tsx
-import { render, screen } from "@testing-library/react"
-import Countdown from "@/src/components/Countdown"
+import { render, screen } from "@testing-library/react";
+import Countdown from "@/src/components/Countdown";
 
 test("renders countdown label", () => {
-	render(<Countdown targetDate="2025-12-31" label="Test Event" />)
-	expect(screen.getByText(/Time until/)).toBeInTheDocument()
-})
+	render(<Countdown targetDate="2025-12-31" label="Test Event" />);
+	expect(screen.getByText(/Time until/)).toBeInTheDocument();
+});
 ```
 
 ### Integration Testing
@@ -508,23 +511,23 @@ Consider using Playwright or Cypress. Example Playwright test:
 
 ```ts
 test("competitor can access dashboard", async ({ page }) => {
-	await page.goto("/login")
+	await page.goto("/login");
 	// fill login form and submit
-	await expect(page).toHaveURL("/dashboard")
-})
+	await expect(page).toHaveURL("/dashboard");
+});
 ```
 
 ## Debugging
 
 ### Common Issues
 
-| Issue | Possible Cause | Solution |
-| --- | --- | --- |
-| Cannot connect to database | MySQL not running | Start MySQL service |
-| Authentication redirect loop | NEXTAUTH_URL mismatch | Update `.env.local` |
-| Component not updating | Missing dependency array | Check `useEffect` dependencies |
-| API returns 401 | Missing session | Check authentication flow |
-| TypeScript errors | Outdated types | Run `npm install` or restart TS server |
+| Issue                        | Possible Cause           | Solution                               |
+| ---------------------------- | ------------------------ | -------------------------------------- |
+| Cannot connect to database   | MySQL not running        | Start MySQL service                    |
+| Authentication redirect loop | NEXTAUTH_URL mismatch    | Update `.env.local`                    |
+| Component not updating       | Missing dependency array | Check `useEffect` dependencies         |
+| API returns 401              | Missing session          | Check authentication flow              |
+| TypeScript errors            | Outdated types           | Run `npm install` or restart TS server |
 
 ### Tools
 
@@ -535,12 +538,12 @@ test("competitor can access dashboard", async ({ page }) => {
 
 ### Production Troubleshooting
 
-| Issue | Possible Cause | Solution |
-| --- | --- | --- |
-| High database connections | Connection leak | Check connection release |
-| Slow page loads | Unoptimized queries | Add database indexes |
-| Authentication failures | Azure AD configuration | Check redirect URIs |
-| Build failures | Dependency conflicts | Update `package.json` |
+| Issue                     | Possible Cause         | Solution                 |
+| ------------------------- | ---------------------- | ------------------------ |
+| High database connections | Connection leak        | Check connection release |
+| Slow page loads           | Unoptimized queries    | Add database indexes     |
+| Authentication failures   | Azure AD configuration | Check redirect URIs      |
+| Build failures            | Dependency conflicts   | Update `package.json`    |
 
 ### Monitoring
 

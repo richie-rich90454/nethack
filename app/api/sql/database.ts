@@ -8,10 +8,10 @@
  * @module database
  */
 
-"use server"
+"use server";
 
-import mysql from "mysql2/promise"
-import { RowDataPacket } from "mysql2"
+import mysql from "mysql2/promise";
+import { RowDataPacket } from "mysql2";
 
 /**
  * MySQL Connection Pool Configuration
@@ -37,7 +37,7 @@ const pool = mysql.createPool({
 	waitForConnections: true,
 	connectionLimit: 20,
 	queueLimit: 0,
-})
+});
 
 /**
  * Handle pool errors
@@ -52,9 +52,9 @@ const pool = mysql.createPool({
  * User data interface for database query results
  */
 interface UserRow extends RowDataPacket {
-	access: number
-	teamID: string | null
-	[key: string]: unknown
+	access: number;
+	teamID: string | null;
+	[key: string]: unknown;
 }
 
 /**
@@ -78,10 +78,10 @@ interface UserRow extends RowDataPacket {
  */
 export default async function getConnection(): Promise<mysql.PoolConnection> {
 	try {
-		return await pool.getConnection()
+		return await pool.getConnection();
 	} catch (error) {
-		console.error("Error getting database connection:", error)
-		throw error
+		console.error("Error getting database connection:", error);
+		throw error;
 	}
 }
 
@@ -108,11 +108,11 @@ export async function getUser(
 		const [rows] = await pool.query<UserRow[]>(
 			"SELECT access, teamID FROM users WHERE email = ?",
 			[email.toLowerCase()], // Normalize email to lowercase for consistent lookup
-		)
-		return rows[0] || null
+		);
+		return rows[0] || null;
 	} catch (error) {
-		console.error("Database error in getUser:", error)
-		return null
+		console.error("Database error in getUser:", error);
+		return null;
 	}
 }
 
@@ -135,10 +135,10 @@ export async function query<T extends RowDataPacket[]>(
 	params: any[] = [],
 ): Promise<T> {
 	try {
-		const [rows] = await pool.query<T>(sql, params)
-		return rows
+		const [rows] = await pool.query<T>(sql, params);
+		return rows;
 	} catch (error) {
-		console.error("Database query error:", error)
-		throw error
+		console.error("Database query error:", error);
+		throw error;
 	}
 }
