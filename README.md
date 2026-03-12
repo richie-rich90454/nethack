@@ -2,15 +2,15 @@
 
 ## Overview
 
-The BIBS·C Network Hackathon Portal is a **fully customizable Next.js application template** designed to manage hackathon competitions of any scale. The platform provides secure authentication, project submission workflows, judging dashboards, and competition state management for participants, judges, and administrators. **All user‑facing text and configurable values are externalized into a single configuration file**, enabling rapid rebranding and adaptation for any event without code changes.
+The BIBS·C Network Hackathon Portal is a fully customizable Next.js application template designed to manage hackathon competitions of any scale. The platform provides secure authentication, project submission workflows, judging dashboards, and competition state management for participants, judges, and administrators. All user‑facing text and configurable values are externalized into a single configuration file, enabling rapid rebranding and adaptation for any event without code changes. The architecture is modular and can be repurposed for other types of events, such as science fairs, code jams, or any multi‑phase project‑based competition.
 
 ## Technology Stack
 
 - **Frontend**: Next.js 16.1.6 with React 19.2.4
-- **Authentication**: NextAuth with Azure AD provider
+- **Authentication**: NextAuth with Azure AD provider (easily extendable to other OAuth providers)
 - **Database**: MySQL 8.0+ with mysql2 driver (connection pooling, type‑safe queries)
 - **Language**: TypeScript (strict mode enabled, path aliases, global type augmentations)
-- **Styling**: CSS Modules (component‑scoped styles with global design tokens)
+- **Styling**: CSS Modules with global design tokens (customizable via CSS variables)
 - **Configuration**: Centralized `config/siteConfig.ts` for all text, dates, and external URLs
 - **Deployment**: Next.js standalone build with production optimizations
 - **Security**: Enhanced headers (CSP, X‑Frame‑Options, etc.) and hardened Next.js configuration
@@ -26,8 +26,10 @@ nethack/
 │   │   └── sql/                    # Database operations
 │   │       ├── database.ts           # Connection pool and utilities
 │   │       ├── editProject/route.ts
+│   │       ├── getJudgeData/route.ts # NEW: Fetch judge scores/comments
 │   │       ├── phase/route.ts
-│   │       └── pullProject/route.ts
+│   │       ├── pullProject/route.ts
+│   │       └── saveJudgeData/route.ts # NEW: Save judge scores/comments
 │   ├── dashboard/                 # User dashboard
 │   │   └── page.tsx
 │   ├── login/                     # Login page
@@ -44,7 +46,7 @@ nethack/
 │   │   ├── DashboardCompetitor.tsx
 │   │   ├── DashboardJudge.tsx
 │   │   ├── Footer.tsx
-│   │   ├── JudgeToolbox.tsx
+│   │   ├── JudgeToolbox.tsx        # NEW: Judge scoring/comment UI
 │   │   ├── Navbar.tsx
 │   │   ├── Submission.tsx
 │   │   ├── SubmissionForm.tsx
@@ -63,9 +65,9 @@ nethack/
 └── package.json                      # Dependencies and scripts
 ```
 
-## 🎨 Customization Guide – Making It Your Own Hackathon Site
+## Customization Guide – Adapting the Platform for Any Event
 
-All user‑visible text, dates, and selectable options are defined in **`config/siteConfig.ts`**. To adapt the portal for a new hackathon, edit only this file – no code changes are required.
+All user‑visible text, dates, and selectable options are defined in **`config/siteConfig.ts`**. By modifying only this file, you can transform the portal for a new hackathon, a science fair, or any multi‑stage project showcase. The platform is designed to be event‑agnostic: the concepts of “competitor,” “judge,” “submission,” and “phase” can be reinterpreted as needed.
 
 ### What You Can Customize
 
@@ -77,28 +79,30 @@ All user‑visible text, dates, and selectable options are defined in **`config/
 | **Dashboard (General)**  | `dashboard.accessDenied`, `dashboard.loading`, `dashboard.loginRequired`                              |
 | **Competitor Dashboard** | Phase labels, tooltips, countdown dates, messages                                                     |
 | **Judge Dashboard**      | Introductory text, judging notes, additional notes, edit form prompts                                 |
+| **Judge Toolbox**        | `judgeToolbox.title`, `editTitle`, `editTechs`, `addComment`                                          |
 | **Showcase Page**        | `showcase.heading`, `showcase.description`, `showcase.longDescription`, `showcase.winners` (team IDs) |
 | **Submission Form**      | Field labels, placeholders, available prompts (`prompts` array)                                       |
+| **Submission Display**   | `submission.developedBy`, `builtUsing`, `chosenPrompt`, `untitled`, etc.                              |
 | **Footer**               | `footer.copyright`                                                                                    |
 | **External Links**       | `externalUrls.signUpForm`                                                                             |
 | **Countdown Dates**      | All date strings (ISO 8601 with offset, e.g. `"2025-06-11T23:59:59+0800"`)                            |
 
 All strings can include HTML (e.g., `<span class="serifBold">`). The configuration is strongly typed – your IDE will provide autocompletion and prevent typos.
 
-### Example: Changing the Competition Year
+### Example: Changing the Event Name
 
 1. Open `config/siteConfig.ts`.
 2. Update the heading:  
-   `welcomeHeading: "Welcome to the 3rd Annual Awesome Hackathon"`
+   `welcomeHeading: "Welcome to the 3rd Annual City Science Fair"`
 3. Adjust the countdown dates and status text.
 4. Save the file – the site immediately reflects the new content.
 
-### Example: Adding a New Submission Prompt
+### Example: Adding a New Submission Category
 
-In the `submissionForm.prompts` array, add your new prompt:
+In the `submissionForm.prompts` array, add your new category:
 
 ```typescript
-prompts: ["Game Jam", "AI for Good", "Open Innovation"];
+prompts: ["Robotics", "Environmental Science", "Creative Coding"];
 ```
 
 The submission form will automatically render radio buttons for each option.
@@ -146,7 +150,8 @@ The submission form will automatically render radio buttons for each option.
     AZURE_AD_TENANT_ID=your_azure_ad_tenant_id
     ```
 
-4. **Set up the database:**
+4. **Set up the database:**  
+   Execute the following SQL to create the required tables.
 
     ```sql
     CREATE DATABASE nethack;
@@ -179,13 +184,26 @@ The submission form will automatically render radio buttons for each option.
         status VARCHAR(50) DEFAULT 'pending'
     );
 
-    -- Phases table (competition timeline)
+    -- Phases table (event timeline)
     CREATE TABLE phases (
         id INT AUTO_INCREMENT PRIMARY KEY,
         phase VARCHAR(50) NOT NULL,
         start_date TIMESTAMP NULL,
         end_date TIMESTAMP NULL,
         is_active BOOLEAN DEFAULT FALSE
+    );
+
+    -- Judging table (scores and comments per judge per team)
+    CREATE TABLE judging (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        teamID VARCHAR(255) NOT NULL,
+        judgeEmail VARCHAR(255) NOT NULL,
+        score INT,
+        comment TEXT,
+        reviewed BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        UNIQUE KEY unique_team_judge (teamID, judgeEmail)
     );
 
     -- Insert default phase
@@ -213,7 +231,60 @@ The submission form will automatically render radio buttons for each option.
 
 ## Architecture
 
-### Authentication System
+The following diagrams illustrate the high‑level architecture of the portal.
+
+### System Context
+
+```mermaid
+graph TD
+    User[User / Participant] -->|Interacts with| WebApp[Next.js Web Application]
+    WebApp -->|Fetches data / submits| API[API Routes]
+    API -->|Reads / writes| DB[(MySQL Database)]
+    API -->|Authenticates| NextAuth[NextAuth.js]
+    NextAuth -->|OAuth| AzureAD[Azure AD]
+```
+
+### Component Hierarchy (Simplified)
+
+```mermaid
+graph TD
+    App[app/layout.tsx] --> Providers[Context Providers]
+    Providers --> Navbar[Navbar]
+    Providers --> Pages[Page Components]
+    Pages --> Dashboard[Dashboard Page]
+    Pages --> Login[Login Page]
+    Pages --> Showcase[Showcase Page]
+
+    Dashboard --> DashboardCompetitor[DashboardCompetitor]
+    Dashboard --> DashboardJudge[DashboardJudge]
+
+    DashboardCompetitor --> SubmissionForm[SubmissionForm]
+    DashboardJudge --> Submission[Submission]
+    DashboardJudge --> JudgeToolbox[JudgeToolbox]
+
+    Showcase --> SubmissionPresent[SubmissionPresent]
+```
+
+### Data Flow for a Judge Action
+
+```mermaid
+sequenceDiagram
+    participant Judge as Judge (Browser)
+    participant UI as JudgeToolbox Component
+    participant API as /api/sql/saveJudgeData
+    participant DB as Database
+
+    Judge->>UI: Adjusts score / comment
+    Judge->>UI: Clicks "Save Judgement"
+    UI->>API: POST { teamID, score, comment }
+    API->>DB: INSERT ... ON DUPLICATE KEY UPDATE
+    DB-->>API: Success
+    API-->>UI: { success: true }
+    UI->>UI: Shows "Saved" indicator, calls onUpdate
+    UI->>Judge: Visual confirmation
+```
+
+## Authentication System
 
 The application uses NextAuth with an Azure AD provider. User roles (access levels) are stored in the `users` table and are merged into the JWT and session via custom callbacks (`app/api/auth/[...nextauth]/route.ts`).
 
@@ -221,7 +292,7 @@ The application uses NextAuth with an Azure AD provider. User roles (access leve
 - **Access Level 1**: Competitor (can submit and edit projects)
 - **Access Level 2+**: Judge/Admin (can view all submissions, edit metadata, use judge tools)
 
-### Database Layer
+## Database Layer
 
 A connection pool is configured in `app/api/sql/database.ts` with the following settings:
 
@@ -231,17 +302,13 @@ A connection pool is configured in `app/api/sql/database.ts` with the following 
 
 Type‑safe query helpers (`query<T>`, `getUser`, etc.) leverage TypeScript generics to ensure correct result shapes.
 
-### Competition State Management
+## Competition State Management
 
 `CompetitionContext` (`src/context/CompetitionContext.tsx`) fetches the current phase from `/api/sql/phase` and provides it throughout the application. Phases are:
 
 - `closed` – Submissions not accepted
 - `active` – Submission period open
 - `judging` – Under review
-
-### Configuration System
-
-All customizable text, dates, and external URLs are defined in `config/siteConfig.ts`. The `siteConfig` object is imported wherever a string is required, ensuring consistency and making rebranding trivial. The configuration interface is fully typed.
 
 ## API Endpoints
 
@@ -251,6 +318,8 @@ All customizable text, dates, and external URLs are defined in `config/siteConfi
 | `/api/sql/phase`          | GET       | Retrieve current competition phase                    |
 | `/api/sql/pullProject`    | GET       | Fetch project submissions (optional `?search=teamID`) |
 | `/api/sql/editProject`    | POST      | Update a project submission                           |
+| `/api/sql/getJudgeData`   | GET       | Retrieve judge score/comment for a specific team      |
+| `/api/sql/saveJudgeData`  | POST      | Save judge score/comment for a specific team          |
 
 All endpoints return JSON. Error responses include a `message` and, where applicable, `details`.
 
@@ -284,15 +353,19 @@ All endpoints return JSON. Error responses include a `message` and, where applic
 - View all project submissions
 - Edit submission metadata (title, technologies)
 - Access judge toolbox utilities
-- Score and review submissions
+- Assign scores (1‑10) and write comments for each project
+- Scores and comments are stored per judge per team, allowing multiple judges to evaluate independently
 
 > **Note:** Users with access level 2 or higher share the same judge capabilities. The system is designed to be extensible for future admin features.
 
 ## Styling Approach
 
-- **CSS Modules** provide component‑scoped styling (e.g., `Countdown.module.css`).
-- **Global styles** (`app/globals.css`) define custom fonts (CMU, Monaspace), color variables, responsive utilities, and UI patterns (tooltips, checkboxes, radios, console‑style elements).
-- All class names used in components must match those defined in the global CSS or respective module.
+- **CSS Modules** provide component‑scoped styling (e.g., `Countdown.module.css`). Each component imports its own stylesheet, ensuring no unintended global leakage.
+- **Global styles** (`app/globals.css`) define CSS variables (colors, border radius, spacing) that are used consistently across all modules. This design‑token approach allows easy theming by altering the variables at the root.
+- All interactive elements follow the same focus‑state convention (green outline) and hover behaviors (no unexpected movement or shadows) for a cohesive user experience.
+- Responsive design is implemented using `clamp()` and `min()` functions, combined with media queries to ensure legibility and usability across all screen sizes.
+
+The styling system is intentionally decoupled from business logic; you can completely overhaul the visual appearance by editing the global CSS and component modules without touching the TypeScript code.
 
 ## Environment Variables
 
@@ -346,6 +419,20 @@ All endpoints return JSON. Error responses include a `message` and, where applic
 | start_date | TIMESTAMP   | Phase start time                     |
 | end_date   | TIMESTAMP   | Phase end time                       |
 | is_active  | BOOLEAN     | Whether phase is current             |
+
+### Judging Table
+
+| Column     | Type                                                                          | Description                            |
+| ---------- | ----------------------------------------------------------------------------- | -------------------------------------- |
+| id         | INT                                                                           | Primary key, auto-increment            |
+| teamID     | VARCHAR(255)                                                                  | Team being judged                      |
+| judgeEmail | VARCHAR(255)                                                                  | Email of the judge                     |
+| score      | INT                                                                           | Score assigned (typically 1‑10)        |
+| comment    | TEXT                                                                          | Judge's comments                       |
+| reviewed   | BOOLEAN                                                                       | Flag for review status (default FALSE) |
+| created_at | TIMESTAMP                                                                     | Creation timestamp                     |
+| updated_at | TIMESTAMP                                                                     | Last update timestamp (auto-updated)   |
+| UNIQUE KEY | unique_team_judge (teamID, judgeEmail) – ensures one entry per judge per team |
 
 ## Performance & Security Enhancements
 
@@ -444,6 +531,11 @@ server {
     - Review `tsconfig.json` for any misconfigurations
     - Check for outdated dependencies with `npm outdated`
 
+5. **Judge Data Not Saving**
+    - Ensure the `judging` table exists and has the correct columns
+    - Verify that the judge is logged in with access level ≥2
+    - Check browser console and server logs for detailed error messages
+
 ### Debugging
 
 - Open browser developer tools (F12) to view console errors and network requests.
@@ -476,6 +568,4 @@ This project is licensed under the terms of the [LICENSE](LICENSE) file included
 
 ---
 
-**You now possess a fully customizable, performant, and secure hackathon portal template. Customize `config/siteConfig.ts` and make it your own.**
-
-**If you find this project helpful, please consider giving it a star.**
+**You now possess a fully customizable, performant, and secure portal template suitable for hackathons, science fairs, and any multi‑stage project showcase. Customize `config/siteConfig.ts` and make it your own.**
