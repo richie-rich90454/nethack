@@ -1,14 +1,14 @@
 .wrap {
-    margin: 10px 0px;
-    background: #151515;
-    width: 60vw;
-    padding: 20px;
-    border-radius: 3dvh;
+	margin: 10px 0px;
+	background: #151515;
+	width: 60vw;
+	padding: 20px;
+	border-radius: 3dvh;
 }
 .countdown {
-    font-size: 8vw;
-    margin: -5px 0px;
+	font-size: 8vw;
+	margin: -5px 0px;
 }
 .label {
-    font-size: 1.25vw;
+	font-size: 1.25vw;
 }

@@ -90,17 +90,17 @@ User Browser → /login (Next.js) → Azure AD OAuth → NextAuth Callbacks → 
 ```typescript
 // app/api/sql/database.ts
 const pool = mysql.createPool({
-    host: "localhost",
-    user: process.env.SQL_USERNAME,
-    password: process.env.SQL_PASSWORD,
-    database: "nethack",
-    waitForConnections: true,
-    connectionLimit: 20,
-    queueLimit: 0
+	host: "localhost",
+	user: process.env.SQL_USERNAME,
+	password: process.env.SQL_PASSWORD,
+	database: "nethack",
+	waitForConnections: true,
+	connectionLimit: 20,
+	queueLimit: 0,
 })
 
 export default async function getConnection() {
-    return await pool.getConnection()
+	return await pool.getConnection()
 }
 ```
 
@@ -150,9 +150,12 @@ export default async function getConnection() {
 All database functions are generic and return typed results:
 
 ```typescript
-export async function query<T extends RowDataPacket[]>(sql: string, params?: any[]): Promise<T> {
-    const [rows] = await pool.query<T>(sql, params)
-    return rows
+export async function query<T extends RowDataPacket[]>(
+	sql: string,
+	params?: any[],
+): Promise<T> {
+	const [rows] = await pool.query<T>(sql, params)
+	return rows
 }
 ```
 

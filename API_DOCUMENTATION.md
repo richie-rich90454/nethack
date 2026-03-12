@@ -32,9 +32,9 @@ No manual header configuration is required for browserâ€‘based requests. Serverâ
 
 ```json
 {
-    "data": {
-        /* response data */
-    } // or a direct array/object
+	"data": {
+		/* response data */
+	} // or a direct array/object
 }
 ```
 
@@ -44,9 +44,9 @@ Many endpoints return the data directly (without a wrapper) for simplicity.
 
 ```json
 {
-    "error": "Error message describing the issue",
-    "details": "Optional additional details",
-    "status": 400
+	"error": "Error message describing the issue",
+	"details": "Optional additional details",
+	"status": 400
 }
 ```
 
@@ -108,8 +108,8 @@ Retrieves the current competition phase from the `phases` table.
 
 ```javascript
 fetch("/api/sql/phase")
-    .then(res => res.json())
-    .then(data => console.log(data.phase))
+	.then((res) => res.json())
+	.then((data) => console.log(data.phase))
 ```
 
 **Implementation Details**:
@@ -136,21 +136,21 @@ Retrieves project submissions from the `hacks` table. Supports an optional `sear
 
 ```json
 [
-    {
-        "id": 1,
-        "teamID": "c0ad4f19",
-        "title": "Natural Selection Simulation",
-        "description": "A simulation of evolutionary processes...",
-        "github": "https://github.com/...",
-        "prompt": "Game Jam",
-        "technologies": "JavaScript, p5.js",
-        "members": "Alice, Bob",
-        "sub_code": "Github",
-        "sub_video": "https://youtu.be/...",
-        "round": "25R2",
-        "submission_date": "2025-05-15T10:30:00.000Z",
-        "status": "pending"
-    }
+	{
+		"id": 1,
+		"teamID": "c0ad4f19",
+		"title": "Natural Selection Simulation",
+		"description": "A simulation of evolutionary processes...",
+		"github": "https://github.com/...",
+		"prompt": "Game Jam",
+		"technologies": "JavaScript, p5.js",
+		"members": "Alice, Bob",
+		"sub_code": "Github",
+		"sub_video": "https://youtu.be/...",
+		"round": "25R2",
+		"submission_date": "2025-05-15T10:30:00.000Z",
+		"status": "pending"
+	}
 ]
 ```
 
@@ -183,12 +183,12 @@ Creates or updates a project submission in the `hacks` table.
 
 ```json
 {
-    "teamID": "c0ad4f19",
-    "title": "Updated Project Title",
-    "description": "Updated description...",
-    "github": "https://github.com/...",
-    "prompt": "Game Jam",
-    "technologies": "JavaScript, React"
+	"teamID": "c0ad4f19",
+	"title": "Updated Project Title",
+	"description": "Updated description...",
+	"github": "https://github.com/...",
+	"prompt": "Game Jam",
+	"technologies": "JavaScript, React"
 }
 ```
 
@@ -199,7 +199,7 @@ Creates or updates a project submission in the `hacks` table.
 
 ```json
 {
-    "message": "Update successful"
+	"message": "Update successful"
 }
 ```
 
@@ -207,7 +207,7 @@ Creates or updates a project submission in the `hacks` table.
 
 ```json
 {
-    "message": "No team found with the given ID"
+	"message": "No team found with the given ID"
 }
 ```
 
@@ -222,24 +222,24 @@ Creates or updates a project submission in the `hacks` table.
 
 ```javascript
 const projectData = {
-    teamID: "c0ad4f19",
-    title: "AI Assistant",
-    description: "An intelligent assistant...",
-    github: "https://github.com/team-001/ai-assistant",
-    prompt: "Game Jam",
-    technologies: "Python, Flask"
+	teamID: "c0ad4f19",
+	title: "AI Assistant",
+	description: "An intelligent assistant...",
+	github: "https://github.com/team-001/ai-assistant",
+	prompt: "Game Jam",
+	technologies: "Python, Flask",
 }
 
 fetch("/api/sql/editProject", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(projectData)
+	method: "POST",
+	headers: { "Content-Type": "application/json" },
+	body: JSON.stringify(projectData),
 })
-    .then(res => res.json())
-    .then(data => {
-        if (res.ok) console.log(data.message)
-        else console.error(data.error)
-    })
+	.then((res) => res.json())
+	.then((data) => {
+		if (res.ok) console.log(data.message)
+		else console.error(data.error)
+	})
 ```
 
 **Implementation Details**:
@@ -261,10 +261,10 @@ import getConnection from "@/app/api/sql/database"
 
 const connection = await getConnection()
 try {
-    const [rows] = await connection.query("SELECT * FROM users")
-    return rows
+	const [rows] = await connection.query("SELECT * FROM users")
+	return rows
 } finally {
-    connection.release()
+	connection.release()
 }
 ```
 
@@ -277,7 +277,7 @@ import { getUser } from "@/app/api/sql/database"
 
 const user = await getUser("user@example.com")
 if (user) {
-    console.log(`Access: ${user.access}, Team: ${user.teamID}`)
+	console.log(`Access: ${user.access}, Team: ${user.teamID}`)
 }
 ```
 
@@ -288,7 +288,10 @@ Executes a raw SQL query with parameterized values. Returns the result rows type
 ```typescript
 import { query } from "@/app/api/sql/database"
 
-const users = await query<{ id: number; email: string }[]>("SELECT id, email FROM users WHERE access = ?", [1])
+const users = await query<{ id: number; email: string }[]>(
+	"SELECT id, email FROM users WHERE access = ?",
+	[1],
+)
 ```
 
 ## Error Handling
@@ -303,8 +306,8 @@ Example error response (403):
 
 ```json
 {
-    "error": "Forbidden",
-    "details": "You do not have permission to edit this project."
+	"error": "Forbidden",
+	"details": "You do not have permission to edit this project."
 }
 ```
 
@@ -397,12 +400,12 @@ import { NextRequest, NextResponse } from "next/server"
 import { query } from "@/app/api/sql/database"
 
 interface PhaseRow extends RowDataPacket {
-    phase: string
+	phase: string
 }
 
 export async function GET(req: NextRequest) {
-    const [rows] = await query<PhaseRow[]>("SELECT phase FROM phases LIMIT 1")
-    return NextResponse.json({ phase: rows[0]?.phase ?? "unknown" })
+	const [rows] = await query<PhaseRow[]>("SELECT phase FROM phases LIMIT 1")
+	return NextResponse.json({ phase: rows[0]?.phase ?? "unknown" })
 }
 ```
 

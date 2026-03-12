@@ -26,8 +26,8 @@ import { siteConfig } from "@/config/siteConfig"
  * Props for the RootLayout component
  */
 interface RootLayoutProps {
-    /** Child pages/components to render */
-    children: ReactNode
+	/** Child pages/components to render */
+	children: ReactNode
 }
 
 /**
@@ -38,36 +38,43 @@ interface RootLayoutProps {
  * @param {RootLayoutProps} props - Component props
  * @returns {JSX.Element} Root layout with providers
  */
-export default function RootLayout({ children }: RootLayoutProps): React.ReactElement {
-    return (
-        <html lang="en">
-            <head>
-                {/* Prevent search engine indexing for development/competition sites */}
-                <meta name="robots" content="noindex, nofollow" />
+export default function RootLayout({
+	children,
+}: RootLayoutProps): React.ReactElement {
+	return (
+		<html lang="en">
+			<head>
+				{/* Prevent search engine indexing for development/competition sites */}
+				<meta name="robots" content="noindex, nofollow" />
 
-                {/* Responsive viewport configuration */}
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
+				{/* Responsive viewport configuration */}
+				<meta
+					name="viewport"
+					content="width=device-width, initial-scale=1"
+				/>
 
-                {/* Application title */}
-                <title>{siteConfig.siteTitle}</title>
-            </head>
-            <body>
-                {/* NextAuth Session Provider for authentication state management */}
-                <SessionProvider>
-                    <div className="biggestWrap">
-                        {/* Global navigation bar */}
-                        <Navbar />
+				{/* Application title */}
+				<title>{siteConfig.siteTitle}</title>
+			</head>
+			<body>
+				{/* NextAuth Session Provider for authentication state management */}
+				<SessionProvider>
+					<div className="biggestWrap">
+						{/* Global navigation bar */}
+						<Navbar />
 
-                        {/* Main content wrapper with competition state provider */}
-                        <div className="bigWrap">
-                            <CompetitionProvider>{children}</CompetitionProvider>
-                        </div>
+						{/* Main content wrapper with competition state provider */}
+						<div className="bigWrap">
+							<CompetitionProvider>
+								{children}
+							</CompetitionProvider>
+						</div>
 
-                        {/* Global footer */}
-                        <Footer />
-                    </div>
-                </SessionProvider>
-            </body>
-        </html>
-    )
+						{/* Global footer */}
+						<Footer />
+					</div>
+				</SessionProvider>
+			</body>
+		</html>
+	)
 }

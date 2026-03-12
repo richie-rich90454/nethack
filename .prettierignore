@@ -22,8 +22,6 @@ coverage/
 *.zip
 *.mp4
 
-# Ignore specific files
-package-lock.json
 
 # Ignore Jekyll/Liquid template files
 docs/_layouts/

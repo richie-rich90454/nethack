@@ -30,13 +30,13 @@ import { RowDataPacket } from "mysql2"
  * @type {mysql.Pool}
  */
 const pool = mysql.createPool({
-    host: "localhost",
-    user: process.env.SQL_USERNAME,
-    password: process.env.SQL_PASSWORD,
-    database: "nethack",
-    waitForConnections: true,
-    connectionLimit: 20,
-    queueLimit: 0
+	host: "localhost",
+	user: process.env.SQL_USERNAME,
+	password: process.env.SQL_PASSWORD,
+	database: "nethack",
+	waitForConnections: true,
+	connectionLimit: 20,
+	queueLimit: 0,
 })
 
 /**
@@ -52,9 +52,9 @@ const pool = mysql.createPool({
  * User data interface for database query results
  */
 interface UserRow extends RowDataPacket {
-    access: number
-    teamID: string | null
-    [key: string]: unknown
+	access: number
+	teamID: string | null
+	[key: string]: unknown
 }
 
 /**
@@ -77,12 +77,12 @@ interface UserRow extends RowDataPacket {
  * }
  */
 export default async function getConnection(): Promise<mysql.PoolConnection> {
-    try {
-        return await pool.getConnection()
-    } catch (error) {
-        console.error("Error getting database connection:", error)
-        throw error
-    }
+	try {
+		return await pool.getConnection()
+	} catch (error) {
+		console.error("Error getting database connection:", error)
+		throw error
+	}
 }
 
 /**
@@ -101,17 +101,19 @@ export default async function getConnection(): Promise<mysql.PoolConnection> {
  *   console.log(`Access level: ${user.access}, Team ID: ${user.teamID}`);
  * }
  */
-export async function getUser(email: string): Promise<{ access: number; teamID: string | null } | null> {
-    try {
-        const [rows] = await pool.query<UserRow[]>(
-            "SELECT access, teamID FROM users WHERE email = ?",
-            [email.toLowerCase()] // Normalize email to lowercase for consistent lookup
-        )
-        return rows[0] || null
-    } catch (error) {
-        console.error("Database error in getUser:", error)
-        return null
-    }
+export async function getUser(
+	email: string,
+): Promise<{ access: number; teamID: string | null } | null> {
+	try {
+		const [rows] = await pool.query<UserRow[]>(
+			"SELECT access, teamID FROM users WHERE email = ?",
+			[email.toLowerCase()], // Normalize email to lowercase for consistent lookup
+		)
+		return rows[0] || null
+	} catch (error) {
+		console.error("Database error in getUser:", error)
+		return null
+	}
 }
 
 /**
@@ -128,12 +130,15 @@ export async function getUser(email: string): Promise<{ access: number; teamID: 
  * @example
  * const results = await query('SELECT * FROM projects WHERE teamID = ?', ['team123']);
  */
-export async function query<T extends RowDataPacket[]>(sql: string, params: any[] = []): Promise<T> {
-    try {
-        const [rows] = await pool.query<T>(sql, params)
-        return rows
-    } catch (error) {
-        console.error("Database query error:", error)
-        throw error
-    }
+export async function query<T extends RowDataPacket[]>(
+	sql: string,
+	params: any[] = [],
+): Promise<T> {
+	try {
+		const [rows] = await pool.query<T>(sql, params)
+		return rows
+	} catch (error) {
+		console.error("Database query error:", error)
+		throw error
+	}
 }

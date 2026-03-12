@@ -30,25 +30,27 @@ import { siteConfig } from "@/config/siteConfig"
  * @returns {JSX.Element} Navigation bar
  */
 const Navbar = (): React.ReactElement => {
-    // Get authentication status from NextAuth session
-    const { status: authStatus } = useSession()
+	// Get authentication status from NextAuth session
+	const { status: authStatus } = useSession()
 
-    return (
-        <div className={styles.nav}>
-            <div className={styles.wrap}>
-                {/* Application title linking to home page */}
-                <Link href="/">{siteConfig.siteTitle}</Link>
+	return (
+		<div className={styles.nav}>
+			<div className={styles.wrap}>
+				{/* Application title linking to home page */}
+				<Link href="/">{siteConfig.siteTitle}</Link>
 
-                {/* Flexible spacer to push auth link to the right */}
-                <span className={styles.fill}></span>
+				{/* Flexible spacer to push auth link to the right */}
+				<span className={styles.fill}></span>
 
-                {/* Dynamic auth link: shows "Logout" when authenticated, "Login" otherwise */}
-                <Link href="/login" className="med">
-                    {authStatus === "authenticated" ? siteConfig.nav.logout : siteConfig.nav.login}
-                </Link>
-            </div>
-        </div>
-    )
+				{/* Dynamic auth link: shows "Logout" when authenticated, "Login" otherwise */}
+				<Link href="/login" className="med">
+					{authStatus === "authenticated"
+						? siteConfig.nav.logout
+						: siteConfig.nav.login}
+				</Link>
+			</div>
+		</div>
+	)
 }
 
 export default Navbar

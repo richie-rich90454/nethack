@@ -1,55 +1,55 @@
 .wrap {
-    padding-bottom: 0px;
-    border-radius: 3dvh;
+	padding-bottom: 0px;
+	border-radius: 3dvh;
 }
 .outline {
-    background: #000;
-    border-radius: 3dvh;
-    padding: 5px 10px;
-    display: flex;
+	background: #000;
+	border-radius: 3dvh;
+	padding: 5px 10px;
+	display: flex;
 }
 .text {
-    display: flex; /* Use flexbox for text */
-    flex-direction: column; /* Stack text vertically */
-    align-items: start;
-    flex: 1;
+	display: flex; /* Use flexbox for text */
+	flex-direction: column; /* Stack text vertically */
+	align-items: start;
+	flex: 1;
 }
 .image {
-    display: inline-block;
-    position: relative;
-    height: 25vw;
-    width: 25vw;
-    margin: 6px;
-    margin-left: 0;
-    margin-right: 8px;
-    overflow: hidden;
-    background: #4679bd;
-    cursor: pointer;
+	display: inline-block;
+	position: relative;
+	height: 25vw;
+	width: 25vw;
+	margin: 6px;
+	margin-left: 0;
+	margin-right: 8px;
+	overflow: hidden;
+	background: #4679bd;
+	cursor: pointer;
 }
 .image .play {
-    opacity: 0;
-    transition: 0.5s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(57, 255, 20, 0.2);
+	opacity: 0;
+	transition: 0.5s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(57, 255, 20, 0.2);
 }
 .image .play svg {
-    transform: scale(3.5);
+	transform: scale(3.5);
 }
 .image:hover .play {
-    opacity: 1;
+	opacity: 1;
 }
 .image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 .text a {
-    text-decoration: underline;
+	text-decoration: underline;
 }

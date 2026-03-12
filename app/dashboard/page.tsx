@@ -27,16 +27,16 @@ import { siteConfig } from "@/config/siteConfig"
  * Interface representing a project entry from the database
  */
 interface ProjectEntry {
-    id: number
-    teamID: string
-    title: string
-    description: string
-    github: string
-    prompt: string
-    technologies: string
-    submission_date?: string
-    status?: string
-    [key: string]: unknown
+	id: number
+	teamID: string
+	title: string
+	description: string
+	github: string
+	prompt: string
+	technologies: string
+	submission_date?: string
+	status?: string
+	[key: string]: unknown
 }
 
 /**
@@ -47,62 +47,66 @@ interface ProjectEntry {
  * @returns {JSX.Element} Dashboard page
  */
 const Dashboard = (): React.ReactElement => {
-    const { data: session, status: authStatus } = useSession()
-    const competition = useCompetition()
-    const [entries, setEntries] = useState<ProjectEntry[]>([])
-    const [edit, setEdit] = useState<boolean>(false)
+	const { data: session, status: authStatus } = useSession()
+	const competition = useCompetition()
+	const [entries, setEntries] = useState<ProjectEntry[]>([])
+	const [edit, setEdit] = useState<boolean>(false)
 
-    const fetchEntries = async (): Promise<void> => {
-        if (session) {
-            try {
-                if (session.user.access > 1) {
-                    const response = await fetch("/api/sql/pullProject")
-                    if (response.ok) {
-                        const data = (await response.json()) as ProjectEntry[]
-                        setEntries(data)
-                    } else {
-                        console.error("Failed to fetch entries")
-                    }
-                }
-            } catch (error) {
-                console.error("Error fetching entries: ", error)
-            }
-        }
-    }
+	const fetchEntries = async (): Promise<void> => {
+		if (session) {
+			try {
+				if (session.user.access > 1) {
+					const response = await fetch("/api/sql/pullProject")
+					if (response.ok) {
+						const data = (await response.json()) as ProjectEntry[]
+						setEntries(data)
+					} else {
+						console.error("Failed to fetch entries")
+					}
+				}
+			} catch (error) {
+				console.error("Error fetching entries: ", error)
+			}
+		}
+	}
 
-    const refreshData = (): void => {
-        fetchEntries()
-    }
+	const refreshData = (): void => {
+		fetchEntries()
+	}
 
-    useEffect(() => {
-        fetchEntries()
-    }, [session])
+	useEffect(() => {
+		fetchEntries()
+	}, [session])
 
-    return (
-        <>
-            {session ? (
-                <>
-                    {/* handle access level 0 - visitor/voter */}
-                    {session.user.access < 1 && (
-                        <p dangerouslySetInnerHTML={{ __html: siteConfig.dashboard.accessDenied }} />
-                    )}
-                    {/* handle access level 1 - competitor */}
-                    {session.user.access === 1 && <DashboardCompetitor />}
-                    {/* handle access level 2+ - judge */}
-                    {session.user.access > 1 && <DashboardJudge />}
-                </>
-            ) : authStatus === "loading" ? (
-                <p>{siteConfig.dashboard.loading}</p>
-            ) : (
-                <p>
-                    {siteConfig.dashboard.loginRequired.replace(
-                        "{link}",
-                        `<Link href="/login" className="button bGray">${siteConfig.dashboard.loginLinkText}</Link>`
-                    )}
-                </p>
-            )}
-        </>
-    )
+	return (
+		<>
+			{session ? (
+				<>
+					{/* handle access level 0 - visitor/voter */}
+					{session.user.access < 1 && (
+						<p
+							dangerouslySetInnerHTML={{
+								__html: siteConfig.dashboard.accessDenied,
+							}}
+						/>
+					)}
+					{/* handle access level 1 - competitor */}
+					{session.user.access === 1 && <DashboardCompetitor />}
+					{/* handle access level 2+ - judge */}
+					{session.user.access > 1 && <DashboardJudge />}
+				</>
+			) : authStatus === "loading" ? (
+				<p>{siteConfig.dashboard.loading}</p>
+			) : (
+				<p>
+					{siteConfig.dashboard.loginRequired.replace(
+						"{link}",
+						`<Link href="/login" className="button bGray">${siteConfig.dashboard.loginLinkText}</Link>`,
+					)}
+				</p>
+			)}
+		</>
+	)
 }
 
 export default Dashboard

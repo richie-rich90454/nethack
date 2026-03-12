@@ -25,22 +25,22 @@ import { siteConfig } from "@/config/siteConfig"
  * Interface for the time left object
  */
 interface TimeLeft {
-    /** Number of days remaining */
-    days: number
-    /** Number of hours remaining (0-23) */
-    hours: number
-    /** Number of minutes remaining (0-59) */
-    minutes: number
-    /** Number of seconds remaining (0-59) */
-    seconds: number
+	/** Number of days remaining */
+	days: number
+	/** Number of hours remaining (0-23) */
+	hours: number
+	/** Number of minutes remaining (0-59) */
+	minutes: number
+	/** Number of seconds remaining (0-59) */
+	seconds: number
 }
 
 /**
  * Props for the CountdownMini component
  */
 interface CountdownMiniProps {
-    /** ISO 8601 date string for countdown target */
-    targetDate: string
+	/** ISO 8601 date string for countdown target */
+	targetDate: string
 }
 
 /**
@@ -51,58 +51,67 @@ interface CountdownMiniProps {
  * @param {CountdownMiniProps} props - Component props
  * @returns {JSX.Element} Formatted time span
  */
-const CountdownMini = ({ targetDate }: CountdownMiniProps): React.ReactElement => {
-    /**
-     * Calculates the time remaining until the target date
-     * @returns {TimeLeft} Time left object with days, hours, minutes, seconds
-     */
-    const calculateTimeLeft = (): TimeLeft => {
-        const target = new Date(targetDate)
-        const now = new Date()
-        const difference = target.getTime() - now.getTime() + target.getTimezoneOffset() * 60 * 1000
-        let timeLeft: TimeLeft
+const CountdownMini = ({
+	targetDate,
+}: CountdownMiniProps): React.ReactElement => {
+	/**
+	 * Calculates the time remaining until the target date
+	 * @returns {TimeLeft} Time left object with days, hours, minutes, seconds
+	 */
+	const calculateTimeLeft = (): TimeLeft => {
+		const target = new Date(targetDate)
+		const now = new Date()
+		const difference =
+			target.getTime() -
+			now.getTime() +
+			target.getTimezoneOffset() * 60 * 1000
+		let timeLeft: TimeLeft
 
-        if (difference > 0) {
-            timeLeft = {
-                days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-                hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-                minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
-                seconds: Math.floor((difference % (1000 * 60)) / 1000)
-            }
-        } else {
-            timeLeft = {
-                days: 0,
-                hours: 0,
-                minutes: 0,
-                seconds: 0
-            }
-        }
+		if (difference > 0) {
+			timeLeft = {
+				days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+				hours: Math.floor(
+					(difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+				),
+				minutes: Math.floor(
+					(difference % (1000 * 60 * 60)) / (1000 * 60),
+				),
+				seconds: Math.floor((difference % (1000 * 60)) / 1000),
+			}
+		} else {
+			timeLeft = {
+				days: 0,
+				hours: 0,
+				minutes: 0,
+				seconds: 0,
+			}
+		}
 
-        return timeLeft
-    }
+		return timeLeft
+	}
 
-    const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft())
+	const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft())
 
-    useEffect(() => {
-        const timer = setInterval((): void => {
-            setTimeLeft(calculateTimeLeft())
-        }, 1000)
+	useEffect(() => {
+		const timer = setInterval((): void => {
+			setTimeLeft(calculateTimeLeft())
+		}, 1000)
 
-        return (): void => clearInterval(timer)
-    }, [targetDate])
+		return (): void => clearInterval(timer)
+	}, [targetDate])
 
-    /**
-     * Format number to always have 2 digits with leading zero
-     * @param {number} num - Number to format
-     * @returns {string} Formatted 2-digit string
-     */
-    const formatNumber = (num: number): string => String(num).padStart(2, "0")
+	/**
+	 * Format number to always have 2 digits with leading zero
+	 * @param {number} num - Number to format
+	 * @returns {string} Formatted 2-digit string
+	 */
+	const formatNumber = (num: number): string => String(num).padStart(2, "0")
 
-    return (
-        <span>
-            {`${formatNumber(timeLeft.days)}:${formatNumber(timeLeft.hours)}:${formatNumber(timeLeft.minutes)}:${formatNumber(timeLeft.seconds)}`}
-        </span>
-    )
+	return (
+		<span>
+			{`${formatNumber(timeLeft.days)}:${formatNumber(timeLeft.hours)}:${formatNumber(timeLeft.minutes)}:${formatNumber(timeLeft.seconds)}`}
+		</span>
+	)
 }
 
 export default CountdownMini

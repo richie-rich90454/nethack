@@ -245,12 +245,12 @@ All customizable text, dates, and external URLs are defined in `config/siteConfi
 
 ## API Endpoints
 
-| Endpoint                  | Method    | Description                                           |
-| ------------------------- | --------- | ----------------------------------------------------- |
-| `/api/auth/[...nextauth]` | GET, POST | NextAuth authentication (Azure AD)                    |
-| `/api/sql/phase`          | GET       | Retrieve current competition phase                    |
-| `/api/sql/pullProject`    | GET       | Fetch project submissions (optional `?search=teamID`) |
-| `/api/sql/editProject`    | POST      | Update a project submission                           |
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/api/auth/[...nextauth]` | GET, POST | NextAuth authentication (Azure AD) |
+| `/api/sql/phase` | GET | Retrieve current competition phase |
+| `/api/sql/pullProject` | GET | Fetch project submissions (optional `?search=teamID`) |
+| `/api/sql/editProject` | POST | Update a project submission |
 
 All endpoints return JSON. Error responses include a `message` and, where applicable, `details`.
 

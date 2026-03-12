@@ -17,86 +17,148 @@ import SubmissionForm from "./SubmissionForm"
 import { siteConfig } from "@/config/siteConfig"
 
 export default function DashboardCompetitor(): React.ReactElement {
-    const { data: session } = useSession()
-    const { competitionState } = useCompetition()
+	const { data: session } = useSession()
+	const { competitionState } = useCompetition()
 
-    const isClosed = competitionState === "closed"
-    const isActive = competitionState === "active"
-    const isJudging = competitionState === "judging"
+	const isClosed = competitionState === "closed"
+	const isActive = competitionState === "active"
+	const isJudging = competitionState === "judging"
 
-    if (!session?.user) {
-        return <p>Loading user information...</p>
-    }
+	if (!session?.user) {
+		return <p>Loading user information...</p>
+	}
 
-    const handleUpdate = async (): Promise<void> => {
-        // For competitors, we might want to refresh something in the future
-        console.log("Submission updated")
-    }
+	const handleUpdate = async (): Promise<void> => {
+		// For competitors, we might want to refresh something in the future
+		console.log("Submission updated")
+	}
 
-    return (
-        <>
-            <h1>{siteConfig.dashboardCompetitor.heading.replace("{name}", session.user.name || "")}</h1>
-            <hr />
-            <p className="cBlue">{siteConfig.dashboardCompetitor.intro}</p>
-            <p className="cYellow padEnd">
-                The 2025 Network Hackathon is currently in the&nbsp;
-                <span className={`qBox ${competitionState === "closed" ? "serifBold serifUnderline" : ""}`}>
-                    {siteConfig.dashboardCompetitor.phaseIndicator.closed.label}
-                    <span className="tooltip">{siteConfig.dashboardCompetitor.phaseIndicator.closed.tooltip}</span>
-                </span>
-                &nbsp;&gt;&nbsp;
-                <span className={`qBox ${competitionState === "active" ? "serifBold serifUnderline" : ""}`}>
-                    {siteConfig.dashboardCompetitor.phaseIndicator.active.label}
-                    <span className="tooltip">{siteConfig.dashboardCompetitor.phaseIndicator.active.tooltip}</span>
-                </span>
-                &nbsp;&gt;&nbsp;
-                <span className={`qBox ${competitionState === "judging" ? "serifBold serifUnderline" : ""}`}>
-                    {siteConfig.dashboardCompetitor.phaseIndicator.judging.label}
-                    <span className="tooltip">{siteConfig.dashboardCompetitor.phaseIndicator.judging.tooltip}</span>
-                </span>{" "}
-                phase.
-            </p>
+	return (
+		<>
+			<h1>
+				{siteConfig.dashboardCompetitor.heading.replace(
+					"{name}",
+					session.user.name || "",
+				)}
+			</h1>
+			<hr />
+			<p className="cBlue">{siteConfig.dashboardCompetitor.intro}</p>
+			<p className="cYellow padEnd">
+				The 2025 Network Hackathon is currently in the&nbsp;
+				<span
+					className={`qBox ${competitionState === "closed" ? "serifBold serifUnderline" : ""}`}
+				>
+					{siteConfig.dashboardCompetitor.phaseIndicator.closed.label}
+					<span className="tooltip">
+						{
+							siteConfig.dashboardCompetitor.phaseIndicator.closed
+								.tooltip
+						}
+					</span>
+				</span>
+				&nbsp;&gt;&nbsp;
+				<span
+					className={`qBox ${competitionState === "active" ? "serifBold serifUnderline" : ""}`}
+				>
+					{siteConfig.dashboardCompetitor.phaseIndicator.active.label}
+					<span className="tooltip">
+						{
+							siteConfig.dashboardCompetitor.phaseIndicator.active
+								.tooltip
+						}
+					</span>
+				</span>
+				&nbsp;&gt;&nbsp;
+				<span
+					className={`qBox ${competitionState === "judging" ? "serifBold serifUnderline" : ""}`}
+				>
+					{
+						siteConfig.dashboardCompetitor.phaseIndicator.judging
+							.label
+					}
+					<span className="tooltip">
+						{
+							siteConfig.dashboardCompetitor.phaseIndicator
+								.judging.tooltip
+						}
+					</span>
+				</span>{" "}
+				phase.
+			</p>
 
-            {isClosed && (
-                <>
-                    <br />
-                    <div className="projBox cYellow padBottom">
-                        <p className="serifBold med">{siteConfig.dashboardCompetitor.closedMessage.title}</p>
-                        <p>
-                            {siteConfig.dashboardCompetitor.closedMessage.timeRemainingLabel}{" "}
-                            <span className="bSmooth console">
-                                <CountdownMini
-                                    targetDate={siteConfig.dashboardCompetitor.closedMessage.countdownDate}
-                                />
-                            </span>
-                        </p>
-                    </div>
-                </>
-            )}
+			{isClosed && (
+				<>
+					<br />
+					<div className="projBox cYellow padBottom">
+						<p className="serifBold med">
+							{siteConfig.dashboardCompetitor.closedMessage.title}
+						</p>
+						<p>
+							{
+								siteConfig.dashboardCompetitor.closedMessage
+									.timeRemainingLabel
+							}{" "}
+							<span className="bSmooth console">
+								<CountdownMini
+									targetDate={
+										siteConfig.dashboardCompetitor
+											.closedMessage.countdownDate
+									}
+								/>
+							</span>
+						</p>
+					</div>
+				</>
+			)}
 
-            {(isActive || isJudging) && (
-                <SubmissionForm teamID={session.user.teamID ?? undefined} readonly={!isActive} onUpdate={handleUpdate}>
-                    {isActive && (
-                        <>
-                            <p className="serifBold med">{siteConfig.dashboardCompetitor.activeMessage.title}</p>
-                            <p>
-                                {siteConfig.dashboardCompetitor.activeMessage.timeRemainingLabel}{" "}
-                                <span className="bSmooth console">
-                                    <CountdownMini
-                                        targetDate={siteConfig.dashboardCompetitor.activeMessage.countdownDate}
-                                    />
-                                </span>
-                            </p>
-                        </>
-                    )}
-                    {isJudging && (
-                        <>
-                            <p className="serifBold med">{siteConfig.dashboardCompetitor.judgingMessage.title}</p>
-                            <p>{siteConfig.dashboardCompetitor.judgingMessage.message}</p>
-                        </>
-                    )}
-                </SubmissionForm>
-            )}
-        </>
-    )
+			{(isActive || isJudging) && (
+				<SubmissionForm
+					teamID={session.user.teamID ?? undefined}
+					readonly={!isActive}
+					onUpdate={handleUpdate}
+				>
+					{isActive && (
+						<>
+							<p className="serifBold med">
+								{
+									siteConfig.dashboardCompetitor.activeMessage
+										.title
+								}
+							</p>
+							<p>
+								{
+									siteConfig.dashboardCompetitor.activeMessage
+										.timeRemainingLabel
+								}{" "}
+								<span className="bSmooth console">
+									<CountdownMini
+										targetDate={
+											siteConfig.dashboardCompetitor
+												.activeMessage.countdownDate
+										}
+									/>
+								</span>
+							</p>
+						</>
+					)}
+					{isJudging && (
+						<>
+							<p className="serifBold med">
+								{
+									siteConfig.dashboardCompetitor
+										.judgingMessage.title
+								}
+							</p>
+							<p>
+								{
+									siteConfig.dashboardCompetitor
+										.judgingMessage.message
+								}
+							</p>
+						</>
+					)}
+				</SubmissionForm>
+			)}
+		</>
+	)
 }

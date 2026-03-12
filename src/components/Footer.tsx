@@ -26,12 +26,14 @@ import { siteConfig } from "@/config/siteConfig"
  * @returns {JSX.Element} Footer with copyright notice
  */
 const Footer = (): React.ReactElement => {
-    return (
-        <div className={styles.foot}>
-            {/* Copyright notice centered with serif bold styling */}
-            <div className="center serifBold">{siteConfig.footer.copyright}</div>
-        </div>
-    )
+	return (
+		<div className={styles.foot}>
+			{/* Copyright notice centered with serif bold styling */}
+			<div className="center serifBold">
+				{siteConfig.footer.copyright}
+			</div>
+		</div>
+	)
 }
 
 export default Footer

@@ -29,57 +29,60 @@ import { siteConfig } from "@/config/siteConfig"
  * @returns {JSX.Element} Home page
  */
 const Home = (): React.ReactElement => {
-    const countdownDates: string[] = siteConfig.home.countdownDates
+	const countdownDates: string[] = siteConfig.home.countdownDates
 
-    const { status, data: session } = useSession()
+	const { status, data: session } = useSession()
 
-    return (
-        <div>
-            <h1>{siteConfig.home.welcomeHeading}</h1>
-            <hr />
-            <p className="cBlue" dangerouslySetInnerHTML={{ __html: siteConfig.home.introText }} />
-            <p className="cYellow">{siteConfig.home.statusText}</p>
+	return (
+		<div>
+			<h1>{siteConfig.home.welcomeHeading}</h1>
+			<hr />
+			<p
+				className="cBlue"
+				dangerouslySetInnerHTML={{ __html: siteConfig.home.introText }}
+			/>
+			<p className="cYellow">{siteConfig.home.statusText}</p>
 
-            {/* Conditional navigation based on authentication status */}
-            {status === "authenticated" && session?.user.access >= 1 ? (
-                <p>
-                    <Link href="/dashboard" className="cBlue link">
-                        &gt;&gt;&gt; Access your dashboard here!
-                    </Link>
-                </p>
-            ) : status === "authenticated" ? (
-                <p>
-                    <a
-                        href={siteConfig.externalUrls.signUpForm}
-                        className="cBlue link"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        &gt;&gt;&gt; Sign up for the Hackathon here!
-                    </a>
-                </p>
-            ) : status === "unauthenticated" ? (
-                <p>
-                    <Link href="/login" className="cBlue link">
-                        &gt;&gt;&gt; Login to your account here!
-                    </Link>
-                </p>
-            ) : (
-                <p>&nbsp;</p>
-            )}
+			{/* Conditional navigation based on authentication status */}
+			{status === "authenticated" && session?.user.access >= 1 ? (
+				<p>
+					<Link href="/dashboard" className="cBlue link">
+						&gt;&gt;&gt; Access your dashboard here!
+					</Link>
+				</p>
+			) : status === "authenticated" ? (
+				<p>
+					<a
+						href={siteConfig.externalUrls.signUpForm}
+						className="cBlue link"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						&gt;&gt;&gt; Sign up for the Hackathon here!
+					</a>
+				</p>
+			) : status === "unauthenticated" ? (
+				<p>
+					<Link href="/login" className="cBlue link">
+						&gt;&gt;&gt; Login to your account here!
+					</Link>
+				</p>
+			) : (
+				<p>&nbsp;</p>
+			)}
 
-            <center className="console">
-                {/* Countdown timers - commented out ones are for future use */}
-                {/* <Countdown key={0} targetDate={countdownDates[0]} label={siteConfig.home.countdownLabels.registrationCloses}/> */}
-                {/* <Countdown key={1} targetDate={countdownDates[1]} label={siteConfig.home.countdownLabels.promptsRelease}/> */}
-                <Countdown
-                    key={2}
-                    targetDate={countdownDates[2]}
-                    label={siteConfig.home.countdownLabels.submissionCloses}
-                />
-            </center>
-        </div>
-    )
+			<center className="console">
+				{/* Countdown timers - commented out ones are for future use */}
+				{/* <Countdown key={0} targetDate={countdownDates[0]} label={siteConfig.home.countdownLabels.registrationCloses}/> */}
+				{/* <Countdown key={1} targetDate={countdownDates[1]} label={siteConfig.home.countdownLabels.promptsRelease}/> */}
+				<Countdown
+					key={2}
+					targetDate={countdownDates[2]}
+					label={siteConfig.home.countdownLabels.submissionCloses}
+				/>
+			</center>
+		</div>
+	)
 }
 
 export default Home
