@@ -23,7 +23,7 @@ import { getUser } from "@/app/api/sql/database"
  *
  * Defines authentication providers, callbacks, and security settings.
  */
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
 	// Secret for encrypting JWT tokens and sessions – must be set in .env.local
 	secret: process.env.NEXTAUTH_SECRET,
 
@@ -83,7 +83,7 @@ const authOptions: NextAuthOptions = {
 							// Return minimal user object – will be passed to the jwt callback
 							return {
 								id: String((user as any).id),
-								email: (user as any).email,
+								email: credentials.email.toLowerCase(),
 								access: (user as any).access,
 								teamID: (user as any).teamID,
 							}

@@ -1,6 +1,7 @@
 import { useCompetition } from "@/src/context/CompetitionContext"
 import { useEffect, useState } from "react"
 import Submission from "./Submission"
+import JudgeToolbox from "./JudgeToolbox"
 import { useSession } from "next-auth/react"
 import SubmissionForm from "./SubmissionForm"
 import styles from "./DashboardJudge.module.css"
@@ -14,6 +15,9 @@ interface ProjectSubmission {
 	github: string
 	prompt: string
 	technologies: string
+	members?: string
+	sub_code?: string
+	sub_video?: string
 	round?: string
 	submission_date?: string
 	status?: string
@@ -32,21 +36,25 @@ export default function DashboardJudge(): React.ReactElement {
 			const response = await fetch("/api/sql/pullProject")
 			if (response.ok) {
 				const data = await response.json()
-				// Transform each item to match Submission component's expectations
-				const transformed = data.map((item: any) => ({
-					id: item.id,
-					teamID: item.teamID,
-					title: item.project_name || "Untitled",
-					description: item.description || "",
-					github: item.submission_url || "",
-					prompt: "", // Add a default or map from somewhere
-					technologies: "", // Add a default or map from somewhere
-					members: "", // Add if available
-					sub_code: "Github", // or "NOT SUBMITTED" as needed
-					sub_video: "NOT SUBMITTED",
-					submission_date: item.submission_date,
-					status: item.status,
-				}))
+				// Transform API response to match ProjectSubmission interface
+				const transformed: ProjectSubmission[] = data.map(
+					(item: any) => ({
+						id: item.id,
+						teamID: item.teamID,
+						// Use the new column names if present, otherwise fall back to old names
+						title: item.title || item.project_name || "Untitled",
+						description: item.description || "",
+						github: item.github || item.submission_url || "",
+						prompt: item.prompt || "",
+						technologies: item.technologies || "",
+						members: item.members || "",
+						sub_code: item.sub_code || "Github",
+						sub_video: item.sub_video || "NOT SUBMITTED",
+						round: item.round || "",
+						submission_date: item.submission_date,
+						status: item.status,
+					}),
+				)
 				setEntries(transformed)
 			} else {
 				console.error("Failed to fetch entries")
@@ -99,8 +107,9 @@ export default function DashboardJudge(): React.ReactElement {
 			</ul>
 
 			<div className={styles.entries}>
-				{entries.map((entry: ProjectSubmission) =>
+				{entries.map((entry) =>
 					entry.teamID === editing ? (
+						// Edit mode: show SubmissionForm
 						<SubmissionForm
 							key={entry.teamID}
 							teamID={entry.teamID}
@@ -115,14 +124,21 @@ export default function DashboardJudge(): React.ReactElement {
 							</p>
 						</SubmissionForm>
 					) : (
-						entry.round === "25R2" && (
+						// Normal view: show Submission + JudgeToolbox
+						<div
+							key={entry.teamID}
+							className={styles.entryWithTools}
+						>
 							<Submission
-								key={entry.teamID}
 								submission={entry}
 								user={session.user}
-								onEdit={(): void => setEditing(entry.teamID)}
+								onEdit={() => setEditing(entry.teamID)}
 							/>
-						)
+							<JudgeToolbox
+								submission={entry}
+								onUpdate={refreshData}
+							/>
+						</div>
 					),
 				)}
 			</div>
